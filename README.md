@@ -1,6 +1,6 @@
 # TAKK App
 
-Ett projekt för att skapa en mobilanpassad webbsida med filmer som visar tecken som stöd (TAKK). Projektet syftar till att stödja aktivt lärande inom vår dagliga verksamhet.
+Ett projekt för att skapa en mobilanpassad webbsida med filmer som visar tecken som stöd (TAKK). Projektet syftar till att stödja aktivt lärande inom föreningen.
 
 ## Funktioner (på sikt)
 
