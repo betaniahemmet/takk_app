@@ -1,0 +1,27 @@
+{
+  "name": "components",
+  "type": "module",
+  "proxy": "http://localhost:5000",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "React components for the Doqrment app",
+  "author": "Henrik",
+  "license": "ISC",
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.4.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.1",
+    "vite": "^6.2.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite preview"
+  }
+}
