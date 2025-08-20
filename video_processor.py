@@ -63,7 +63,7 @@ def process_video(
         f"(ih-min(iw\\,ih))*{crop_anchor_y}"
     )
     filters = [
-        f"[0:v]{crop},scale={target}:{target}:in_range=pc:out_range=tv,setsar=1,format=rgba[v0]"
+        f"[0:v]{crop},scale={target}:{target}:in_range=pc:out_range=tv,setsar=1,format=yuv420p[v0]"
     ]
     last = "v0"
 
