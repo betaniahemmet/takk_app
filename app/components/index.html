@@ -1,12 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="sv">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Doqrment</title>
+    <title>TAKK</title>
+    <script>
+      // Dark mode: read saved preference or fall back to system
+      const saved = localStorage.getItem('theme');          // 'light' | 'dark' | 'system'
+      const sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = saved ? (saved === 'dark' || (saved === 'system' && sysDark)) : sysDark;
+      if (isDark) document.documentElement.classList.add('dark');
+    </script>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/Main.jsx"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
