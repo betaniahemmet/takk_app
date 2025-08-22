@@ -15,9 +15,9 @@ print(f"➡️  BASE_URL from env: {os.getenv('BASE_URL')}")
 
 class Config:
     BASE_DIR = BASE_DIR
-    SECRET_KEY = os.environ["SECRET_KEY"]
-    FLASK_ENV = os.environ["FLASK_ENV"]
-    SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"]
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev")
+    FLASK_ENV = os.getenv("FLASK_ENV", "development")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///instance/app.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    DEBUG = os.environ["DEBUG"].lower() == "true"
-    BASE_URL = os.getenv("BASE_URL")  # still crashes if missing in qr_pdf.py
+    DEBUG = os.getenv("DEBUG", "true").lower() == "true"
+    BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")

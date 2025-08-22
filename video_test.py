@@ -3,20 +3,23 @@ from video_processor import process_video
 
 BASE = Path(__file__).resolve().parent
 MEDIA = BASE / "media"
-OUT   = BASE / "processed_videos"
+OUT = BASE / "processed_videos"
 OUT.mkdir(exist_ok=True)
 
-infile  = MEDIA / "test_video.mp4"
+infile = MEDIA / "test_video.mp4"
 outfile = OUT / f"{infile.stem}_square{infile.suffix}"
-logo    = MEDIA / "logotyp.png"
+logo = MEDIA / "logotyp.png"
+pict = MEDIA / "test_pict.jpg"
 
 print("Logo path:", logo)
 print("Logo exists:", logo.exists())
+print("pictogram exists: ", pict.exists())
 
 process_video(
     infile,
     outfile,
-    logo_path=logo,     # <- use the exact path you just printed
+    logo_path=logo,  # <- use the exact path you just printed
+    pictogram_path=pict,
     target=1080,
-    crop_anchor_y=0.40
+    crop_anchor_y=0.40,
 )
