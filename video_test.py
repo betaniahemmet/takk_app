@@ -6,10 +6,10 @@ MEDIA = BASE / "media"
 OUT = BASE / "processed_videos"
 OUT.mkdir(exist_ok=True)
 
-infile = MEDIA / "test_video.mp4"
+infile = MEDIA / "signs/dricka/quiz.mp4"
 outfile = OUT / f"{infile.stem}_square{infile.suffix}"
 logo = MEDIA / "logotyp.png"
-pict = MEDIA / "test_pict.jpg"
+pict = MEDIA / "signs/dricka/pict.jpg"
 
 print("Logo path:", logo)
 print("Logo exists:", logo.exists())
