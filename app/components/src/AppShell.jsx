@@ -2,11 +2,10 @@
 export default function AppShell({ children }) {
   return (
     <div className="relative min-h-dvh overflow-hidden">
-      {/* BG image (bottom) */}
       <picture className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <img
-          src="/media/ui/takk-bg-2000.webp"
-          srcSet="/media/ui/takk-bg-1200.webp 1200w, /media/ui/takk-bg-2000.webp 2000w, /media/ui/takk-bg-2800.webp 2800w"
+      <img
+          src="/media/ui/takk-bg-alpha-2000.webp"
+          srcSet="/media/ui/takk-bg-alpha-1200.webp 1200w, /media/ui/takk-bg-alpha-2000.webp 2000w, /media/ui/takk-bg-alpha-2800.webp 2800w"
           sizes="100vw"
           alt=""
           aria-hidden="true"
@@ -14,7 +13,7 @@ export default function AppShell({ children }) {
           loading="eager"
           fetchPriority="low"
           className="
-            absolute opacity-60 left-auto
+            absolute left-auto
 
             /* MOBILE: bigger + a bit lower, anchored to right */
             w-[100vw] right-[-4%] bottom-[-12%]
