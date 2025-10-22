@@ -1,4 +1,3 @@
-// …top imports already present:
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from "react-router-dom";
@@ -115,7 +114,7 @@ function Training() {
 
   if (!level?.id) {
     return (
-      <AppShell title={`Träning – Nivå ${n}`}>
+      <AppShell title={`Träning - Nivå ${n}`}>
         <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>
       </AppShell>
     );
@@ -145,7 +144,7 @@ function Training() {
         <div className="text-lg font-semibold">{current?.label || current?.id}</div>
 
         <VideoPlayer
-          src={current.training_video}
+          src={current.video}
           muted={false}
           videoRef={vRef}
         />
@@ -216,14 +215,14 @@ function Quiz() {
   // ----- guards (after ALL hooks) -----
   if (!level) {
     return (
-      <AppShell title={`Gissa – Nivå ${n}`}>
+      <AppShell title={`Gissa - Nivå ${n}`}>
         <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>
       </AppShell>
     );
   }
   if (!q) {
     return (
-      <AppShell title={`Gissa – Nivå ${n}`}>
+      <AppShell title={`Gissa - Nivå ${n}`}>
         <Card className="p-5">Inga frågor.</Card>
       </AppShell>
     );
@@ -280,7 +279,7 @@ function Quiz() {
   return (
     <AppShell title={`Gissa – ${level.name || `Nivå ${n}`}`}>
       <Card className="p-5 space-y-6">
-        <VideoPlayer src={q.quiz_video} muted={true} videoRef={vRef} />
+        <VideoPlayer src={q.video} muted={true} videoRef={vRef} />
 
         <div className="flex justify-end mt-1">
           <Button variant="outline" onClick={playClip} disabled={isLocked}>Spela klipp</Button>
