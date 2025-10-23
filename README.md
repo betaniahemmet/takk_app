@@ -19,5 +19,3 @@ Ett projekt för att skapa en mobilanpassad webbsida med filmer som visar tecken
 ## För internt bruk
 
 Detta projekt är i nuläget avsett för intern användning inom verksamheten.
-
-
