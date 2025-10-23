@@ -16,7 +16,8 @@ export default function Competition() {
     const [showOverlay, setShowOverlay] = useState(false);
     const [scores, setScores] = useState([]);
     const [madeTop, setMadeTop] = useState(false);
-
+    const vRef = useRef(null);
+    
     // Fetch signs + distractors once
     useEffect(() => {
         fetch("/api/signs")
@@ -35,25 +36,25 @@ export default function Competition() {
     };
 
     // compute possible answers
-    const makeChoices = () => {
-        if (!allSignIds.length) return [];
-        const target = allSignIds[current % allSignIds.length];
-        const targetLabel = signs[target]?.label || target;
-        const wordCount = targetLabel.trim().split(/\s+/).length;
-        const pool = [
-            ...(distractors[String(wordCount)] || []),
-            ...allSignIds.map((id) => signs[id]?.label),
-        ];
-        const uniq = [...new Set(pool.filter((x) => x && x !== targetLabel))];
-        const shuffled = uniq.sort(() => Math.random() - 0.5).slice(0, 3);
-        return [targetLabel, ...shuffled].sort(() => Math.random() - 0.5);
-    };
+    const makeChoices = useMemo(() => {
+        return () => {
+            if (!allSignIds.length) return [];
+            const target = allSignIds[current % allSignIds.length];
+            const targetLabel = signs[target]?.label || target;
+            const wordCount = targetLabel.trim().split(/\s+/).length;
+            const pool = [...(distractors[String(wordCount)] || []), ...allSignIds.map(id => signs[id]?.label)];
+            const uniq = [...new Set(pool.filter(x => x && x !== targetLabel))];
+            const shuffled = uniq.sort(() => Math.random() - 0.5).slice(0, 3);
+            return [targetLabel, ...shuffled].sort(() => Math.random() - 0.5);
+        };
+    }, [signs, distractors, current, allSignIds]);
 
     const [choices, setChoices] = useState([]);
 
     useEffect(() => {
         setChoices(makeChoices());
-    }, [signs, distractors, current]);
+    }, [makeChoices]);
+
 
     const handleAnswer = (choice) => {
         const target = allSignIds[current % allSignIds.length];
@@ -115,26 +116,31 @@ export default function Competition() {
     if (phase === "play") {
         const target = allSignIds[current % allSignIds.length];
         const label = signs[target]?.label;
-        const vRef = useRef(null);
 
         return (
             <AppShellCompetition>
                 <div className="p-5">
                     <Card className="p-5 space-y-5">
                         <VideoPlayer src={signs[target]?.video} muted videoRef={vRef} />
-                        <Button
-                            variant="primary"
-                            className="w-full"
-                            onClick={() => {
-                                const v = vRef.current;
-                                if (v) {
-                                    v.currentTime = 0;
-                                    v.play();
-                                }
-                            }}
-                        >
-                            Spela klipp
-                        </Button>
+
+                        {/* Video controls row */}
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                variant="primary"
+                                className="w-1/2"
+                                onClick={() => {
+                                    const v = vRef.current;
+                                    if (v) {
+                                        v.currentTime = 0;
+                                        v.play();
+                                    }
+                                }}
+                            >
+                                Spela klipp
+                            </Button>
+                        </div>
+
+                        {/* Choices */}
                         <div className="grid gap-3">
                             {choices.map((c, i) => (
                                 <Button
@@ -147,8 +153,12 @@ export default function Competition() {
                                 </Button>
                             ))}
                         </div>
-                        <div className="text-sm opacity-70 text-center">Streak: {streak}</div>
                     </Card>
+
+                    {/* Streak outside card */}
+                    <div className="text-sm opacity-70 text-center mt-3">
+                        Streak: {streak}
+                    </div>
                 </div>
             </AppShellCompetition>
         );
