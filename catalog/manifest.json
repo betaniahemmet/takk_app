@@ -1,26 +1,37 @@
 {
-  "version": 1,
+  "version": 2,
   "levels": [
-    { "id": 1, "name": "Nivå 1", "signs": ["hej","tack","vatten"] }
+    {
+      "id": 1,
+      "name": "Nivå 1",
+      "signs": [
+        "hej",
+        "jag_heter",
+        "tack",
+        "varsågod"
+      ]
+    }
   ],
   "signs": {
     "hej": {
       "label": "Hej",
-      "symbol": "/media/signs/hej/pict.jpg",
-      "training_video": "/media/signs/hej/training.mp4",
-      "quiz_video": "/media/signs/hej/quiz.mp4"
+      "symbol": "/media/signs/hej/hej.jpg",
+      "video": "/media/signs/hej/hej_square.mp4"
+    },
+    "jag_heter": {
+      "label": "Jag heter",
+      "symbol": "/media/signs/jag_heter/heta.jpg",
+      "video": "/media/signs/jag_heter/jag_heter_square.mp4"
     },
     "tack": {
       "label": "Tack",
-      "symbol": "/media/signs/tack/pict.jpg",
-      "training_video": "/media/signs/tack/training.mp4",
-      "quiz_video": "/media/signs/tack/quiz.mp4"
+      "symbol": "/media/signs/tack/tack.jpg",
+      "video": "/media/signs/tack/tack_square.mp4"
     },
-    "vatten": {
-      "label": "Vatten",
-      "symbol": "/media/signs/dricka/pict.jpg",
-      "training_video": "/media/signs/dricka/training.mp4",
-      "quiz_video": "/media/signs/dricka/quiz.mp4"
+    "varsågod": {
+      "label": "Varsågod",
+      "symbol": "/media/signs/varsågod/varsågod.jpg",
+      "video": "/media/signs/varsågod/varsågod_square.mp4"
     }
   }
 }
