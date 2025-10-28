@@ -16,6 +16,7 @@ export default function Competition() {
     const [showOverlay, setShowOverlay] = useState(false);
     const [scores, setScores] = useState([]);
     const [madeTop, setMadeTop] = useState(false);
+    const [order, setOrder] = useState([]);   // shuffled order of signs
     const vRef = useRef(null);
     const chimeRef = useRef(null);
     const ENABLE_SOUND = true;
@@ -23,13 +24,20 @@ export default function Competition() {
     
     // Fetch signs + distractors once
     useEffect(() => {
-        fetch("/api/signs")
-            .then((r) => r.json())
-            .then(setSigns);
-        fetch("/api/distractors")
-            .then((r) => r.json())
-            .then(setDistractors);
+        Promise.all([fetch("/api/signs"), fetch("/api/distractors")])
+            .then(async ([signsRes, distRes]) => {
+                const signsData = await signsRes.json();
+                const distData = await distRes.json();
+                setSigns(signsData);
+                setDistractors(distData);
+
+                // ✅ shuffle sign order once per session
+                const shuffled = Object.keys(signsData).sort(() => Math.random() - 0.5);
+                setOrder(shuffled);
+            })
+            .catch((err) => console.error("Fetch error:", err));
     }, []);
+
 
     const allSignIds = useMemo(() => Object.keys(signs || {}), [signs]);
 
@@ -41,33 +49,43 @@ export default function Competition() {
     // compute possible answers
     const makeChoices = useMemo(() => {
         return () => {
-            if (!allSignIds.length) return [];
-            const target = allSignIds[current % allSignIds.length];
+            if (!order.length) return [];
+            const target = order[current];
             const targetLabel = signs[target]?.label || target;
+
             const wordCount = targetLabel.trim().split(/\s+/).length;
-            const pool = [...(distractors[String(wordCount)] || []), ...allSignIds.map(id => signs[id]?.label)];
-            const uniq = [...new Set(pool.filter(x => x && x !== targetLabel))];
+
+            // pool = same word-count distractors + all labels from this session order
+            const pool = [
+                ...(distractors[String(wordCount)] || []),
+                ...order.map((id) => signs[id]?.label),
+            ];
+
+            const uniq = [...new Set(pool.filter((x) => x && x !== targetLabel))];
             const shuffled = uniq.sort(() => Math.random() - 0.5).slice(0, 3);
             return [targetLabel, ...shuffled].sort(() => Math.random() - 0.5);
         };
-    }, [signs, distractors, current, allSignIds]);
+    }, [order, current, signs, distractors]);
+
 
     const [choices, setChoices] = useState([]);
 
     useEffect(() => {
-        setChoices(makeChoices());
-    }, [makeChoices]);
+        if (phase === "play") {
+            setChoices(makeChoices());
+        }
+    }, [makeChoices, phase, current]);
 
 
     const handleAnswer = (choice) => {
-        const target = allSignIds[current % allSignIds.length];
+        const target = order[current];
         const correct = signs[target]?.label;
-
+        
         if (choice === correct) {
             const base = Math.random() * (1.17 - 1.15) + 1.15;
             const pts = base + streak * 0.05;
-            setScore(s => s + pts);
-            setStreak(s => s + 1);
+            setScore((s) => s + pts);
+            setStreak((s) => s + 1);
 
             // ✅ play chime and wait briefly before next sign
             if (ENABLE_SOUND && chimeRef.current) {
@@ -78,15 +96,22 @@ export default function Competition() {
             }
 
             setTimeout(() => {
-                nextSign();
+                // stop after last sign
+                if (current + 1 >= order.length) {
+                    endGame();
+                } else {
+                    nextSign();
+                }
             }, CONFIRM_MS);
         } else {
             endGame();
         }
     };
 
+
     const endGame = async () => {
         setPhase("end");
+        setMadeTop(false); // reset before new result
         try {
             const res = await fetch("/api/score", {
                 method: "POST",
@@ -96,12 +121,13 @@ export default function Competition() {
 
             if (!res.ok) throw new Error(`Server error ${res.status}`);
             const data = await res.json();
+            console.log("📊 madeTop from backend:", data.madeTop, typeof data.madeTop);
+
 
             console.log("Score submit response:", data);
 
             setScores(data.scores || []);
-            // ✅ explicit boolean normalization
-            setMadeTop(Boolean(data.madeTop === true));
+            setMadeTop(!!data.madeTop);
             setShowOverlay(true);
         } catch (err) {
             console.error("Score submit failed:", err);
@@ -110,14 +136,20 @@ export default function Competition() {
         }
     };
 
-
     const resetGame = () => {
+        // 🔁 new randomized order for next session
+        setOrder(
+            Object.keys(signs).sort(() => Math.random() - 0.5)
+        );
+
+        setCurrent(0);
         setScore(0);
         setStreak(0);
-        setCurrent(0);
         setChoices([]);
         setShowOverlay(false);
-        setPhase("name");
+        setMadeTop(false);
+        setScores([]);
+        setPhase("name"); // switch back to name entry last
     };
 
     // --- Render sections ---
@@ -147,7 +179,7 @@ export default function Competition() {
     }
 
     if (phase === "play") {
-        const target = allSignIds[current % allSignIds.length];
+        const target = order[current];
 
         return (
             <AppShellCompetition>
@@ -234,7 +266,7 @@ function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, onRes
                 ))}
                 </ul>
                 <div className="flex flex-col gap-2 mt-6">
-                    <Button variant="primary" onClick={() => window.location.reload()}>Spela igen</Button>
+                    <Button variant="primary" onClick={resetGame}>Spela igen</Button>
                     <Button variant="outline" onClick={() => (window.location.href = "/")}>
                         Till huvudmenyn
                     </Button>

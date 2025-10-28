@@ -1,5 +1,5 @@
 # app/routes.py
-from flask import Blueprint, jsonify, current_app, send_from_directory, request
+from flask import Blueprint, jsonify, current_app, send_from_directory, request, abort
 import os, json
 
 main_bp = Blueprint("main", __name__)
@@ -29,8 +29,8 @@ from .leaderboard import add_score, get_top
 
 @main_bp.get("/api/scores")
 def api_scores():
-    top20 = get_top(limit=20)
-    return jsonify({"scores": top20})
+    top10 = get_top(limit=10)
+    return jsonify({"scores": top10})
 
 @main_bp.post("/api/score")
 def api_add_score():
@@ -41,8 +41,8 @@ def api_add_score():
         return jsonify({"ok": False, "error": "name and score required"}), 400
 
     try:
-        top20, made_top = add_score(name, float(score))
-        return jsonify({"ok": True, "madeTop": made_top, "scores": top20})
+        top10, made_top = add_score(name, float(score))
+        return jsonify({"ok": True, "madeTop": made_top, "scores": top10})
     except ValueError as e:
         return jsonify({"ok": False, "error": str(e)}), 400
 
@@ -111,12 +111,25 @@ def api_signs():
         return jsonify({})
 
 
-# SPA fallback
+# --- React SPA Fallback ---
 @main_bp.route("/", defaults={"path": ""})
 @main_bp.route("/<path:path>")
-def spa(path):
-    static_dir = current_app.static_folder  # <- use what create_app() configured
-    target = os.path.join(static_dir, path) if path else None
-    if path and os.path.isfile(target):
+def spa_fallback(path):
+    if path.startswith(("api/", "media/", "static/")):
+        abort(404)
+
+    static_dir = current_app.static_folder
+    full_path = os.path.join(static_dir, path)
+
+
+    # serve a real file if it exists
+    if path and os.path.isfile(full_path):
         return send_from_directory(static_dir, path)
+
+    # otherwise, fall back to index.html
+    index_path = os.path.join(static_dir, "index.html")
+    if not os.path.exists(index_path):
+        current_app.logger.error(f"React index.html not found in {static_dir}")
+        abort(500, description=f"index.html not found in {static_dir}")
+
     return send_from_directory(static_dir, "index.html")
