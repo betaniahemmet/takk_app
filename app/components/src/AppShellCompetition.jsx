@@ -36,6 +36,7 @@ export default function AppShellCompetition({ children }) {
 
             {/* Foreground content (identical to AppShell) */}
             <main className="relative z-10 mx-auto max-w-md p-5">
+                
                 {children}
             </main>
         </div>
