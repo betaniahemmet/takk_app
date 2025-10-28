@@ -1,5 +1,5 @@
 import os, json, threading, tempfile
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Paths
 PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -48,7 +48,7 @@ def add_score(name: str, score: float, max_keep: int = 1000):
     entry = {
         "name": name.strip()[:32],
         "score": round(score, 2),
-        "date": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+        "date": datetime.now(timezone.utc).isoformat(timespec="seconds")
     }
 
     with _LOCK:
@@ -60,13 +60,14 @@ def add_score(name: str, score: float, max_keep: int = 1000):
             data = data[:max_keep]
         _atomic_write(data)
 
-    # after write, compute whether this entry made top 20
-    top20 = data[:20]
-    made_top = any(e is entry for e in top20)  # identity won’t hold after reload
-    # safer check:
-    made_top = entry in top20
-    return top20, made_top
+    # after write, compute whether this entry made top 10
+    top10 = data[:10]
+    made_top = any(
+        e["name"] == entry["name"] and e["score"] == entry["score"]
+        for e in top10
+    )
+    return top10, made_top
 
-def get_top(limit: int = 20):
+def get_top(limit: int = 10):
     data = _read_all()
     return data[:max(0, int(limit))]

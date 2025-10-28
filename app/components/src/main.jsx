@@ -387,6 +387,22 @@ function Results() {
     );
 }
 
+function NotFound() {
+  return (
+    <AppShell title="404">
+      <Card className="p-5 text-center space-y-3">
+        <div className="text-xl font-semibold">Sidan finns inte.</div>
+        <Link to="/">
+          <Button variant="primary" className="w-full mt-3">
+            Till startsidan
+          </Button>
+        </Link>
+      </Card>
+    </AppShell>
+  );
+}
+
+
 function App() {
     return (
         <BrowserRouter>
@@ -399,6 +415,7 @@ function App() {
                 <Route path="/results" element={<Results />} />
                 <Route path="/competition" element={<Competition />} />
                 <Route path="/dictionary" element={<Card className="p-5">Kommer snart…</Card>} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );

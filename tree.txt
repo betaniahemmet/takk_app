@@ -1,0 +1,94 @@
+├── .editorconfig
+├── .env.development
+├── .env.example
+├── .env.production
+├── .env.testing
+├── .flake8
+├── .flaskenv
+├── .gitignore
+├── .pre-commit-config.yaml
+├── .prettierrc
+├── app
+│   ├── __init__.py
+│   ├── app.py
+│   ├── components
+│   │   ├── index.html
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── postcss.config.cjs
+│   │   ├── public
+│   │   │   └── webblogo.png
+│   │   ├── requirements.txt
+│   │   ├── Shared
+│   │   │   └── useDarkMode.js
+│   │   ├── src
+│   │   │   ├── app.jsx
+│   │   │   ├── AppShell.jsx
+│   │   │   ├── AppShellCompetition.jsx
+│   │   │   ├── Competition.jsx
+│   │   │   ├── index.css
+│   │   │   ├── lib
+│   │   │   ├── main.jsx
+│   │   │   ├── ui
+│   │   │   └── VideoPlayer.jsx
+│   │   ├── tailwind.config.js
+│   │   └── vite.config.js
+│   ├── config.py
+│   ├── init.py
+│   ├── leaderboard.py
+│   ├── models.py
+│   ├── routes.py
+│   ├── static
+│   │   ├── css
+│   │   │   └── style.css
+│   │   ├── images
+│   │   │   └── webblogo.png
+│   │   └── js
+│   ├── templates
+│   └── utils
+│       ├── __init__.py
+│       └── export_checker.py
+├── catalog
+│   ├── distractors.json
+│   ├── leaderboard.json
+│   └── manifest.json
+├── instance
+├── LICENSE
+├── package-lock.json
+├── processed_clips
+│   ├── hej
+│   │   ├── hej.jpg
+│   │   └── hej_square.mp4
+│   ├── jag_heter
+│   │   ├── heta.jpg
+│   │   ├── jag.jpg
+│   │   └── jag_heter_square.mp4
+│   ├── tack
+│   │   ├── tack.jpg
+│   │   └── tack_square.mp4
+│   └── varsågod
+│       ├── varsågod.jpg
+│       └── varsågod_square.mp4
+├── raw_clips
+│   ├── Hej.mov
+│   ├── Jag heter.mov
+│   ├── Tack.mov
+│   └── Varsågog.mov
+├── README.md
+├── requirements.txt
+├── run.py
+├── scripts
+│   └── generate_tree.py
+├── setup_db.py
+├── testenv.py
+├── tests
+│   ├── conftest.py
+│   ├── test_app.py
+│   ├── test_models.py
+│   └── test_routes.py
+├── tools
+│   └── validate_catalog.py
+└── video_processing
+    ├── batch_processor.py
+    ├── manifest_builder.py
+    └── video_processor.py
