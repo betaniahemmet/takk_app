@@ -7,6 +7,7 @@ import Button from "./ui/Button.jsx";
 import Card from "./ui/Card.jsx";
 import VideoPlayer from "./VideoPlayer.jsx";
 import Competition from "./Competition.jsx";
+import Dictionary from "./Dictionary.jsx";
 
 // Utility
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
@@ -388,20 +389,19 @@ function Results() {
 }
 
 function NotFound() {
-  return (
-    <AppShell title="404">
-      <Card className="p-5 text-center space-y-3">
-        <div className="text-xl font-semibold">Sidan finns inte.</div>
-        <Link to="/">
-          <Button variant="primary" className="w-full mt-3">
-            Till startsidan
-          </Button>
-        </Link>
-      </Card>
-    </AppShell>
-  );
+    return (
+        <AppShell title="404">
+            <Card className="p-5 text-center space-y-3">
+                <div className="text-xl font-semibold">Sidan finns inte.</div>
+                <Link to="/">
+                    <Button variant="primary" className="w-full mt-3">
+                        Till startsidan
+                    </Button>
+                </Link>
+            </Card>
+        </AppShell>
+    );
 }
-
 
 function App() {
     return (
@@ -414,7 +414,7 @@ function App() {
                 <Route path="/game/niva/:n/quiz" element={<Quiz />} />
                 <Route path="/results" element={<Results />} />
                 <Route path="/competition" element={<Competition />} />
-                <Route path="/dictionary" element={<Card className="p-5">Kommer snart…</Card>} />
+                <Route path="/dictionary" element={<Dictionary />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>

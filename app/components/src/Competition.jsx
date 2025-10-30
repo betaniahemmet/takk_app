@@ -16,12 +16,12 @@ export default function Competition() {
     const [showOverlay, setShowOverlay] = useState(false);
     const [scores, setScores] = useState([]);
     const [madeTop, setMadeTop] = useState(false);
-    const [order, setOrder] = useState([]);   // shuffled order of signs
+    const [order, setOrder] = useState([]); // shuffled order of signs
     const vRef = useRef(null);
     const chimeRef = useRef(null);
     const ENABLE_SOUND = true;
-    const CONFIRM_MS = 800;     // short pause before next sign
-    
+    const CONFIRM_MS = 800; // short pause before next sign
+
     // Fetch signs + distractors once
     useEffect(() => {
         Promise.all([fetch("/api/signs"), fetch("/api/distractors")])
@@ -37,7 +37,6 @@ export default function Competition() {
             })
             .catch((err) => console.error("Fetch error:", err));
     }, []);
-
 
     const allSignIds = useMemo(() => Object.keys(signs || {}), [signs]);
 
@@ -67,7 +66,6 @@ export default function Competition() {
         };
     }, [order, current, signs, distractors]);
 
-
     const [choices, setChoices] = useState([]);
 
     useEffect(() => {
@@ -76,11 +74,10 @@ export default function Competition() {
         }
     }, [makeChoices, phase, current]);
 
-
     const handleAnswer = (choice) => {
         const target = order[current];
         const correct = signs[target]?.label;
-        
+
         if (choice === correct) {
             const base = Math.random() * (1.17 - 1.15) + 1.15;
             const pts = base + streak * 0.05;
@@ -108,7 +105,6 @@ export default function Competition() {
         }
     };
 
-
     const endGame = async () => {
         setPhase("end");
         setMadeTop(false); // reset before new result
@@ -123,7 +119,6 @@ export default function Competition() {
             const data = await res.json();
             console.log("📊 madeTop from backend:", data.madeTop, typeof data.madeTop);
 
-
             console.log("Score submit response:", data);
 
             setScores(data.scores || []);
@@ -137,10 +132,8 @@ export default function Competition() {
     };
 
     const resetGame = () => {
-        // 🔁 new randomized order for next session
-        setOrder(
-            Object.keys(signs).sort(() => Math.random() - 0.5)
-        );
+        // new randomized order for next session
+        setOrder(Object.keys(signs).sort(() => Math.random() - 0.5));
 
         setCurrent(0);
         setScore(0);
@@ -218,13 +211,11 @@ export default function Competition() {
                             ))}
                         </div>
                     </Card>
-                    
+
                     <audio ref={chimeRef} src="/media/ui/correct.mp3" preload="auto" />
 
                     {/* Streak outside card */}
-                    <div className="text-sm opacity-70 text-center mt-3">
-                        Streak: {streak}
-                    </div>
+                    <div className="text-sm opacity-70 text-center mt-3">Streak: {streak}</div>
                 </div>
             </AppShellCompetition>
         );
@@ -249,24 +240,28 @@ export default function Competition() {
     }
 }
 
-function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, onRestart, resetGame}) {
+function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, onRestart, resetGame }) {
     return (
         <div className="relative flex justify-center">
             <Card className="p-5 space-y-3 w-full max-w-sm text-center shadow-lg">
                 <h2 className="text-lg font-semibold">🏆 Topp 10</h2>
                 <ul className="space-y-1 text-sm text-center">
-                {scores.slice(0, 10).map((s, i) => (
-                    <li
-                    key={i}
-                    className={`flex justify-between items-center px-2 ${i === 0 ? "font-bold" : ""}`}
-                    >
-                    <span className="flex-1 text-left">{i + 1}. {s.name}</span>
-                    <span className="flex-1 text-right">{s.score.toFixed(2)}</span>
-                    </li>
-                ))}
+                    {scores.slice(0, 10).map((s, i) => (
+                        <li
+                            key={i}
+                            className={`flex justify-between items-center px-2 ${i === 0 ? "font-bold" : ""}`}
+                        >
+                            <span className="flex-1 text-left">
+                                {i + 1}. {s.name}
+                            </span>
+                            <span className="flex-1 text-right">{s.score.toFixed(2)}</span>
+                        </li>
+                    ))}
                 </ul>
                 <div className="flex flex-col gap-2 mt-6">
-                    <Button variant="primary" onClick={resetGame}>Spela igen</Button>
+                    <Button variant="primary" onClick={resetGame}>
+                        Spela igen
+                    </Button>
                     <Button variant="outline" onClick={() => (window.location.href = "/")}>
                         Till huvudmenyn
                     </Button>
@@ -280,7 +275,9 @@ function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, onRes
                         {madeTop ? (
                             <p className="text-sm">🎉 Du kom med på topplistan!</p>
                         ) : (
-                            <p className="text-sm opacity-80">Bra jobbat! Försök igen för att nå topplistan.</p>
+                            <p className="text-sm opacity-80">
+                                Bra jobbat! Försök igen för att nå topplistan.
+                            </p>
                         )}
 
                         <Button variant="outline" onClick={() => setShowOverlay(false)}>

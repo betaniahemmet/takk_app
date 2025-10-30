@@ -1,4 +1,7 @@
-import os, json, threading, tempfile
+import json
+import os
+import tempfile
+import threading
 from datetime import datetime, timezone
 
 # Paths
@@ -9,11 +12,13 @@ LEADERBOARD_PATH = os.path.join(CATALOG_DIR, "leaderboard.json")
 
 _LOCK = threading.Lock()
 
+
 def _ensure_files():
     os.makedirs(CATALOG_DIR, exist_ok=True)
     if not os.path.exists(LEADERBOARD_PATH):
         with open(LEADERBOARD_PATH, "w", encoding="utf-8") as f:
             json.dump([], f, ensure_ascii=False)
+
 
 def _read_all():
     _ensure_files()
@@ -22,6 +27,7 @@ def _read_all():
             return json.load(f)
         except json.JSONDecodeError:
             return []
+
 
 def _atomic_write(data):
     os.makedirs(CATALOG_DIR, exist_ok=True)
@@ -37,6 +43,7 @@ def _atomic_write(data):
         except Exception:
             pass
 
+
 def add_score(name: str, score: float, max_keep: int = 1000):
     if not isinstance(name, str) or not name.strip():
         raise ValueError("name required")
@@ -48,7 +55,7 @@ def add_score(name: str, score: float, max_keep: int = 1000):
     entry = {
         "name": name.strip()[:32],
         "score": round(score, 2),
-        "date": datetime.now(timezone.utc).isoformat(timespec="seconds")
+        "date": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
 
     with _LOCK:
@@ -62,12 +69,10 @@ def add_score(name: str, score: float, max_keep: int = 1000):
 
     # after write, compute whether this entry made top 10
     top10 = data[:10]
-    made_top = any(
-        e["name"] == entry["name"] and e["score"] == entry["score"]
-        for e in top10
-    )
+    made_top = any(e["name"] == entry["name"] and e["score"] == entry["score"] for e in top10)
     return top10, made_top
+
 
 def get_top(limit: int = 10):
     data = _read_all()
-    return data[:max(0, int(limit))]
+    return data[: max(0, int(limit))]

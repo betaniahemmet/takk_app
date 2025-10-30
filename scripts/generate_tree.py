@@ -34,9 +34,7 @@ def generate_tree(path=".", prefix="", depth=0, max_depth=3):
         tree.append(f"{prefix}{connector}{entry}")
         if os.path.isdir(full_path):
             extension = "    " if i == len(entries) - 1 else "│   "
-            tree.extend(
-                generate_tree(full_path, prefix + extension, depth + 1, max_depth)
-            )
+            tree.extend(generate_tree(full_path, prefix + extension, depth + 1, max_depth))
     return tree
 
 
