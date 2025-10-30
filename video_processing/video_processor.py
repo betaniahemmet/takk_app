@@ -50,10 +50,7 @@ def process_video(
     # Center crop to square (keep full height)
     crop = "crop=ih:ih:(iw-ih)/2:0"
 
-    filters = [
-        f"[0:v]{crop},scale={target}:{target}:in_range=pc:out_range=tv,"
-        "setsar=1,format=yuv420p[v0]"
-    ]
+    filters = [f"[0:v]{crop},scale={target}:{target}:in_range=pc:out_range=tv," "setsar=1,format=yuv420p[v0]"]
     last = "v0"
 
     # Logo overlay (bottom-right)

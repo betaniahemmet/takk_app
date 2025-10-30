@@ -16,21 +16,34 @@
     "hej": {
       "label": "Hej",
       "symbol": "/media/signs/hej/hej.jpg",
+      "pictograms": [
+        "/media/signs/hej/hej.jpg"
+      ],
       "video": "/media/signs/hej/hej_square.mp4"
     },
     "jag_heter": {
       "label": "Jag heter",
       "symbol": "/media/signs/jag_heter/heta.jpg",
+      "pictograms": [
+        "/media/signs/jag_heter/heta.jpg",
+        "/media/signs/jag_heter/jag.jpg"
+      ],
       "video": "/media/signs/jag_heter/jag_heter_square.mp4"
     },
     "tack": {
       "label": "Tack",
       "symbol": "/media/signs/tack/tack.jpg",
+      "pictograms": [
+        "/media/signs/tack/tack.jpg"
+      ],
       "video": "/media/signs/tack/tack_square.mp4"
     },
     "varsågod": {
       "label": "Varsågod",
       "symbol": "/media/signs/varsågod/varsågod.jpg",
+      "pictograms": [
+        "/media/signs/varsågod/varsågod.jpg"
+      ],
       "video": "/media/signs/varsågod/varsågod_square.mp4"
     }
   }

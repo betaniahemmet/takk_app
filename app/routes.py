@@ -1,10 +1,20 @@
 # app/routes.py
-from flask import Blueprint, jsonify, current_app, send_from_directory, request, abort
-import os, json
+import json
+import os
+
+from flask import Blueprint, abort, current_app, jsonify, request, send_from_directory
+
+from .leaderboard import add_score, get_top
 
 main_bp = Blueprint("main", __name__)
 
 
+def _distractors_path():
+    package_dir = os.path.dirname(os.path.abspath(__file__))
+    project_dir = os.path.dirname(package_dir)
+    return os.path.join(project_dir, "catalog", "distractors.json")
+
+
 def _manifest_path():
     package_dir = os.path.dirname(os.path.abspath(__file__))
     project_dir = os.path.dirname(package_dir)
@@ -15,22 +25,12 @@ def _load_manifest():
     with open(_manifest_path(), encoding="utf-8") as f:
         return json.load(f)
 
-
-def _manifest_path():
-    package_dir = os.path.dirname(os.path.abspath(__file__))
-    project_dir = os.path.dirname(package_dir)
-    return os.path.join(project_dir, "catalog", "manifest.json")
-
-def _load_manifest():
-    with open(_manifest_path(), encoding="utf-8") as f:
-        return json.load(f)
-
-from .leaderboard import add_score, get_top
 
 @main_bp.get("/api/scores")
 def api_scores():
     top10 = get_top(limit=10)
     return jsonify({"scores": top10})
+
 
 @main_bp.post("/api/score")
 def api_add_score():
@@ -46,16 +46,12 @@ def api_add_score():
     except ValueError as e:
         return jsonify({"ok": False, "error": str(e)}), 400
 
-def _distractors_path():
-    package_dir = os.path.dirname(os.path.abspath(__file__))
-    project_dir = os.path.dirname(package_dir)
-    return os.path.join(project_dir, "catalog", "distractors.json")
 
 @main_bp.get("/api/distractors")
 def api_distractors():
     path = _distractors_path()
     if not os.path.exists(path):
-        return jsonify({"2": [], "3": []})
+        return jsonify({"2": [], "3": [], "meta": {"status": "empty"}})
     with open(path, encoding="utf-8") as f:
         try:
             data = json.load(f)
@@ -86,29 +82,53 @@ def api_levels():
         return jsonify({"levels": m.get("levels", [])})
     except FileNotFoundError:
         return jsonify({"levels": []})
+    except json.JSONDecodeError:
+        return jsonify({"message": "Data corrupted"})
 
 
 @main_bp.get("/api/levels/<int:n>")
 def api_level_detail(n: int):
-    m = _load_manifest()
+
+    try:
+        m = _load_manifest()
+    except FileNotFoundError:
+        return jsonify({"levels[]"})
+    except json.JSONDecodeError:
+        return jsonify({"message": "Data corrupted"})
+
     level = next((L for L in m.get("levels", []) if L.get("id") == n), None)
     if not level:
         return jsonify({"error": "level not found"}), 404
     signs_meta = m.get("signs", {})
-    expanded = [
-        {"id": sid, **(signs_meta.get(sid, {"label": sid}))}
-        for sid in level.get("signs", [])
-    ]
+    expanded = [{"id": sid, **(signs_meta.get(sid, {"label": sid}))} for sid in level.get("signs", [])]
     return jsonify({"id": n, "name": level.get("name"), "signs": expanded})
 
 
 @main_bp.get("/api/signs")
 def api_signs():
+    """Return all signs as a sorted array (label, video, pictograms)."""
     try:
         m = _load_manifest()
-        return jsonify(m.get("signs", {}))
     except FileNotFoundError:
-        return jsonify({})
+        return jsonify({"message": "Data not found", "signs": []}), 404
+    except json.JSONDecodeError:
+        return jsonify({"message": "Data corrupted"})
+
+    signs_obj = m.get("signs", {})
+    signs_list = []
+    for sid, s in signs_obj.items():
+        pics = s.get("pictograms") or ([s["symbol"]] if s.get("symbol") else [])
+        signs_list.append(
+            {
+                "id": sid,
+                "label": s.get("label", sid),
+                "video": s.get("video"),
+                "pictograms": pics,
+            }
+        )
+
+    signs_list.sort(key=lambda x: x["label"].lower())
+    return jsonify({"signs": signs_list})
 
 
 # --- React SPA Fallback ---
@@ -120,7 +140,6 @@ def spa_fallback(path):
 
     static_dir = current_app.static_folder
     full_path = os.path.join(static_dir, path)
-
 
     # serve a real file if it exists
     if path and os.path.isfile(full_path):

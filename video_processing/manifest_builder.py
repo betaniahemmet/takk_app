@@ -21,14 +21,12 @@ def title_from_name(name: str) -> str:
 def prompt_level(sign_name: str) -> int:
     """Ask the user which level a sign belongs to."""
     while True:
-        val = input(
-            f"Assign level (1–5, or 0/Enter to skip) for '{sign_name}': "
-        ).strip()
+        val = input(f"Assign level (1-5, or 0/Enter to skip) for '{sign_name}': ").strip()
         if val == "" or val == "0":
             return 0
         if val.isdigit() and 1 <= int(val) <= 5:
             return int(val)
-        print("Please enter a number between 1–5, or press Enter to skip.")
+        print("Please enter a number between 1-5, or press Enter to skip.")
 
 
 # === Main logic ===
@@ -58,7 +56,7 @@ def build_manifest():
         dest_folder = MEDIA_SIGNS_ROOT / sign_key
         dest_folder.mkdir(parents=True, exist_ok=True)
 
-        for f in folder.iterdir():
+        for f in sorted(folder.iterdir()):
             dest_path = dest_folder / f.name
             if f.is_file():
                 shutil.copy2(f, dest_path)
@@ -83,6 +81,7 @@ def build_manifest():
         signs[sign_key] = {
             "label": label,
             "symbol": pictos[0] if pictos else None,
+            "pictograms": pictos,
             "video": video,
         }
 
@@ -92,10 +91,7 @@ def build_manifest():
     # Construct manifest
     manifest = {
         "version": 2,
-        "levels": [
-            {"id": lvl, "name": f"Nivå {lvl}", "signs": sorted(signs_in_lvl)}
-            for lvl, signs_in_lvl in sorted(levels.items())
-        ],
+        "levels": [{"id": lvl, "name": f"Nivå {lvl}", "signs": sorted(signs_in_lvl)} for lvl, signs_in_lvl in sorted(levels.items())],
         "signs": signs,
     }
 

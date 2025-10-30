@@ -35,10 +35,7 @@ export default function AppShellCompetition({ children }) {
             <div className="absolute inset-0 z-[2] bg-black/25" />
 
             {/* Foreground content (identical to AppShell) */}
-            <main className="relative z-10 mx-auto max-w-md p-5">
-                
-                {children}
-            </main>
+            <main className="relative z-10 mx-auto max-w-md p-5">{children}</main>
         </div>
     );
 }

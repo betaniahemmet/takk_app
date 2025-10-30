@@ -1,4 +1,6 @@
-import json, os, sys
+import json
+import os
+import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 CATALOG = os.path.join(ROOT, "catalog", "manifest.json")
