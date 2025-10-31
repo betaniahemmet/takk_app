@@ -26,17 +26,24 @@ export default function Competition() {
     useEffect(() => {
         Promise.all([fetch("/api/signs"), fetch("/api/distractors")])
             .then(async ([signsRes, distRes]) => {
-                const signsData = await signsRes.json();
+                const signsPayload = await signsRes.json();
                 const distData = await distRes.json();
-                setSigns(signsData);
+                const signsArray = signsPayload.signs || [];
+                const signsMap = {};
+                for (const s of signsArray) {
+                    signsMap[s.id] = s;
+                }
+
+                setSigns(signsMap);
                 setDistractors(distData);
 
-                // ✅ shuffle sign order once per session
-                const shuffled = Object.keys(signsData).sort(() => Math.random() - 0.5);
+                const shuffled = Object.keys(signsMap).sort(() => Math.random() - 0.5);
                 setOrder(shuffled);
+                console.log("Loaded", shuffled.length, "signs");
             })
             .catch((err) => console.error("Fetch error:", err));
     }, []);
+
 
     const allSignIds = useMemo(() => Object.keys(signs || {}), [signs]);
 
