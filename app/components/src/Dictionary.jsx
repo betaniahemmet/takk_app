@@ -17,29 +17,30 @@ export default function Dictionary() {
 	const vRef = useRef(null);
 
 	// --- Load signs from backend ---
-    useEffect(() => {
-        fetch("/api/signs")
-            .then((r) => r.json())
-            .then((data) => {
-                // Flatten object → array
-                const arr = Object.entries(data).map(([id, s]) => ({
-                    id,
-                    label: s.label,
-                    video: s.video,
-                    symbol: s.symbol,
-                }));
-                setSigns(arr.sort(() => Math.random() - 0.5));
-            })
-            .catch(() => setSigns([]));
-    }, []);
+	useEffect(() => {
+		fetch("/api/signs")
+			.then((r) => r.json())
+			.then((data) => {
+				const all = data.signs || [];
+                console.log("Loaded signs from API:", all);
+				setSigns(all);
+
+				// Preselect "Hej" or the first sign
+				const hej =
+					all.find((s) => s.label?.toLowerCase() === "hej") ||
+					(all.length > 0 ? all[0] : null);
+				if (hej) setSelected(hej);
+			})
+			.catch(() => setSigns([]));
+	}, []);
 
 	// --- Filter signs by query ---
-	const filtered = useMemo(() => {
-		const q = query.trim().toLowerCase();
-		return (signs || [])
-			.filter((s) => s.label.toLowerCase().includes(q))
-			.sort((a, b) => a.label.localeCompare(b.label));
-	}, [signs, query]);
+    const filtered = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        return (Array.isArray(signs) ? signs : [])
+            .filter((s) => s && (s.label || "").toLowerCase().includes(q))
+            .sort((a, b) => (a.label || "").localeCompare(b.label || ""));
+    }, [signs, query]);
 
 	// --- Delay helper ---
 	const delay = (ms) => new Promise((res) => setTimeout(res, ms));
