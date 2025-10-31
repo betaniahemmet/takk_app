@@ -1,12 +1,10 @@
 # manifest_builder.py
 import json
-import shutil
 import sys
 from pathlib import Path
 
 # === Configuration ===
 BASE_DIR = Path(__file__).resolve().parent.parent
-PROCESSED_ROOT = BASE_DIR / "processed_clips"
 MEDIA_SIGNS_ROOT = BASE_DIR / "media" / "signs"
 OUTPUT_FILE = BASE_DIR / "catalog" / "manifest.json"
 PUBLIC_BASE = "/media/signs"
@@ -34,33 +32,24 @@ def build_manifest():
     MEDIA_SIGNS_ROOT.mkdir(parents=True, exist_ok=True)
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
 
-    if not PROCESSED_ROOT.exists():
-        print(f"[error] Processed folder not found: {PROCESSED_ROOT}")
+    if not MEDIA_SIGNS_ROOT.exists():
+        print(f"[error] Media folder not found: {MEDIA_SIGNS_ROOT}")
         sys.exit(1)
 
     signs = {}
     levels = {}
 
-    # Walk through processed_clips and find signs
-    for folder in sorted(PROCESSED_ROOT.iterdir()):
+    # Walk through media/signs and collect sign data
+    for folder in sorted(MEDIA_SIGNS_ROOT.iterdir()):
         if not folder.is_dir():
             continue
 
         sign_key = folder.name.lower().replace(" ", "_")
         label = title_from_name(sign_key)
-
         video = None
         pictos = []
 
-        # Ensure destination folder exists
-        dest_folder = MEDIA_SIGNS_ROOT / sign_key
-        dest_folder.mkdir(parents=True, exist_ok=True)
-
         for f in sorted(folder.iterdir()):
-            dest_path = dest_folder / f.name
-            if f.is_file():
-                shutil.copy2(f, dest_path)
-
             if f.suffix.lower() == ".mp4":
                 video = f"{PUBLIC_BASE}/{sign_key}/{f.name}"
             elif f.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}:
@@ -70,7 +59,6 @@ def build_manifest():
             print(f"[warn] No video found in {folder.name}, skipping.")
             continue
 
-        # Assign level interactively
         print(f"\nFound sign: {sign_key}")
         print(f"  Label: {label}")
         print(f"  Pictograms: {len(pictos)} found")
@@ -99,7 +87,7 @@ def build_manifest():
     with OUTPUT_FILE.open("w", encoding="utf-8") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
 
-    print(f"\n✅ Manifest written to: {OUTPUT_FILE}")
+    print(f"\n Manifest written to: {OUTPUT_FILE}")
     print(f"   {len(signs)} signs processed, {len(levels)} levels assigned.")
 
 
