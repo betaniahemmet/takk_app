@@ -7,7 +7,7 @@ from video_processor import process_video
 # === Global configuration ===
 BASE_DIR = Path(__file__).resolve().parent.parent
 INPUT_ROOT = BASE_DIR / "raw_clips"
-OUTPUT_ROOT = BASE_DIR / "processed_clips"
+OUTPUT_ROOT = BASE_DIR / "media" / "signs"
 LOGO_PATH = BASE_DIR / "media/logotyp.png"
 if not LOGO_PATH.exists():
     raise FileNotFoundError(f"Logo not found: {LOGO_PATH}")
@@ -54,7 +54,7 @@ def batch_process():
             )
             count += 1
 
-    print(f"\n✅ Finished processing {count} videos.")
+    print(f"\n Finished processing {count} videos.")
     print(f"All outputs are in: {OUTPUT_ROOT.resolve()}")
 
 
