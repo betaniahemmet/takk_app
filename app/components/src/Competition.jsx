@@ -196,7 +196,9 @@ export default function Competition() {
                                     const v = vRef.current;
                                     if (v) {
                                         v.currentTime = 0;
-                                        v.play();
+                                        v.play().catch(err =>
+                                            console.warn("Playback failed", err)
+                                        );
                                     }
                                 }}
                             >

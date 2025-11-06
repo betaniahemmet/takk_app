@@ -1,23 +1,39 @@
+# app/config.py
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Go up one level from /app to project root
-BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-env = os.getenv("FLASK_ENV", "development")
-env_file = os.path.join(BASE_DIR, f".env.{env}")
-load_dotenv(env_file)
+# --- Locate project root ---
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Debug print to verify loading
-print(f"🌍 Loading .env file: {env_file}")
-print(f"➡️  BASE_URL from env: {os.getenv('BASE_URL')}")
+# --- Load environment file ONCE (module-level) ---
+# Only load if not already loaded (prevents double-loading on reloader)
+if not os.environ.get("_TAKK_ENV_LOADED"):
+    env = os.getenv("FLASK_ENV", "development")
+    env_file = BASE_DIR / f".env.{env}"
+
+    if env_file.exists():
+        load_dotenv(env_file)
+        print(f"✓ Loaded environment: {env_file.name}")
+    else:
+        print(f"⚠ No .env file found for '{env}', using defaults")
+
+    # Mark as loaded to prevent duplicate loads
+    os.environ["_TAKK_ENV_LOADED"] = "1"
 
 
+# --- Config class ---
 class Config:
+    """Central Flask configuration."""
+
     BASE_DIR = BASE_DIR
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev")
     FLASK_ENV = os.getenv("FLASK_ENV", "development")
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///instance/app.db")
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = os.getenv("DEBUG", "true").lower() == "true"
     BASE_URL = os.getenv("BASE_URL", "http://localhost:5000")
+    SANDBOX_MODE = os.getenv("SANDBOX_MODE", "false").lower() == "true"
+
+    @staticmethod
+    def is_sandbox() -> bool:
+        """Return True if app runs in sandbox/testing mode."""
+        return Config.SANDBOX_MODE or Config.FLASK_ENV == "testing"
