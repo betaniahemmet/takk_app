@@ -29,12 +29,12 @@ def title_from_name(name: str) -> str:
 def prompt_level(sign_name: str) -> int:
     """Ask the user which level a sign belongs to."""
     while True:
-        val = input(f"Assign level (1-5, or 0/Enter to skip) for '{sign_name}': ").strip()
+        val = input(f"Assign level (1-9, or 0/Enter to skip) for '{sign_name}': ").strip()
         if val == "" or val == "0":
             return 0
-        if val.isdigit() and 1 <= int(val) <= 5:
+        if val.isdigit() and 1 <= int(val) <= 9:
             return int(val)
-        print("Please enter a number between 1-5, or press Enter to skip.")
+        print("Please enter a number between 1-9, or press Enter to skip.")
 
 
 # === Main logic ===
