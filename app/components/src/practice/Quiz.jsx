@@ -206,7 +206,7 @@ function Results() {
                     </Link>
                     <Link to="/">
                         <Button variant="primary" className="w-full">
-                            Hem
+                            Till Huvudmenyn
                         </Button>
                     </Link>
                 </div>
