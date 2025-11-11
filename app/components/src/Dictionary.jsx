@@ -3,6 +3,7 @@ import AppShell from "./AppShell.jsx";
 import Card from "./ui/Card.jsx";
 import Button from "./ui/Button.jsx";
 import VideoPlayer from "./VideoPlayer.jsx";
+import HomeButton from "./ui/HomeButton.jsx";
 
 export default function Dictionary() {
 	// --- State ---
@@ -106,12 +107,15 @@ export default function Dictionary() {
 	return (
 		<AppShell title="Dictionary">
 			<Card className="p-5 space-y-5">
-				{/* Header with search button */}
+				{/* Header with search button AND home button */}
 				<div className="flex items-center justify-between">
 					<h1 className="text-lg font-semibold">Tecken</h1>
-					<Button variant="outline" onClick={() => setIsSearchOpen(true)}>
-						Sök
-					</Button>
+					<div className="flex items-center gap-2">
+						<Button variant="outline" onClick={() => setIsSearchOpen(true)}>
+							Sök
+						</Button>
+						<HomeButton />
+					</div>
 				</div>
 
 				{/* Player area */}
