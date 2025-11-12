@@ -1,9 +1,8 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "./ui/Button.jsx";
 import Card from "./ui/Card.jsx";
 import AppShell from "./AppShell.jsx";
 import { Layers, Trophy, Book } from "lucide-react";
-
 
 function Home() {
     return (
