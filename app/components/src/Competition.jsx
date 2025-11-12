@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import Card from "./ui/Card.jsx";
 import Button from "./ui/Button.jsx";
+import { Home } from "lucide-react";
 import Input from "./ui/Input.jsx";
 import VideoPlayer from "./VideoPlayer.jsx";
 import AppShellCompetition from "./AppShellCompetition.jsx";
@@ -43,7 +44,6 @@ export default function Competition() {
             })
             .catch((err) => console.error("Fetch error:", err));
     }, []);
-
 
     const allSignIds = useMemo(() => Object.keys(signs || {}), [signs]);
 
@@ -173,6 +173,11 @@ export default function Competition() {
                     >
                         Starta tävling
                     </Button>
+
+                    <Button variant="outline" onClick={() => (window.location.href = "/")}>
+                        <Home className="w-4 h-4 mr-2" />
+                        Till huvudmenyn
+                    </Button>
                 </Card>
             </AppShellCompetition>
         );
@@ -196,7 +201,9 @@ export default function Competition() {
                                     const v = vRef.current;
                                     if (v) {
                                         v.currentTime = 0;
-                                        v.play();
+                                        v.play().catch((err) =>
+                                            console.warn("Playback failed", err)
+                                        );
                                     }
                                 }}
                             >
@@ -250,7 +257,7 @@ export default function Competition() {
 function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, onRestart, resetGame }) {
     return (
         <div className="relative flex justify-center">
-            <Card className="p-5 space-y-3 w-full max-w-sm text-center shadow-lg">
+            <Card className="p-5 space-y-3 w-full max-w-md text-center shadow-lg">
                 <h2 className="text-lg font-semibold">🏆 Topp 10</h2>
                 <ul className="space-y-1 text-sm text-center">
                     {scores.slice(0, 10).map((s, i) => (
@@ -270,6 +277,7 @@ function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, onRes
                         Spela igen
                     </Button>
                     <Button variant="outline" onClick={() => (window.location.href = "/")}>
+                        <Home className="w-4 h-4 mr-2" />
                         Till huvudmenyn
                     </Button>
                 </div>

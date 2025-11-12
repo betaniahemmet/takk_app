@@ -81,9 +81,9 @@ def api_levels():
         m = _load_manifest()
         return jsonify({"levels": m.get("levels", [])})
     except FileNotFoundError:
-        return jsonify({"levels": []})
+        return jsonify({"levels": []}), 404
     except json.JSONDecodeError:
-        return jsonify({"message": "Data corrupted"})
+        return jsonify({"message": "Data corrupted"}), 500
 
 
 @main_bp.get("/api/levels/<int:n>")
@@ -92,9 +92,9 @@ def api_level_detail(n: int):
     try:
         m = _load_manifest()
     except FileNotFoundError:
-        return jsonify({"levels[]"})
+        return jsonify({"levels": []}), 404
     except json.JSONDecodeError:
-        return jsonify({"message": "Data corrupted"})
+        return jsonify({"message": "Data corrupted"}), 500
 
     level = next((L for L in m.get("levels", []) if L.get("id") == n), None)
     if not level:
@@ -112,7 +112,7 @@ def api_signs():
     except FileNotFoundError:
         return jsonify({"message": "Data not found", "signs": []}), 404
     except json.JSONDecodeError:
-        return jsonify({"message": "Data corrupted"})
+        return jsonify({"message": "Data corrupted"}), 500
 
     signs_obj = m.get("signs", {})
     signs_list = []
