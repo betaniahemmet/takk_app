@@ -1,3 +1,4 @@
+takk_app
 ├── .editorconfig
 ├── .env.development
 ├── .env.example
@@ -26,17 +27,33 @@
 │   │   │   ├── AppShell.jsx
 │   │   │   ├── AppShellCompetition.jsx
 │   │   │   ├── Competition.jsx
+│   │   │   ├── Dictionary.jsx
+│   │   │   ├── Home.jsx
 │   │   │   ├── index.css
 │   │   │   ├── lib
+│   │   │   │   └── queue.js
 │   │   │   ├── main.jsx
+│   │   │   ├── practice
+│   │   │   │   ├── Quiz.jsx
+│   │   │   │   └── Training.jsx
+│   │   │   ├── Practice.jsx
 │   │   │   ├── ui
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Card.jsx
+│   │   │   │   ├── Checkbox.jsx
+│   │   │   │   ├── HomeButton.jsx
+│   │   │   │   ├── index.js
+│   │   │   │   ├── Input.jsx
+│   │   │   │   ├── Label.jsx
+│   │   │   │   ├── PageWrapperDesktop.jsx
+│   │   │   │   ├── PageWrapperMobile.jsx
+│   │   │   │   ├── Select.jsx
+│   │   │   │   └── Slider.jsx
 │   │   │   └── VideoPlayer.jsx
 │   │   ├── tailwind.config.js
 │   │   └── vite.config.js
 │   ├── config.py
-│   ├── init.py
 │   ├── leaderboard.py
-│   ├── models.py
 │   ├── routes.py
 │   ├── static
 │   │   ├── css
@@ -46,48 +63,366 @@
 │   │   └── js
 │   ├── templates
 │   └── utils
-│       ├── __init__.py
-│       └── export_checker.py
 ├── catalog
 │   ├── distractors.json
 │   ├── leaderboard.json
 │   └── manifest.json
 ├── instance
 ├── LICENSE
+├── media
+│   ├── logotyp.png
+│   ├── signs
+│   │   ├── akta
+│   │   │   ├── akta.jpg
+│   │   │   └── akta_square.mp4
+│   │   ├── bada
+│   │   │   ├── bada.jpg
+│   │   │   └── bada_square.mp4
+│   │   ├── bajsa
+│   │   │   ├── bajsa.jpg
+│   │   │   └── bajsa_square.mp4
+│   │   ├── bra
+│   │   │   ├── bra.jpg
+│   │   │   └── bra_square.mp4
+│   │   ├── byta
+│   │   │   ├── byta.jpg
+│   │   │   └── byta_square.mp4
+│   │   ├── byta_blöja
+│   │   │   ├── 1_byta.jpg
+│   │   │   ├── 2_blöja.jpg
+│   │   │   └── byta_blöja_square.mp4
+│   │   ├── byta_personal
+│   │   │   ├── 1_byta.jpg
+│   │   │   ├── 2_personal.jpg
+│   │   │   └── byta_personal_square.mp4
+│   │   ├── byta_stol
+│   │   │   ├── 1_byta.jpg
+│   │   │   ├── 2_.jpg
+│   │   │   └── byta_stol_square.mp4
+│   │   ├── dricka
+│   │   │   ├── dricka.jpg
+│   │   │   └── dricka_square.mp4
+│   │   ├── du_ska_åka_hem
+│   │   │   ├── 1_du.jpg
+│   │   │   ├── 2_ska.jpg
+│   │   │   ├── 3_åka.jpg
+│   │   │   ├── 4_hem.jpg
+│   │   │   └── du_ska_åka_hem_square.mp4
+│   │   ├── du_ska_åka_till_jobbet
+│   │   │   ├── 1_du.jpg
+│   │   │   ├── 2_ska.jpg
+│   │   │   ├── 3_åka.jpg
+│   │   │   ├── 4_jobbet.jpg
+│   │   │   └── du_ska_åka_till_jobbet_square.mp4
+│   │   ├── du_är_busig
+│   │   │   ├── 1_du.jpg
+│   │   │   ├── 2_är.jpg
+│   │   │   ├── 3_busig.jpg
+│   │   │   └── du_är_busig_square.mp4
+│   │   ├── du_är_fin
+│   │   │   ├── 1_du.jpg
+│   │   │   ├── 2_är.jpg
+│   │   │   ├── 3_fin.jpg
+│   │   │   └── du_är_fin_square.mp4
+│   │   ├── du_är_rolig
+│   │   │   ├── 1_du.jpg
+│   │   │   ├── 2_är.jpg
+│   │   │   ├── 3_rolig.jpg
+│   │   │   └── du_är_rolig_square.mp4
+│   │   ├── du_är_snäll
+│   │   │   ├── 1_du.jpg
+│   │   │   ├── 2_är.jpg
+│   │   │   ├── 3_snäll.jpg
+│   │   │   └── du_är_snäll_square.mp4
+│   │   ├── duktig
+│   │   │   ├── duktig.jpg
+│   │   │   └── duktig_square.mp4
+│   │   ├── duscha
+│   │   │   ├── duscha.jpg
+│   │   │   └── duscha_square.mp4
+│   │   ├── fin
+│   │   │   ├── fin.jpg
+│   │   │   └── fin_square.mp4
+│   │   ├── frukt
+│   │   │   ├── frukt.jpg
+│   │   │   └── frukt_square.mp4
+│   │   ├── färdig
+│   │   │   ├── färdig.jpg
+│   │   │   └── färdig_square.mp4
+│   │   ├── gå
+│   │   │   ├── gå.jpg
+│   │   │   └── gå_square.mp4
+│   │   ├── gå_in
+│   │   │   ├── 1_gå.jpg
+│   │   │   ├── 2_in.jpg
+│   │   │   └── gå_in_square.mp4
+│   │   ├── gå_ut
+│   │   │   ├── 1_gå.jpg
+│   │   │   ├── 2_ut.jpg
+│   │   │   └── gå_ut_square.mp4
+│   │   ├── hej
+│   │   │   ├── hej.jpg
+│   │   │   └── hej_square.mp4
+│   │   ├── hem
+│   │   │   ├── hem.jpg
+│   │   │   └── hem_square.mp4
+│   │   ├── hjälpa
+│   │   │   ├── hjälpa.jpg
+│   │   │   └── hjälpa_square.mp4
+│   │   ├── idag
+│   │   │   ├── idag.jpg
+│   │   │   └── idag_square.mp4
+│   │   ├── imorgon
+│   │   │   ├── imorgon.jpg
+│   │   │   └── imorgon_square.mp4
+│   │   ├── jag_heter
+│   │   │   ├── 1_jag.jpg
+│   │   │   ├── 2_heter.jpg
+│   │   │   └── jag_heter_square.mp4
+│   │   ├── jobb
+│   │   │   ├── jobb.jpg
+│   │   │   └── jobb_square.mp4
+│   │   ├── kaffe
+│   │   │   ├── kaffe.jpg
+│   │   │   └── kaffe_square.mp4
+│   │   ├── kallt
+│   │   │   ├── kallt.jpg
+│   │   │   └── kallt_square.mp4
+│   │   ├── kissa
+│   │   │   ├── kissa.jpg
+│   │   │   └── kissa_square.mp4
+│   │   ├── ledsen
+│   │   │   ├── ledsen.jpg
+│   │   │   └── ledsen_square.mp4
+│   │   ├── mamma
+│   │   │   ├── mamma.jpg
+│   │   │   └── mamma_square.mp4
+│   │   ├── nu
+│   │   │   ├── nu.jpg
+│   │   │   └── nu_square.mp4
+│   │   ├── nu_ska_du_åka_hem
+│   │   │   ├── 1_nu.jpg
+│   │   │   ├── 2_ska.jpg
+│   │   │   ├── 3_du.jpg
+│   │   │   ├── 4_åka.jpg
+│   │   │   ├── 5_hem.jpg
+│   │   │   └── nu_ska_du_åka_hem_square.mp4
+│   │   ├── nu_ska_du_åka_till_jobbet
+│   │   │   ├── 1_nu.jpg
+│   │   │   ├── 2_ska.jpg
+│   │   │   ├── 3_du.jpg
+│   │   │   ├── 4_åka.jpg
+│   │   │   ├── 5_jobbet.jpg
+│   │   │   └── nu_ska_du_åka_till_jobbet_square.mp4
+│   │   ├── nu_ska_vi
+│   │   │   ├── 1_nu.jpg
+│   │   │   ├── 2_ska.jpg
+│   │   │   ├── 3_vi.jpg
+│   │   │   └── nu_ska_vi_square.mp4
+│   │   ├── nu_ska_vi_gå_in
+│   │   │   ├── 1_nu.jpg
+│   │   │   ├── 2_ska.jpg
+│   │   │   ├── 3_vi.jpg
+│   │   │   ├── 4_in.jpg
+│   │   │   └── nu_ska_vi_gå_in_square.mp4
+│   │   ├── nu_ska_vi_gå_ut
+│   │   │   ├── 1_nu.jpg
+│   │   │   ├── 2_ska.jpg
+│   │   │   ├── 3_vi.jpg
+│   │   │   ├── 4_ut.jpg
+│   │   │   └── nu_ska_vi_gå_ut_square.mp4
+│   │   ├── pappa
+│   │   │   ├── pappa.jpg
+│   │   │   └── pappa_square.mp4
+│   │   ├── personal
+│   │   │   ├── personal.jpg
+│   │   │   └── personal_square.mp4
+│   │   ├── roligt
+│   │   │   ├── roligt.jpg
+│   │   │   └── roligt_square.mp4
+│   │   ├── sen
+│   │   │   ├── sen.jpg
+│   │   │   └── sen_square.mp4
+│   │   ├── sitta
+│   │   │   ├── sitta.jpg
+│   │   │   └── sitta_square.mp4
+│   │   ├── snart
+│   │   │   ├── snart.jpg
+│   │   │   └── snart_square.mp4
+│   │   ├── snäll
+│   │   │   ├── snäll.jpg
+│   │   │   └── snäll_square.mp4
+│   │   ├── tack
+│   │   │   ├── tack.jpg
+│   │   │   └── tack_square.mp4
+│   │   ├── tack_för_hjälpen
+│   │   │   ├── 1_tack.jpg
+│   │   │   ├── 2_hjälpen.jpg
+│   │   │   └── tack_för_hjälpen_square.mp4
+│   │   ├── taxi
+│   │   │   ├── taxi.jpg
+│   │   │   └── taxi_square.mp4
+│   │   ├── taxin_kommer_snart
+│   │   │   ├── 1_taxi.jpg
+│   │   │   ├── 2_kommer.jpg
+│   │   │   ├── 3_snart.jpg
+│   │   │   └── taxin_kommer_snart_square.mp4
+│   │   ├── toa
+│   │   │   ├── toa_square.mp4
+│   │   │   └── toalett.jpg
+│   │   ├── trasig
+│   │   │   ├── trasig.jpg
+│   │   │   └── trasig_square.mp4
+│   │   ├── trött
+│   │   │   ├── trött.jpg
+│   │   │   └── trött_square.mp4
+│   │   ├── varmt
+│   │   │   ├── varmt.jpg
+│   │   │   └── varmt_square.mp4
+│   │   ├── varsågod
+│   │   │   ├── varsågod.jpg
+│   │   │   └── varsågod_square.mp4
+│   │   ├── vet_inte
+│   │   │   ├── vet inte.jpg
+│   │   │   └── vet_inte_square.mp4
+│   │   ├── vila
+│   │   │   ├── vila.jpg
+│   │   │   └── vila_square.mp4
+│   │   ├── vill_du
+│   │   │   ├── 1_vill.jpg
+│   │   │   ├── 2_du.jpg
+│   │   │   └── vill_du_square.mp4
+│   │   ├── vill_du_ha_hjälp
+│   │   │   ├── 1_vill.jpg
+│   │   │   ├── 2_du.jpg
+│   │   │   ├── 3_ha.jpg
+│   │   │   ├── 4_hjälp.jpg
+│   │   │   └── vill_du_ha_hjälp_square.mp4
+│   │   ├── vill_du_ha_mer
+│   │   │   ├── 1_vill.jpg
+│   │   │   ├── 2_du.jpg
+│   │   │   ├── 3_ha.jpg
+│   │   │   ├── 4_mer.jpg
+│   │   │   └── vill_du_ha_mer_square.mp4
+│   │   ├── vill_du_ha_mer_kaffe
+│   │   │   ├── 1_vill.jpg
+│   │   │   ├── 2_du.jpg
+│   │   │   ├── 3_ha.jpg
+│   │   │   ├── 3_mer.jpg
+│   │   │   ├── 4_kaffe.jpg
+│   │   │   └── vill_du_ha_mer_kaffe_square.mp4
+│   │   ├── vill_du_ha_mer_ketchup
+│   │   │   ├── 1_vill.jpg
+│   │   │   ├── 2_du.jpg
+│   │   │   ├── 3_ha.jpg
+│   │   │   ├── 4_mer.jpg
+│   │   │   ├── 5_ketchup.jpg
+│   │   │   └── vill_du_ha_mer_ketchup_square.mp4
+│   │   ├── vän
+│   │   │   ├── vän.jpg
+│   │   │   └── vän_square.mp4
+│   │   ├── vänta
+│   │   │   ├── vänta.jpg
+│   │   │   └── vänta_square.mp4
+│   │   ├── äta
+│   │   │   ├── äta.jpg
+│   │   │   └── äta_square.mp4
+│   │   └── åka
+│   │       ├── åka.jpg
+│   │       └── åka_square.mp4
+│   └── ui
+│       ├── correct.mp3
+│       ├── takk-bg-alpha-1200.webp
+│       ├── takk-bg-alpha-2000.webp
+│       └── takk-bg-alpha-2800.webp
 ├── package-lock.json
-├── processed_clips
-│   ├── hej
-│   │   ├── hej.jpg
-│   │   └── hej_square.mp4
-│   ├── jag_heter
-│   │   ├── heta.jpg
-│   │   ├── jag.jpg
-│   │   └── jag_heter_square.mp4
-│   ├── tack
-│   │   ├── tack.jpg
-│   │   └── tack_square.mp4
-│   └── varsågod
-│       ├── varsågod.jpg
-│       └── varsågod_square.mp4
+├── pyproject.toml
 ├── raw_clips
+│   ├── Akta.mov
+│   ├── Bada.mov
+│   ├── Bajsa.mov
+│   ├── Bra.mov
+│   ├── Byta blöja.mov
+│   ├── Byta personal.mov
+│   ├── Byta stol.mov
+│   ├── Byta.mov
+│   ├── Dricka.mov
+│   ├── Du ska åka hem.mov
+│   ├── Du ska åka till jobbet.mov
+│   ├── Du är busig.mov
+│   ├── Du är fin.mov
+│   ├── Du är rolig.mov
+│   ├── Du är snäll.mov
+│   ├── Duktig.mov
+│   ├── Duscha.mov
+│   ├── Fin.mov
+│   ├── Frukt.mov
+│   ├── Färdig.mov
+│   ├── Gå in.mov
+│   ├── Gå ut.mov
+│   ├── Gå.mov
 │   ├── Hej.mov
+│   ├── Hem.mov
+│   ├── Hjälpa.mov
+│   ├── Idag.mov
+│   ├── Imorgon.mov
 │   ├── Jag heter.mov
+│   ├── Jobb.mov
+│   ├── Kaffe.mov
+│   ├── Kallt.mov
+│   ├── Kissa.mov
+│   ├── Ledsen.mov
+│   ├── Mamma.mov
+│   ├── Nu ska du åka hem.mov
+│   ├── Nu ska du åka till jobbet.mov
+│   ├── Nu ska vi gå in (2).mov
+│   ├── Nu ska vi gå in.mov
+│   ├── Nu ska vi gå ut.mov
+│   ├── Nu ska vi.mov
+│   ├── Nu.mov
+│   ├── Pappa.mov
+│   ├── Personal.mov
+│   ├── Roligt.mov
+│   ├── Sen.mov
+│   ├── Sitta.mov
+│   ├── Snart.mov
+│   ├── Snäll.mov
+│   ├── Tack för hjälpen.mov
 │   ├── Tack.mov
-│   └── Varsågog.mov
+│   ├── Taxi.mov
+│   ├── Taxin kommer snart.mov
+│   ├── Toa.mov
+│   ├── Trasig.mov
+│   ├── Trött.mov
+│   ├── Varmt.mov
+│   ├── Varsågod.mov
+│   ├── Vet inte.mov
+│   ├── Vila.mov
+│   ├── Vill du ha hjälp.mov
+│   ├── Vill du ha mer kaffe.mov
+│   ├── Vill du ha mer ketchup.mov
+│   ├── Vill du ha mer.mov
+│   ├── Vill du.mov
+│   ├── Vän.mov
+│   ├── Vänta.mov
+│   ├── Äta.mov
+│   └── Åka.mov
 ├── README.md
 ├── requirements.txt
 ├── run.py
 ├── scripts
 │   └── generate_tree.py
-├── setup_db.py
 ├── testenv.py
 ├── tests
+│   ├── __init__.py
+│   ├── _tmp
 │   ├── conftest.py
-│   ├── test_app.py
-│   ├── test_models.py
-│   └── test_routes.py
+│   ├── test_api.py
+│   ├── test_manifest_builder.py
+│   └── verify_endpoints.py
 ├── tools
 │   └── validate_catalog.py
+├── tree.txt
 └── video_processing
     ├── batch_processor.py
     ├── manifest_builder.py
