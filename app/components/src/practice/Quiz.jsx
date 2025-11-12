@@ -7,7 +7,6 @@ import VideoPlayer from "../VideoPlayer.jsx";
 
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
-
 function Quiz() {
     const { n } = useParams();
     const nav = useNavigate();
@@ -81,7 +80,7 @@ function Quiz() {
     if (phase === "finished") {
         return <Results />;
     }
-    
+
     // ----- handlers (non-hooks) -----
     const playClip = () => {
         const v = vRef.current;
