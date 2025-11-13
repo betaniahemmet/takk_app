@@ -4,7 +4,6 @@ import "./index.css";
 import AppShell from "./AppShell.jsx";
 import Button from "./ui/Button.jsx";
 import Card from "./ui/Card.jsx";
-
 // Import pages
 import Home from "./Home.jsx";
 import { GameLevels, LevelDetail } from "./Practice.jsx";
@@ -12,6 +11,7 @@ import Training from "./practice/Training.jsx";
 import Quiz from "./practice/Quiz.jsx";
 import Competition from "./Competition.jsx";
 import Dictionary from "./Dictionary.jsx";
+import Feedback from "./Feedback.jsx"; // Add this line
 
 // NotFound component (keep it here since it's simple and only used once)
 function NotFound() {
@@ -28,7 +28,6 @@ function NotFound() {
         </AppShell>
     );
 }
-
 function App() {
     return (
         <BrowserRouter>
@@ -40,10 +39,10 @@ function App() {
                 <Route path="/game/niva/:n/quiz" element={<Quiz />} />
                 <Route path="/competition" element={<Competition />} />
                 <Route path="/dictionary" element={<Dictionary />} />
+                <Route path="/feedback" element={<Feedback />} /> {/* Add this line */}
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );
 }
-
 createRoot(document.getElementById("root")).render(<App />);
