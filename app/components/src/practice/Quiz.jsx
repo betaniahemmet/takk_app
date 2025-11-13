@@ -24,6 +24,7 @@ function Quiz() {
     const [phase, setPhase] = useState("playing");
     const vRef = useRef(null);
     const chimeRef = useRef(null);
+    const [hasPlayedVideo, setHasPlayedVideo] = useState(false);
     const CONFIRM_MS = 600;
     const ENABLE_SOUND = true;
 
@@ -63,6 +64,7 @@ function Quiz() {
     useEffect(() => {
         setEliminated(new Set());
         setConfirmingId(null);
+        setHasPlayedVideo(false);
     }, [qid]);
 
     // ----- guards (after ALL hooks) -----
@@ -139,7 +141,12 @@ function Quiz() {
     return (
         <AppShell title={`Gissa – ${level.name || `Nivå ${n}`}`}>
             <Card className="p-5 space-y-6">
-                <VideoPlayer src={q.video} muted={true} videoRef={vRef} />
+                <VideoPlayer
+                    src={q.video}
+                    muted={true}
+                    videoRef={vRef}
+                    onPlay={() => setHasPlayedVideo(true)}
+                />
 
                 <div className="flex justify-end mt-1">
                     <Button variant="outline" onClick={playClip} disabled={isLocked}>
@@ -154,9 +161,11 @@ function Quiz() {
 
                         let cls = "w-full";
                         let variant = "muted";
-                        let disabled = isEliminated || isLocked;
+                        let disabled = isEliminated || isLocked || !hasPlayedVideo;
 
                         if (isEliminated) cls += " opacity-60 line-through cursor-not-allowed";
+                        if (!hasPlayedVideo && !isEliminated && !isConfirm)
+                            cls += " opacity-40 cursor-not-allowed";
                         if (isConfirm) {
                             variant = "primary";
                             cls +=

@@ -5,6 +5,7 @@ export default function VideoPlayer({
     src,
     muted = false,
     onEnd,
+    onPlay,
     className = "",
     videoRef: externalRef, // lets parent control (Spela klipp)
     controls = false,
@@ -51,6 +52,7 @@ export default function VideoPlayer({
                 preload="metadata"
                 onLoadedMetadata={onLoadedMeta}
                 onEnded={onEnd}
+                onPlay={onPlay}
                 // Keep aspect by containing within wrapper, never stretch
                 className="block w-full h-full object-contain"
                 {...(controls ? { controls: true } : {})}
