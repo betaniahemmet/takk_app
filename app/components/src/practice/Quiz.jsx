@@ -8,11 +8,15 @@ import VideoPlayer from "../VideoPlayer.jsx";
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
 function Quiz() {
+    // ----- state/refs (hooks) -----
+
     const { n } = useParams();
     const nav = useNavigate();
 
-    // ----- state/refs (hooks) -----
-    const [level, setLevel] = useState(null);
+    const [level, setLevel] = useState(null); // just id + name
+    const [currentSigns, setCurrentSigns] = useState([]); // questions
+    const [poolSigns, setPoolSigns] = useState([]); // distractors 1..n
+
     const [order, setOrder] = useState([]);
     const [idx, setIdx] = useState(0);
     const [eliminated, setEliminated] = useState(new Set());
@@ -20,13 +24,13 @@ function Quiz() {
     const [phase, setPhase] = useState("playing");
     const vRef = useRef(null);
     const chimeRef = useRef(null);
-
+    const [hasPlayedVideo, setHasPlayedVideo] = useState(false);
     const CONFIRM_MS = 600;
     const ENABLE_SOUND = true;
 
     // Load level + build order
     useEffect(() => {
-        fetch(`/api/levels/${n}`)
+        fetch(`/api/levels/${n}/cumulative`)
             .then((r) => r.json())
             .then((L) => {
                 setLevel(L);
@@ -47,7 +51,8 @@ function Quiz() {
     // Build options
     const options = useMemo(() => {
         if (!level || !q) return [];
-        const pool = (level.signs || []).filter((s) => s.id !== q.id);
+        // Use cumulativeSigns for distractor pool (all previous levels)
+        const pool = (level.cumulativeSigns || []).filter((s) => s.id !== q.id);
         const others = shuffle(pool)
             .slice(0, 3)
             .map((s) => ({ id: s.id, label: s.label || s.id }));
@@ -59,6 +64,7 @@ function Quiz() {
     useEffect(() => {
         setEliminated(new Set());
         setConfirmingId(null);
+        setHasPlayedVideo(false);
     }, [qid]);
 
     // ----- guards (after ALL hooks) -----
@@ -135,7 +141,12 @@ function Quiz() {
     return (
         <AppShell title={`Gissa – ${level.name || `Nivå ${n}`}`}>
             <Card className="p-5 space-y-6">
-                <VideoPlayer src={q.video} muted={true} videoRef={vRef} />
+                <VideoPlayer
+                    src={q.video}
+                    muted={true}
+                    videoRef={vRef}
+                    onPlay={() => setHasPlayedVideo(true)}
+                />
 
                 <div className="flex justify-end mt-1">
                     <Button variant="outline" onClick={playClip} disabled={isLocked}>
@@ -150,9 +161,11 @@ function Quiz() {
 
                         let cls = "w-full";
                         let variant = "muted";
-                        let disabled = isEliminated || isLocked;
+                        let disabled = isEliminated || isLocked || !hasPlayedVideo;
 
                         if (isEliminated) cls += " opacity-60 line-through cursor-not-allowed";
+                        if (!hasPlayedVideo && !isEliminated && !isConfirm)
+                            cls += " opacity-40 cursor-not-allowed";
                         if (isConfirm) {
                             variant = "primary";
                             cls +=
