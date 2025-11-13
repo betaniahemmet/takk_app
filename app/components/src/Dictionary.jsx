@@ -89,6 +89,13 @@ export default function Dictionary() {
             });
     }, []);
 
+    // Scroll to top when a new sign is selected
+    useEffect(() => {
+        if (selected) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    }, [selected]);
+
     return (
         <AppShell title="Dictionary">
             <Card className="p-5 space-y-5">
@@ -105,8 +112,8 @@ export default function Dictionary() {
 
                 {/* Player area */}
                 {selected && (
-                    <div className="space-y-4 text-center">
-                        <div className="text-lg font-semibold">
+                    <div className="space-y-4">
+                        <div className="text-lg font-semibold text-center">
                             {selected?.label || "No sign selected"}
                         </div>
 
@@ -145,13 +152,15 @@ export default function Dictionary() {
                             </div>
                         </div>
 
-                        <Button
-                            variant={isPlaying ? "muted" : "primary"}
-                            onClick={playVideo}
-                            disabled={isPlaying}
-                        >
-                            {isPlaying ? "Spelar…" : "Spela video"}
-                        </Button>
+                        <div className="flex justify-end">
+                            <Button
+                                variant={isPlaying ? "muted" : "primary"}
+                                onClick={playVideo}
+                                disabled={isPlaying}
+                            >
+                                {isPlaying ? "Spelar…" : "Spela video"}
+                            </Button>
+                        </div>
 
                         <hr className="border-black/10 dark:border-white/10" />
                     </div>

@@ -1,6 +1,8 @@
 # app/routes.py
 import json
 import os
+import uuid
+from datetime import datetime
 
 from flask import Blueprint, abort, current_app, jsonify, request, send_from_directory
 
@@ -24,6 +26,12 @@ def _manifest_path():
 def _load_manifest():
     with open(_manifest_path(), encoding="utf-8") as f:
         return json.load(f)
+
+
+def _feedback_path():
+    package_dir = os.path.dirname(os.path.abspath(__file__))
+    project_dir = os.path.dirname(package_dir)
+    return os.path.join(project_dir, "feedback.json")
 
 
 @main_bp.get("/api/scores")
@@ -171,6 +179,40 @@ def api_level_cumulative(n: int):
     return jsonify(
         {"id": n, "name": current_level.get("name"), "signs": current_signs, "cumulativeSigns": cumulative_signs}  # Only current level  # All levels 1→n
     )
+
+
+@main_bp.post("/api/feedback")
+def api_feedback():
+    data = request.get_json(silent=True) or {}
+    message = (data.get("message") or "").strip()
+
+    if not message:
+        return jsonify({"ok": False, "error": "message required"}), 400
+
+    feedback_entry = {"id": str(uuid.uuid4()), "timestamp": datetime.utcnow().isoformat() + "Z", "message": message}
+
+    path = _feedback_path()
+
+    # Read existing feedback or start with empty list
+    if os.path.exists(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                feedback_list = json.load(f)
+        except json.JSONDecodeError:
+            feedback_list = []
+    else:
+        feedback_list = []
+
+    # Append new feedback
+    feedback_list.append(feedback_entry)
+
+    # Write back to file
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(feedback_list, f, indent=2, ensure_ascii=False)
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
 
 
 # --- React SPA Fallback ---
