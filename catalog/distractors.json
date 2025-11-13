@@ -1,4 +1,6 @@
 {
-    "2": ["god morgon", "fin katt", "jag vill", "halv special", "snygga boots"],
-    "3": ["vad heter du", "hur mår du idag", "vad är klockan?", "var bor du?"]
+    "2": ["God morgon", "Fin katt", "Jag ser", "Halv special", "Snygga boots", "Ingen vet"],
+    "3": ["Vad äter du?", "Glaset är halvfullt", "Vad är klockan?", "Var bor du?", "Många bäckar små", "Vattnet urholkar stenen"],
+    "4": ["Jag är hämtar fler", "En sak i taget", "Även en blind höna", "Fångad av en stormvind", "Bollen är helt rund", "Skivad gurka eller bostongurka?", "Tärningen är bortkastad"],
+    "5": ["Inte fisksoppa på en tisdag", "Det är inte ditt fel", "Häll upp ett glas till", "Tiden är en platt cirkel"]
 }

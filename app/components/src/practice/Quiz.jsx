@@ -8,11 +8,15 @@ import VideoPlayer from "../VideoPlayer.jsx";
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
 function Quiz() {
+    // ----- state/refs (hooks) -----
+
     const { n } = useParams();
     const nav = useNavigate();
 
-    // ----- state/refs (hooks) -----
-    const [level, setLevel] = useState(null);
+    const [level, setLevel] = useState(null); // just id + name
+    const [currentSigns, setCurrentSigns] = useState([]); // questions
+    const [poolSigns, setPoolSigns] = useState([]); // distractors 1..n
+
     const [order, setOrder] = useState([]);
     const [idx, setIdx] = useState(0);
     const [eliminated, setEliminated] = useState(new Set());
@@ -20,13 +24,12 @@ function Quiz() {
     const [phase, setPhase] = useState("playing");
     const vRef = useRef(null);
     const chimeRef = useRef(null);
-
     const CONFIRM_MS = 600;
     const ENABLE_SOUND = true;
 
     // Load level + build order
     useEffect(() => {
-        fetch(`/api/levels/${n}`)
+        fetch(`/api/levels/${n}/cumulative`)
             .then((r) => r.json())
             .then((L) => {
                 setLevel(L);
@@ -47,7 +50,8 @@ function Quiz() {
     // Build options
     const options = useMemo(() => {
         if (!level || !q) return [];
-        const pool = (level.signs || []).filter((s) => s.id !== q.id);
+        // Use cumulativeSigns for distractor pool (all previous levels)
+        const pool = (level.cumulativeSigns || []).filter((s) => s.id !== q.id);
         const others = shuffle(pool)
             .slice(0, 3)
             .map((s) => ({ id: s.id, label: s.label || s.id }));
