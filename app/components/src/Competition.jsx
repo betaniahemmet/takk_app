@@ -57,19 +57,29 @@ export default function Competition() {
         return () => {
             if (!order.length) return [];
             const target = order[current];
-            const targetLabel = signs[target]?.label || target;
+            const targetSign = signs[target];
+            if (!targetSign) return [];
 
-            const wordCount = targetLabel.trim().split(/\s+/).length;
+            const targetLabel = targetSign.label || target;
+            const targetPicCount = (targetSign.pictograms || []).length;
 
-            // pool = same word-count distractors + all labels from this session order
-            const pool = [
-                ...(distractors[String(wordCount)] || []),
-                ...order.map((id) => signs[id]?.label),
-            ];
+            // Get matching distractors from JSON
+            const matchingDistractors = distractors[String(targetPicCount)] || [];
 
+            // Get matching signs (same pictogram count)
+            const matchingSigns = order
+                .filter((id) => id !== target)
+                .map((id) => signs[id])
+                .filter((s) => s && (s.pictograms || []).length === targetPicCount)
+                .map((s) => s.label);
+
+            // Combine pools
+            const pool = [...matchingDistractors, ...matchingSigns];
             const uniq = [...new Set(pool.filter((x) => x && x !== targetLabel))];
-            const shuffled = uniq.sort(() => Math.random() - 0.5).slice(0, 3);
-            return [targetLabel, ...shuffled].sort(() => Math.random() - 0.5);
+
+            // Pick 3 distractors + 1 correct, then shuffle
+            const choices = [targetLabel, ...uniq.sort(() => Math.random() - 0.5).slice(0, 3)];
+            return choices.sort(() => Math.random() - 0.5);
         };
     }, [order, current, signs, distractors]);
 

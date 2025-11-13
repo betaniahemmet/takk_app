@@ -131,6 +131,48 @@ def api_signs():
     return jsonify({"signs": signs_list})
 
 
+@main_bp.get("/api/levels/<int:n>/cumulative")
+def api_level_cumulative(n: int):
+    """Return current level signs + cumulative signs for distractors."""
+    try:
+        m = _load_manifest()
+    except FileNotFoundError:
+        return jsonify({"levels": []}), 404
+    except json.JSONDecodeError:
+        return jsonify({"message": "Data corrupted"}), 500
+
+    # Get the current level info
+    current_level = next((L for L in m.get("levels", []) if L.get("id") == n), None)
+    if not current_level:
+        return jsonify({"error": "level not found"}), 404
+
+    signs_meta = m.get("signs", {})
+
+    # Current level signs only (for questions)
+    current_signs = [{"id": sid, **(signs_meta.get(sid, {"label": sid}))} for sid in current_level.get("signs", [])]
+
+    # Collect all sign IDs from levels 1 through n (for distractors)
+    all_sign_ids = []
+    for level in m.get("levels", []):
+        if level.get("id", 0) <= n:
+            all_sign_ids.extend(level.get("signs", []))
+
+    # Remove duplicates
+    seen = set()
+    unique_sign_ids = []
+    for sid in all_sign_ids:
+        if sid not in seen:
+            seen.add(sid)
+            unique_sign_ids.append(sid)
+
+    # Expand all cumulative signs
+    cumulative_signs = [{"id": sid, **(signs_meta.get(sid, {"label": sid}))} for sid in unique_sign_ids]
+
+    return jsonify(
+        {"id": n, "name": current_level.get("name"), "signs": current_signs, "cumulativeSigns": cumulative_signs}  # Only current level  # All levels 1→n
+    )
+
+
 # --- React SPA Fallback ---
 @main_bp.route("/", defaults={"path": ""})
 @main_bp.route("/<path:path>")
