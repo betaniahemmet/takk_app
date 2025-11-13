@@ -18,6 +18,7 @@ export default function Competition() {
     const [scores, setScores] = useState([]);
     const [madeTop, setMadeTop] = useState(false);
     const [order, setOrder] = useState([]); // shuffled order of signs
+    const [hasPlayedVideo, setHasPlayedVideo] = useState(false);
     const vRef = useRef(null);
     const chimeRef = useRef(null);
     const ENABLE_SOUND = true;
@@ -50,6 +51,7 @@ export default function Competition() {
     // pick next sign
     const nextSign = () => {
         setCurrent((c) => c + 1);
+        setHasPlayedVideo(false);
     };
 
     // compute possible answers
@@ -200,7 +202,12 @@ export default function Competition() {
             <AppShellCompetition>
                 <div className="p-5">
                     <Card className="p-5 space-y-5">
-                        <VideoPlayer src={signs[target]?.video} muted videoRef={vRef} />
+                        <VideoPlayer
+                            src={signs[target]?.video}
+                            muted
+                            videoRef={vRef}
+                            onPlay={() => setHasPlayedVideo(true)}
+                        />
 
                         {/* Video controls row */}
                         <div className="flex justify-end gap-2">
@@ -227,8 +234,9 @@ export default function Competition() {
                                 <Button
                                     key={i}
                                     variant="outline"
-                                    className="w-full"
+                                    className={`w-full ${!hasPlayedVideo ? "opacity-40 cursor-not-allowed" : ""}`}
                                     onClick={() => handleAnswer(c)}
+                                    disabled={!hasPlayedVideo}
                                 >
                                     {c}
                                 </Button>
