@@ -1,0 +1,32 @@
+# /etc/systemd/system/takk.service
+
+[Unit]
+Description=TAKK Sign Language Learning App
+After=network.target
+
+[Service]
+Type=notify
+User=takk
+Group=takk
+WorkingDirectory=/opt/takk
+Environment="PATH=/opt/takk/venv/bin"
+Environment="FLASK_ENV=production"
+ExecStart=/opt/takk/venv/bin/gunicorn \
+    --config /opt/takk/gunicorn.conf.py \
+    run:app
+
+# Restart policy
+Restart=always
+RestartSec=3
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=takk
+
+[Install]
+WantedBy=multi-user.target
