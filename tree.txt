@@ -28,6 +28,7 @@ takk_app
 │   │   │   ├── AppShellCompetition.jsx
 │   │   │   ├── Competition.jsx
 │   │   │   ├── Dictionary.jsx
+│   │   │   ├── Feedback.jsx
 │   │   │   ├── Home.jsx
 │   │   │   ├── index.css
 │   │   │   ├── lib
@@ -55,18 +56,17 @@ takk_app
 │   ├── config.py
 │   ├── leaderboard.py
 │   ├── routes.py
-│   ├── static
-│   │   ├── css
-│   │   │   └── style.css
-│   │   ├── images
-│   │   │   └── webblogo.png
-│   │   └── js
-│   ├── templates
-│   └── utils
+│   └── static
+│       ├── css
+│       │   └── style.css
+│       ├── images
+│       │   └── webblogo.png
+│       └── js
 ├── catalog
 │   ├── distractors.json
 │   ├── leaderboard.json
 │   └── manifest.json
+├── feedback.json
 ├── instance
 ├── LICENSE
 ├── media
@@ -97,7 +97,7 @@ takk_app
 │   │   │   └── byta_personal_square.mp4
 │   │   ├── byta_stol
 │   │   │   ├── 1_byta.jpg
-│   │   │   ├── 2_.jpg
+│   │   │   ├── 2_stol.jpg
 │   │   │   └── byta_stol_square.mp4
 │   │   ├── dricka
 │   │   │   ├── dricka.jpg
@@ -268,8 +268,8 @@ takk_app
 │   │   │   ├── 3_snart.jpg
 │   │   │   └── taxin_kommer_snart_square.mp4
 │   │   ├── toa
-│   │   │   ├── toa_square.mp4
-│   │   │   └── toalett.jpg
+│   │   │   ├── toa.jpg
+│   │   │   └── toa_square.mp4
 │   │   ├── trasig
 │   │   │   ├── trasig.jpg
 │   │   │   └── trasig_square.mp4
@@ -283,7 +283,7 @@ takk_app
 │   │   │   ├── varsågod.jpg
 │   │   │   └── varsågod_square.mp4
 │   │   ├── vet_inte
-│   │   │   ├── vet inte.jpg
+│   │   │   ├── vet_inte.jpg
 │   │   │   └── vet_inte_square.mp4
 │   │   ├── vila
 │   │   │   ├── vila.jpg

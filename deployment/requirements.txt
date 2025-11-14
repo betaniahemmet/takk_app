@@ -1,0 +1,15 @@
+# Flask core
+Flask==3.0.3
+Werkzeug==3.0.3
+
+# CORS support
+flask-cors==4.0.1
+
+# Environment variables
+python-dotenv==1.0.1
+
+# Production server
+gunicorn==22.0.0
+
+# Optional: Better JSON handling
+# orjson==3.10.5
