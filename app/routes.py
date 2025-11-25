@@ -8,6 +8,7 @@ from pathlib import Path
 from flask import Blueprint, abort, current_app, jsonify, request, send_from_directory
 
 from .leaderboard import add_score, get_top
+from .version import __version__
 
 main_bp = Blueprint("main", __name__)
 
@@ -54,6 +55,11 @@ def _feedback_path():
 def _load_manifest():
     with open(_manifest_path(), encoding="utf-8") as f:
         return json.load(f)
+
+
+@main_bp.get("/api/version")
+def api_version():
+    return jsonify({"version": __version__})
 
 
 @main_bp.get("/api/scores")
