@@ -1,7 +1,7 @@
 // In AppShell (root layout) — neutral background for all non-competition pages
 export default function AppShell({ children }) {
     return (
-        <div className="relative min-h-dvh overflow-hidden">
+        <div className="relative min-h-dvh overflow-hidden text-gray-900 dark:text-white">
             {/* Background image */}
             <picture className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
                 <img

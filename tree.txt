@@ -19,7 +19,6 @@ takk_app
 │   │   ├── postcss.config.cjs
 │   │   ├── public
 │   │   │   └── webblogo.png
-│   │   ├── requirements.txt
 │   │   ├── Shared
 │   │   │   └── useDarkMode.js
 │   │   ├── src
@@ -66,6 +65,17 @@ takk_app
 │   ├── distractors.json
 │   ├── leaderboard.json
 │   └── manifest.json
+├── deployment
+│   ├── deployment-check.sh
+│   ├── DEPLOYMENT-ORGANIZATION.md
+│   ├── DEPLOYMENT-PREP.md
+│   ├── deployment-README.md
+│   ├── DEPLOYMENT.md
+│   ├── gunicorn.conf.py
+│   ├── nginx-takk.conf
+│   ├── requirements.txt
+│   ├── setup-deployment.sh
+│   └── takk.service
 ├── feedback.json
 ├── instance
 ├── LICENSE
@@ -332,6 +342,7 @@ takk_app
 │   │       └── åka_square.mp4
 │   └── ui
 │       ├── correct.mp3
+│       ├── favicon.png
 │       ├── takk-bg-alpha-1200.webp
 │       ├── takk-bg-alpha-2000.webp
 │       └── takk-bg-alpha-2800.webp
@@ -408,7 +419,6 @@ takk_app
 │   ├── Äta.mov
 │   └── Åka.mov
 ├── README.md
-├── requirements.txt
 ├── run.py
 ├── scripts
 │   └── generate_tree.py
@@ -422,7 +432,6 @@ takk_app
 │   └── verify_endpoints.py
 ├── tools
 │   └── validate_catalog.py
-├── tree.txt
 └── video_processing
     ├── batch_processor.py
     ├── manifest_builder.py

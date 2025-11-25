@@ -23,6 +23,7 @@ export default function Competition() {
     const chimeRef = useRef(null);
     const ENABLE_SOUND = true;
     const CONFIRM_MS = 800; // short pause before next sign
+    const [lastCorrect, setLastCorrect] = useState(null);
 
     // Fetch signs + distractors once
     useEffect(() => {
@@ -120,6 +121,7 @@ export default function Competition() {
                 }
             }, CONFIRM_MS);
         } else {
+            setLastCorrect(correct);  // Save correct answer before ending
             endGame();
         }
     };
@@ -161,6 +163,7 @@ export default function Competition() {
         setShowOverlay(false);
         setMadeTop(false);
         setScores([]);
+        setLastCorrect(null);
         setPhase("name"); // switch back to name entry last
     };
 
@@ -263,7 +266,7 @@ export default function Competition() {
                         setShowOverlay={setShowOverlay}
                         score={score}
                         madeTop={madeTop}
-                        onRestart={() => window.location.reload()}
+                        correctAnswer={lastCorrect}
                         resetGame={resetGame}
                     />
                 </div>
@@ -272,10 +275,10 @@ export default function Competition() {
     }
 }
 
-function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, onRestart, resetGame }) {
+function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, correctAnswer, resetGame }) {
     return (
         <div className="relative flex justify-center">
-            <Card className="p-5 space-y-3 w-full max-w-md text-center shadow-lg">
+            <Card className="p-5 space-y-3 w-full max-w-md text-center shadow-lg text-gray-900 dark:text-white">    
                 <h2 className="text-lg font-semibold">🏆 Topp 10</h2>
                 <ul className="space-y-1 text-sm text-center">
                     {scores.slice(0, 10).map((s, i) => (
@@ -303,8 +306,12 @@ function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, onRes
 
             {showOverlay && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                    <Card className="p-6 text-center space-y-4 bg-white/20 backdrop-blur-md text-white rounded-2xl shadow-lg">
+                    <Card className="p-6 text-center space-y-4 bg-white/80 dark:bg-white/20 backdrop-blur-md text-gray-900 dark:text-white rounded-2xl shadow-lg">
                         <h1 className="text-2xl font-bold">Du fick {score.toFixed(2)} poäng!</h1>
+                        {correctAnswer && (
+                            <p className="text-sm">Rätt svar: <span className="font-semibold">{correctAnswer}</span></p>
+                        )}
+                        
                         {madeTop ? (
                             <p className="text-sm">🎉 Du kom med på topplistan!</p>
                         ) : (
