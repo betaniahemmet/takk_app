@@ -1,4 +1,6 @@
 // In AppShell (root layout) — neutral background for all non-competition pages
+import { VersionDisplay } from './VersionDisplay';
+
 export default function AppShell({ children }) {
     return (
         <div className="relative min-h-dvh overflow-hidden text-gray-900 dark:text-white">
@@ -27,7 +29,10 @@ export default function AppShell({ children }) {
             <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/25 via-transparent to-black/35" />
 
             {/* Foreground content (single children render) */}
-            <main className="relative z-10 mx-auto max-w-md p-5">{children}</main>
+            <main className="relative z-10 mx-auto max-w-md p-5">
+                {children}
+                <VersionDisplay />
+            </main>
         </div>
     );
 }
