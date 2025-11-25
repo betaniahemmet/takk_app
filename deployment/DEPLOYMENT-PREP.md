@@ -108,15 +108,15 @@ Or manually test in browser:
 
 ## 📊 Expected Performance
 
-With the HP EliteDesk 800 G5 DM (i5-9500T, 16GB RAM):
+With the HP Elite Mini 600 G9 DM (i3-12100T, 16GB RAM):
 
 | Metric | Expected |
 |--------|----------|
-| Concurrent users | 100+ |
+| Concurrent users | 80+ |
 | Video load time | <1 second |
 | API response | <100ms |
-| Memory usage | 2-4GB |
-| CPU usage | 10-30% average |
+| Memory usage | 1.5 - 3GB |
+| CPU usage | 15-35% average |
 
 ## 🔧 Post-Deployment Adjustments
 

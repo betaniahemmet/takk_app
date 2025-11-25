@@ -12,7 +12,7 @@ export default function Button({
         primary: "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600",
         muted: "bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/20",
         outline:
-            "bg-transparent border border-gray-300 text-gray-900 hover:bg-black/5 dark:border-white/20 dark:text-white dark:hover:bg-white/10",
+            "bg-white/90 text-gray-800 ring-1 ring-gray-200 hover:ring-blue-300 hover:bg-white dark:bg-white/10 dark:text-white dark:ring-white/20 dark:hover:bg-white/20",
         secondary:
             "bg-slate-700 text-white hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700",
         ghost: "bg-transparent text-[var(--fg)] hover:bg-black/5 dark:text-[var(--fg)] dark:hover:bg-white/10",
