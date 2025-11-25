@@ -160,7 +160,7 @@ function Quiz() {
                         const isConfirm = confirmingId === opt.id;
 
                         let cls = "w-full";
-                        let variant = "muted";
+                        let variant = "outline";
                         let disabled = isEliminated || isLocked || !hasPlayedVideo;
 
                         if (isEliminated) cls += " opacity-60 line-through cursor-not-allowed";
