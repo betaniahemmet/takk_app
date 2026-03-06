@@ -12,6 +12,7 @@ import Quiz from "./practice/Quiz.jsx";
 import Competition from "./Competition.jsx";
 import Dictionary from "./Dictionary.jsx";
 import Feedback from "./Feedback.jsx"; // Add this line
+import Introduction from "./Introduction.jsx";
 
 // NotFound component (keep it here since it's simple and only used once)
 function NotFound() {
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/competition" element={<Competition />} />
                 <Route path="/dictionary" element={<Dictionary />} />
                 <Route path="/feedback" element={<Feedback />} /> {/* Add this line */}
+                <Route path="/introduktion" element={<Introduction />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>

@@ -222,6 +222,8 @@ export default function Dictionary() {
                                         setShowPictograms(false);
                                         setPicIndex(0);
                                         setIsPlaying(false);
+                                        setQuery("");
+                                        setIsSearchOpen(false);
                                     }}
                                     className="py-3 px-2 text-white cursor-pointer hover:bg-white/10 rounded-md"
                                 >

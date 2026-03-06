@@ -49,18 +49,20 @@ takk_app
 │   │   │   │   ├── PageWrapperMobile.jsx
 │   │   │   │   ├── Select.jsx
 │   │   │   │   └── Slider.jsx
+│   │   │   ├── VersionDisplay.jsx
 │   │   │   └── VideoPlayer.jsx
 │   │   ├── tailwind.config.js
 │   │   └── vite.config.js
 │   ├── config.py
 │   ├── leaderboard.py
 │   ├── routes.py
-│   └── static
-│       ├── css
-│       │   └── style.css
-│       ├── images
-│       │   └── webblogo.png
-│       └── js
+│   ├── static
+│   │   ├── css
+│   │   │   └── style.css
+│   │   ├── images
+│   │   │   └── webblogo.png
+│   │   └── js
+│   └── version.py
 ├── catalog
 │   ├── distractors.json
 │   ├── leaderboard.json
@@ -340,6 +342,7 @@ takk_app
 │   │   └── åka
 │   │       ├── åka.jpg
 │   │       └── åka_square.mp4
+│   ├── takklogocrop.png
 │   └── ui
 │       ├── correct.mp3
 │       ├── favicon.png
@@ -432,6 +435,8 @@ takk_app
 │   └── verify_endpoints.py
 ├── tools
 │   └── validate_catalog.py
+├── tree.txt
+├── VERSION
 └── video_processing
     ├── batch_processor.py
     ├── manifest_builder.py
