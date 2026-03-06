@@ -16,7 +16,7 @@ export default function Card({
         >
             {/* Translucent background only */}
             <div
-                className="absolute inset-0 rounded-2xl bg-white/70 dark:bg-black/40 backdrop-blur-sm"
+                className="absolute inset-0 rounded-2xl bg-white/85 dark:bg-slate-900/75 backdrop-blur-sm"
                 aria-hidden="true"
             />
             {/* Content wrapper (receives your p-5, space-y-*, etc.) */}
