@@ -1,5 +1,4 @@
 # testenv.py
-# testenv.py
 """
 Ensures pytest runs in isolation and uses a clean environment.
 Import this at the top of your tests if you need shared settings.
