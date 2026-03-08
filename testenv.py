@@ -23,6 +23,9 @@ os.environ.setdefault("DO_NOT_TOUCH_REAL_DATA", "1")
 # --- Explicit test mode ---
 os.environ["SANDBOX_MODE"] = "true"
 
+# --- Redis: point to local instance (tests use fakeredis fixture to avoid real connections) ---
+os.environ.setdefault("REDIS_URL", "redis://localhost:6379")
+
 # --- Temporary isolated dirs for media/catalog ---
 TMP_DIR = BASE_DIR / "tests" / "_tmp"
 TMP_DIR.mkdir(parents=True, exist_ok=True)

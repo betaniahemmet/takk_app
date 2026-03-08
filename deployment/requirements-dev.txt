@@ -1,0 +1,15 @@
+# Development and testing dependencies
+# Install with: pip install -r deployment/requirements-dev.txt
+# (This includes all production deps via -r below)
+-r requirements.txt
+
+# Testing
+pytest
+fakeredis>=2.0.0       # Redis mock — used in tests/test_leaderboard.py
+requests               # HTTP client — used in tests/verify_endpoints.py
+
+# Code quality
+black                  # Code formatter
+flake8                 # Linter
+isort                  # Import sorter
+pre-commit             # Git hooks

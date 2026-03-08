@@ -4,7 +4,17 @@
       "Bash(find:*)",
       "Bash(python3:*)",
       "Bash(xargs du -k)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(xargs ls:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(py -m pytest --version)",
+      "Read(//c/Users/henri/AppData/Roaming/Python/Python313/**)",
+      "Bash(pip show:*)",
+      "Bash(ls:*)",
+      "Bash(venv/Scripts/pip install:*)",
+      "Bash(venv/Scripts/pytest:*)",
+      "Bash(venv/Scripts/pip freeze:*)"
     ]
   }
 }

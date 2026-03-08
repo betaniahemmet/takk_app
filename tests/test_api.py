@@ -124,3 +124,23 @@ def test_api_score_post_ok(client, monkeypatch):
 def test_api_score_post_bad_request(client):
     r = client.post("/api/score", json={"name": "", "score": None})
     assert r.status_code == 400
+
+
+def test_api_scores(client, monkeypatch):
+    from app import routes
+
+    monkeypatch.setattr(
+        routes,
+        "get_top",
+        lambda limit=10: [
+            {"name": "Alice", "score": 5.20, "date": "2026-01-01T00:00:00+00:00"},
+            {"name": "Bob", "score": 3.10, "date": "2026-01-02T00:00:00+00:00"},
+        ],
+    )
+    r = client.get("/api/scores")
+    assert r.status_code == 200
+    data = r.get_json()
+    assert "scores" in data
+    assert len(data["scores"]) == 2
+    assert data["scores"][0]["name"] == "Alice"
+    assert data["scores"][0]["score"] == 5.20
