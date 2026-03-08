@@ -4,6 +4,7 @@ import AppShell from "../AppShell.jsx";
 import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
 import VideoPlayer from "../VideoPlayer.jsx";
+import HomeButton from "../ui/HomeButton.jsx";
 
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
@@ -141,6 +142,9 @@ function Quiz() {
     return (
         <AppShell title={`Gissa – ${level.name || `Nivå ${n}`}`}>
             <Card className="p-5 space-y-6">
+                <div className="flex justify-end">
+                    <HomeButton />
+                </div>
                 <VideoPlayer
                     src={q.video}
                     muted={true}

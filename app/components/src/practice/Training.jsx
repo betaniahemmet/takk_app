@@ -4,6 +4,7 @@ import AppShell from "../AppShell.jsx";
 import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
 import VideoPlayer from "../VideoPlayer.jsx";
+import HomeButton from "../ui/HomeButton.jsx";
 
 function Training() {
     const { n } = useParams();
@@ -88,7 +89,10 @@ function Training() {
     return (
         <AppShell title={`Träning — ${level.name || `Nivå ${n}`}`}>
             <Card className="p-5 space-y-4">
-                <div className="text-lg font-semibold">{current?.label || current?.id}</div>
+                <div className="flex items-center justify-between">
+                    <div className="text-lg font-semibold">{current?.label || current?.id}</div>
+                    <HomeButton />
+                </div>
 
                 {/* Video or Pictograms */}
                 <div className="relative w-full aspect-square overflow-hidden rounded-lg bg-black/5 dark:bg-white/5">

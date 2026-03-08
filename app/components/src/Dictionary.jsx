@@ -187,7 +187,7 @@ export default function Dictionary() {
 
             {/* Search modal overlay */}
             {isSearchOpen && (
-                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col p-5">
+                <div className="fixed inset-0 z-50 bg-white/90 dark:bg-black/85 backdrop-blur-sm flex flex-col p-5">
                     <div className="flex items-center justify-between mb-4">
                         <input
                             type="text"
@@ -195,11 +195,11 @@ export default function Dictionary() {
                             placeholder="Sök tecken…"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            className="flex-1 p-2 rounded-md border border-white/20 bg-black/50 text-white placeholder-white/50"
+                            className="flex-1 p-2 rounded-md border border-black/20 dark:border-white/20 bg-white dark:bg-black/50 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/50"
                         />
                         <Button
                             variant="outline"
-                            className="ml-3 text-white border-white/30 hover:bg-white/10"
+                            className="ml-3"
                             onClick={() => setIsSearchOpen(false)}
                         >
                             Avbryt
@@ -207,7 +207,7 @@ export default function Dictionary() {
                     </div>
 
                     <div className="overflow-y-auto flex-1">
-                        <ul className="divide-y divide-white/20">
+                        <ul className="divide-y divide-black/10 dark:divide-white/20">
                             {filtered.map((sign) => (
                                 <li
                                     key={sign.id}
@@ -225,13 +225,13 @@ export default function Dictionary() {
                                         setQuery("");
                                         setIsSearchOpen(false);
                                     }}
-                                    className="py-3 px-2 text-white cursor-pointer hover:bg-white/10 rounded-md"
+                                    className="py-3 px-2 text-gray-900 dark:text-white cursor-pointer hover:bg-black/5 dark:hover:bg-white/10 rounded-md"
                                 >
                                     {sign.label}
                                 </li>
                             ))}
                             {filtered.length === 0 && (
-                                <li className="text-white/60 text-center mt-6">Inga resultat</li>
+                                <li className="text-gray-500 dark:text-white/60 text-center mt-6">Inga resultat</li>
                             )}
                         </ul>
                     </div>
