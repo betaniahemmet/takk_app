@@ -129,6 +129,7 @@ export default function Dictionary() {
                                     src={selected.video}
                                     videoRef={vRef}
                                     muted={false}
+                                    preload="none"
                                     onEnd={handleVideoEnd}
                                 />
                             </div>

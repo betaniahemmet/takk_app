@@ -10,6 +10,7 @@ export default function VideoPlayer({
     videoRef: externalRef, // lets parent control (Spela klipp)
     controls = false,
     fallbackRatio = "1 / 1", // keep square until metadata arrives
+    preload = "metadata",
 }) {
     const innerRef = useRef(null);
     const ref = externalRef || innerRef;
@@ -49,7 +50,7 @@ export default function VideoPlayer({
                 src={src}
                 muted={muted}
                 playsInline
-                preload="metadata"
+                preload={preload}
                 onLoadedMetadata={onLoadedMeta}
                 onEnded={onEnd}
                 onPlay={onPlay}

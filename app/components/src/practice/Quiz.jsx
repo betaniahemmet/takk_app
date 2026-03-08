@@ -148,6 +148,7 @@ function Quiz() {
                 <VideoPlayer
                     src={q.video}
                     muted={true}
+                    preload="auto"
                     videoRef={vRef}
                     onPlay={() => setHasPlayedVideo(true)}
                 />

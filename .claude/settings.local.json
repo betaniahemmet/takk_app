@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(python3:*)",
+      "Bash(xargs du -k)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

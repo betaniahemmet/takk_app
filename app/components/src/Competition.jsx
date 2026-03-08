@@ -208,9 +208,19 @@ export default function Competition() {
                         <VideoPlayer
                             src={signs[target]?.video}
                             muted
+                            preload="auto"
                             videoRef={vRef}
                             onPlay={() => setHasPlayedVideo(true)}
                         />
+                        {order[current + 1] && signs[order[current + 1]]?.video && (
+                            <video
+                                key={order[current + 1]}
+                                src={signs[order[current + 1]].video}
+                                preload="auto"
+                                style={{ display: "none" }}
+                                aria-hidden="true"
+                            />
+                        )}
 
                         {/* Video controls row */}
                         <div className="flex justify-end gap-2">

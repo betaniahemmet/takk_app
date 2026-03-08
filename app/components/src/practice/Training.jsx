@@ -23,6 +23,7 @@ function Training() {
     }, [n]);
 
     const current = level?.signs?.[i];
+    const nextSign = level?.signs?.[i + 1];
 
     if (!level?.id) {
         return (
@@ -104,9 +105,19 @@ function Training() {
                         <VideoPlayer
                             src={current.video}
                             muted={false}
+                            preload="none"
                             videoRef={vRef}
                             onEnd={handleVideoEnd}
                         />
+                        {nextSign?.video && (
+                            <video
+                                key={nextSign.video}
+                                src={nextSign.video}
+                                preload="auto"
+                                style={{ display: "none" }}
+                                aria-hidden="true"
+                            />
+                        )}
                     </div>
 
                     <div
