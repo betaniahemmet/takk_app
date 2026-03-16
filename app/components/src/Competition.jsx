@@ -5,6 +5,7 @@ import { Home } from "lucide-react";
 import Input from "./ui/Input.jsx";
 import VideoPlayer from "./VideoPlayer.jsx";
 import AppShellCompetition from "./AppShellCompetition.jsx";
+import mouthCoords from "../../../catalog/mouth_coordinates.json";
 
 export default function Competition() {
     const [phase, setPhase] = useState("name"); // name | play | end
@@ -177,8 +178,8 @@ export default function Competition() {
                     </h1>
                     <Input
                         value={tag}
-                        onChange={(e) => setTag(e.target.value.slice(0, 10))} // max 10 characters
-                        placeholder="Skriv ditt spelarnamn (max 10 tecken)..."
+                        onChange={(e) => setTag(e.target.value.slice(0, 12))} // max 12 characters
+                        placeholder="Skriv ditt spelarnamn (max 12 tecken)..."
                     />
 
                     <Button
@@ -211,6 +212,7 @@ export default function Competition() {
                             preload="auto"
                             videoRef={vRef}
                             onPlay={() => setHasPlayedVideo(true)}
+                            mouthCoord={mouthCoords[target] ?? null}
                         />
                         {order[current + 1] && signs[order[current + 1]]?.video && (
                             <video
@@ -287,8 +289,8 @@ export default function Competition() {
 
 function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, correctAnswer, resetGame }) {
     return (
-        <div className="relative flex justify-center">
-            <Card className="p-5 space-y-3 w-full max-w-md text-center shadow-lg text-gray-900 dark:text-white">    
+        <div className="relative">
+            <Card className="p-5 space-y-3 w-full text-center shadow-lg text-gray-900 dark:text-white">    
                 <h2 className="text-lg font-semibold">🏆 Topp 10</h2>
                 <ul className="space-y-1 text-sm text-center">
                     {scores.slice(0, 10).map((s, i) => (

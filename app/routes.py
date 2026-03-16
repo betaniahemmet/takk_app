@@ -82,8 +82,8 @@ def api_add_score():
     if not name or score is None:
         return jsonify({"ok": False, "error": "name and score required"}), 400
 
-    # Validate name length (max 10 chars as per UI)
-    if len(name) > 10:
+    # Validate name length (max 12 chars as per UI)
+    if len(name) > 12:
         return jsonify({"ok": False, "error": "name too long"}), 400
 
     # Validate score is reasonable (prevent absurd values)

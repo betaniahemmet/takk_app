@@ -11,6 +11,7 @@ export default function VideoPlayer({
     controls = false,
     fallbackRatio = "1 / 1", // keep square until metadata arrives
     preload = "metadata",
+    mouthCoord = null, // {x, y} as percentages — renders a blur overlay over the mouth
 }) {
     const innerRef = useRef(null);
     const ref = externalRef || innerRef;
@@ -58,6 +59,21 @@ export default function VideoPlayer({
                 className="block w-full h-full object-contain"
                 {...(controls ? { controls: true } : {})}
             />
+            {mouthCoord && (
+                <div
+                    style={{
+                        position: "absolute",
+                        left: `${mouthCoord.x - 6}%`,
+                        top: `${mouthCoord.y - 5}%`,
+                        width: "12%",
+                        height: "10%",
+                        backdropFilter: "blur(12px)",
+                        background: "rgba(0,0,0,0.25)",
+                        borderRadius: "4px",
+                        pointerEvents: "none",
+                    }}
+                />
+            )}
         </div>
     );
 }

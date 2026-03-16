@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mouth Blur Test</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #111;
+      color: #eee;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      color: #aaa;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .player-wrap {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .blur-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      pointer-events: none;
+    }
+
+    .sign-label {
+      position: absolute;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+      letter-spacing: 0.03em;
+      pointer-events: none;
+    }
+
+    .progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: rgba(255,255,255,0.7);
+      transition: width 0.1s linear;
+    }
+
+    /* Controls */
+    .controls {
+      margin-top: 20px;
+      width: 400px;
+      background: #1e1e1e;
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .control-row label {
+      width: 160px;
+      font-size: 0.82rem;
+      color: #bbb;
+      flex-shrink: 0;
+    }
+
+    .control-row input[type=range] {
+      flex: 1;
+      accent-color: #5b9cf6;
+    }
+
+    .control-row .val {
+      width: 42px;
+      text-align: right;
+      font-size: 0.82rem;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .nav-row button {
+      background: #333;
+      border: none;
+      color: #eee;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .nav-row button:hover { background: #444; }
+
+    .nav-row .counter {
+      font-size: 0.82rem;
+      color: #888;
+    }
+
+    .auto-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: #bbb;
+      cursor: pointer;
+      user-select: none;
+    }
+    .auto-toggle input { accent-color: #5b9cf6; }
+  </style>
+</head>
+<body>
+
+<h1>Mouth Blur Preview</h1>
+
+<div class="player-wrap" id="playerWrap">
+  <video id="video" autoplay muted playsinline></video>
+  <div class="blur-bar" id="blurBar"></div>
+  <div class="sign-label" id="signLabel"></div>
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="controls">
+  <div class="control-row">
+    <label>Blur intensity</label>
+    <input type="range" id="blurSlider" min="0" max="20" step="0.5" value="12">
+    <span class="val" id="blurVal">12px</span>
+  </div>
+  <div class="control-row">
+    <label>Overlay darkness</label>
+    <input type="range" id="darkSlider" min="0" max="0.5" step="0.01" value="0.3">
+    <span class="val" id="darkVal">0.30</span>
+  </div>
+  <div class="control-row">
+    <label>Bar top position</label>
+    <input type="range" id="topSlider" min="30" max="45" step="0.5" value="38">
+    <span class="val" id="topVal">38%</span>
+  </div>
+  <div class="control-row">
+    <label>Bar bottom position</label>
+    <input type="range" id="botSlider" min="55" max="65" step="0.5" value="60">
+    <span class="val" id="botVal">60%</span>
+  </div>
+
+  <div class="nav-row">
+    <button id="prevBtn">← Prev</button>
+    <label class="auto-toggle">
+      <input type="checkbox" id="autoCheck" checked>
+      Auto-advance (4s)
+    </label>
+    <span class="counter" id="counter"></span>
+    <button id="nextBtn">Next →</button>
+  </div>
+</div>
+
+<script>
+  const signs = [
+    "akta","bada","bajsa","bra","byta","byta_blöja","byta_personal","byta_stol",
+    "dricka","du_ska_åka_hem","du_ska_åka_till_jobbet","du_är_busig","du_är_fin",
+    "du_är_rolig","du_är_snäll","duktig","duscha","fin","frukt","färdig",
+    "gå","gå_in","gå_ut","hej","hem","hjälpa","idag","imorgon","jag_heter",
+    "jobb","kaffe","kallt","kissa","ledsen","mamma","nu","nu_ska_du_åka_hem",
+    "nu_ska_du_åka_till_jobbet","nu_ska_vi","nu_ska_vi_gå_in","nu_ska_vi_gå_ut",
+    "pappa","personal","roligt","sen","sitta","snart","snäll","tack",
+    "tack_för_hjälpen","taxi","taxin_kommer_snart","toa","trasig","trött",
+    "varmt","varsågod","vet_inte","vila","vill_du","vill_du_ha_hjälp",
+    "vill_du_ha_mer","vill_du_ha_mer_kaffe","vill_du_ha_mer_ketchup",
+    "vän","vänta","äta","åka"
+  ];
+
+  let current = 0;
+  let autoTimer = null;
+  let progressTimer = null;
+  let progressStart = null;
+
+  const video      = document.getElementById('video');
+  const blurBar    = document.getElementById('blurBar');
+  const signLabel  = document.getElementById('signLabel');
+  const progressBar= document.getElementById('progressBar');
+  const counter    = document.getElementById('counter');
+
+  // Controls
+  const blurSlider = document.getElementById('blurSlider');
+  const darkSlider = document.getElementById('darkSlider');
+  const topSlider  = document.getElementById('topSlider');
+  const botSlider  = document.getElementById('botSlider');
+  const blurVal    = document.getElementById('blurVal');
+  const darkVal    = document.getElementById('darkVal');
+  const topVal     = document.getElementById('topVal');
+  const botVal     = document.getElementById('botVal');
+  const autoCheck  = document.getElementById('autoCheck');
+
+  function applyBarStyle() {
+    const blur   = blurSlider.value;
+    const dark   = darkSlider.value;
+    const top    = topSlider.value;
+    const bot    = botSlider.value;
+    const height = (bot - top).toFixed(1);
+
+    blurBar.style.top    = top + '%';
+    blurBar.style.height = height + '%';
+    blurBar.style.backdropFilter = `blur(${blur}px)`;
+    blurBar.style.webkitBackdropFilter = `blur(${blur}px)`;
+    blurBar.style.background = `rgba(0,0,0,${dark})`;
+
+    blurVal.textContent = blur + 'px';
+    darkVal.textContent = parseFloat(dark).toFixed(2);
+    topVal.textContent  = top + '%';
+    botVal.textContent  = bot + '%';
+  }
+
+  function loadSign(index) {
+    const sign = signs[index];
+    const path = `media/signs/${sign}/${sign}_square.mp4`;
+    video.src = path;
+    video.load();
+    video.play().catch(() => {});
+    signLabel.textContent = sign.replace(/_/g, ' ');
+    counter.textContent   = `${index + 1} / ${signs.length}`;
+    startProgress();
+  }
+
+  function startProgress() {
+    clearInterval(progressTimer);
+    progressBar.style.width = '0%';
+    progressStart = Date.now();
+    const duration = 4000;
+    progressTimer = setInterval(() => {
+      const elapsed = Date.now() - progressStart;
+      const pct = Math.min(100, (elapsed / duration) * 100);
+      progressBar.style.width = pct + '%';
+      if (pct >= 100) clearInterval(progressTimer);
+    }, 50);
+  }
+
+  function scheduleAuto() {
+    clearTimeout(autoTimer);
+    if (autoCheck.checked) {
+      autoTimer = setTimeout(() => {
+        current = (current + 1) % signs.length;
+        loadSign(current);
+        scheduleAuto();
+      }, 4000);
+    }
+  }
+
+  function goTo(index) {
+    current = (index + signs.length) % signs.length;
+    loadSign(current);
+    scheduleAuto();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+  autoCheck.addEventListener('change', () => {
+    if (autoCheck.checked) scheduleAuto();
+    else clearTimeout(autoTimer);
+  });
+
+  [blurSlider, darkSlider, topSlider, botSlider].forEach(s =>
+    s.addEventListener('input', applyBarStyle)
+  );
+
+  // Init
+  applyBarStyle();
+  loadSign(0);
+  scheduleAuto();
+</script>
+</body>
+</html>

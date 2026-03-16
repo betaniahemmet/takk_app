@@ -8,6 +8,9 @@ pytest
 fakeredis>=2.0.0       # Redis mock — used in tests/test_leaderboard.py
 requests               # HTTP client — used in tests/verify_endpoints.py
 
+# Video processing tools
+opencv-python             # cv2 — used in video_processing/mouth_coordinate_tool.py
+
 # Code quality
 black                  # Code formatter
 flake8                 # Linter

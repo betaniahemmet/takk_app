@@ -1,0 +1,106 @@
+VIDEO PROCESSING WORKFLOW ANALYSIS
+===================================
+Date: 2026-03-13
+
+WHAT EACH SCRIPT DOES
+----------------------
+
+video_processor.py — Core ffmpeg wrapper. Given a raw .mov/.mp4, it:
+- Center-crops to square (keeps full height, trims width)
+- Scales to 1080x1080
+- Overlays the Betaniahemmet logo bottom-right
+- Encodes to H.264 with BT.709 color, faststart, mono AAC audio
+- Outputs {name}_square.mp4
+
+batch_processor.py — Orchestrates bulk processing:
+- Reads all videos from raw_clips/
+- Normalizes folder name (Glad.mov -> glad/)
+- Calls process_video() for each one
+- Hard-stops if media/signs/ already exists — entire output folder must be
+  deleted before re-running
+
+manifest_builder.py — Interactive CLI that builds catalog/manifest.json:
+- Walks media/signs/ folders
+- Auto-detects .mp4 (video) and .jpg/.png (pictograms)
+- Prompts interactively for each sign's level assignment (1-9, or skip)
+- Rebuilds the entire manifest from scratch
+
+
+CURRENT WORKFLOW: "Add new sign"
+---------------------------------
+
+1. [MANUAL]     Record video -> save as raw_clips/Glad.mov
+2. [MANUAL]     Copy pictogram JPEGs into media/signs/glad/ with correct naming
+                (e.g., glad.jpg for single-word, 1_glad.jpg / 2_... for compound)
+3. [MANUAL]     Delete media/signs/ entirely if running batch again, OR
+                manually call process_video() for the single new sign
+4. [AUTOMATED]  python video_processing/batch_processor.py -> glad_square.mp4
+5. [MANUAL]     python video_processing/manifest_builder.py -> prompts for ALL signs
+                (even existing ones already assigned)
+6. [MANUAL]     git add / commit / push
+7. [MANUAL]     SSH to server, git pull, restart service
+
+
+PAIN POINTS
+-----------
+
+1. Batch processor is all-or-nothing
+   The output guard (sys.exit if media/signs/ exists) means you can't add one
+   sign without either deleting the entire output folder and reprocessing
+   everything, or manually calling process_video() outside the batch script.
+   Reprocessing 80+ videos just to add one new one is slow.
+
+2. manifest_builder.py asks about every sign every time
+   It rebuilds from scratch and prompts for level assignments on all signs —
+   including the ~80 already correctly placed. Adding 2 new signs means
+   answering ~82 prompts. Since it overwrites the whole file, you can't append.
+
+3. Pictogram naming/copying is fully manual with implicit conventions
+   No tooling for pictograms. The convention (single word -> glad.jpg; compound
+   -> 1_glad.jpg, 2_...jpg) is nowhere documented in code. The manifest builder
+   silently includes whatever JPEGs are in the folder in alphabetical order —
+   only works if they're prefixed correctly.
+
+4. Pictogram deduplication is invisible
+   Multi-word signs share pictograms (e.g., byta.jpg appears in byta/,
+   byta_bloja/, byta_personal/, byta_stol/ as separate copies). If a pictogram
+   is updated, all copies must be replaced manually.
+
+5. No incremental/merge path for the manifest
+   No "merge existing" mode. All level assignments must be re-entered every run.
+   If you skip a sign (enter 0), it disappears from all levels entirely.
+
+
+SUGGESTIONS
+-----------
+
+High value, low effort:
+
+1. Add --incremental mode to batch_processor.py — skip any folder that already
+   has a *_square.mp4. One new .mov -> one new output. No deletions needed.
+
+2. Merge-aware manifest_builder.py — load the existing manifest at start,
+   pre-populate level assignments from it, only prompt for signs NOT yet in
+   the manifest. Existing signs keep their levels silently. Saves ~80 prompts
+   per run.
+
+3. Document the pictogram naming convention — add a comment at the top of
+   manifest_builder.py (or a README in video_processing/) explaining the
+   1_word.jpg / 2_word.jpg convention for compound signs.
+
+Medium effort, high value:
+
+4. A single add_sign.py script wrapping the whole flow for one sign:
+   - Takes sign_name and optional level as CLI args
+   - Runs process_video() on the new raw clip
+   - Merges the new entry into the existing manifest (no re-prompting old signs)
+   - Prints what to git add
+
+5. Shared pictogram pool — keep a media/pictograms/ flat directory and reference
+   by path in the manifest instead of copying identical files per sign folder.
+   Eliminates duplication but requires a manifest structure change.
+
+Low priority:
+
+6. Consider dropping the batch_processor all-or-nothing guard entirely —
+   incremental mode makes it unnecessary.

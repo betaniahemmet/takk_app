@@ -5,6 +5,7 @@ import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
 import VideoPlayer from "../VideoPlayer.jsx";
 import HomeButton from "../ui/HomeButton.jsx";
+import mouthCoords from "../../../../catalog/mouth_coordinates.json";
 
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
@@ -151,6 +152,7 @@ function Quiz() {
                     preload="auto"
                     videoRef={vRef}
                     onPlay={() => setHasPlayedVideo(true)}
+                    mouthCoord={mouthCoords[q.id] ?? null}
                 />
 
                 <div className="flex justify-end mt-1">
