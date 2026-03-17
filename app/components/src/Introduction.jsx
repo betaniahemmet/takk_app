@@ -4,12 +4,13 @@ import HomeButton from "./ui/HomeButton.jsx";
 
 const sections = [
     {
-        title: "Om projektet",
-        description: "Betaniahemmet och TAKK",
-    },
-    {
         title: "Så använder du appen",
         description: "Guide till appens funktioner",
+        videoSrc: "/media/intro/intro_takk_app.mp4",
+    },
+    {
+        title: "Om projektet",
+        description: "Betaniahemmet och TAKK",
     },
     {
         title: "Introduktion till TAKK",
@@ -35,11 +36,21 @@ export default function Introduction() {
                                     {section.description}
                                 </p>
                             </div>
-                            <div className="w-full aspect-video rounded-lg bg-black/10 dark:bg-white/10 flex items-center justify-center">
-                                <span className="text-sm text-gray-400 dark:text-gray-500">
-                                    Video kommer snart
-                                </span>
-                            </div>
+                            {section.videoSrc ? (
+                                <video
+                                    src={section.videoSrc}
+                                    controls
+                                    playsInline
+                                    preload="metadata"
+                                    className="w-full aspect-video rounded-lg bg-black"
+                                />
+                            ) : (
+                                <div className="w-full aspect-video rounded-lg bg-black/10 dark:bg-white/10 flex items-center justify-center">
+                                    <span className="text-sm text-gray-400 dark:text-gray-500">
+                                        Video kommer snart
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

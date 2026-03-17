@@ -56,6 +56,7 @@ app/components/dist/
 
 # Raw video files (too large, not needed in repo)
 raw_clips/
+raw_intro/
 
 # User-generated data (don't commit)
 feedback.json

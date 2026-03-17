@@ -6,6 +6,7 @@
 # Output: media/intro/{name}.mp4
 # Usage:  python video_processing/process_intro_videos.py
 
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -22,7 +23,17 @@ LOGO_REL_WIDTH = 0.16  # same as sign videos
 MARGIN_PX = 40  # same as sign videos
 
 
-def process(infile: Path, outfile: Path, ffmpeg: str) -> None:
+def get_video_duration(infile: Path, ffprobe: str) -> float:
+    result = subprocess.run(
+        [ffprobe, "-v", "quiet", "-print_format", "json", "-show_streams", "-select_streams", "v:0", str(infile)],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return float(json.loads(result.stdout)["streams"][0]["duration"])
+
+
+def process(infile: Path, outfile: Path, ffmpeg: str, duration: float) -> None:
     # Scale to 1080px height, keep native aspect ratio, add logo overlay
     target_h = 1080
     logo_w = max(1, int(round(target_h * LOGO_REL_WIDTH)))
@@ -30,7 +41,8 @@ def process(infile: Path, outfile: Path, ffmpeg: str) -> None:
         f"[0:v]scale=-2:{target_h}:in_range=pc:out_range=tv,setsar=1,format=yuv420p[v0]",
         f"[1:v]format=rgba,scale={logo_w}:-1[lg]",
         f"[v0][lg]overlay=x=W-w-{MARGIN_PX}:y=H-h-{MARGIN_PX}[v1]",
-        "[v1]fps=30,format=yuv420p[vout]",
+        "[v1]format=yuv420p[vout]",
+        "[0:a]pan=mono|c0=0.5*c0+0.5*c1[aout]",
     ]
     filter_chain = ";".join(filters)
     cmd = [
@@ -47,7 +59,9 @@ def process(infile: Path, outfile: Path, ffmpeg: str) -> None:
         "-map",
         "[vout]",
         "-map",
-        "0:a?",
+        "[aout]",
+        "-t",
+        str(duration),
         "-c:v",
         "libx264",
         "-preset",
@@ -64,8 +78,6 @@ def process(infile: Path, outfile: Path, ffmpeg: str) -> None:
         "+faststart",
         "-c:a",
         "aac",
-        "-ac",
-        "1",
         "-ar",
         "48000",
         "-b:a",
@@ -100,7 +112,7 @@ def main():
         print(f"No video files found in {INPUT_DIR}")
         sys.exit(0)
 
-    ffmpeg, _ = _sfrun.get_or_fetch_platform_executables_else_raise()
+    ffmpeg, ffprobe = _sfrun.get_or_fetch_platform_executables_else_raise()
 
     skipped = 0
     processed = 0
@@ -110,13 +122,14 @@ def main():
         outfile = OUTPUT_DIR / f"{name}.mp4"
 
         if outfile.exists():
-            print(f"[skip]    {infile.name}  →  {outfile.name}  (already exists)")
+            print(f"[skip]    {infile.name}  ->  {outfile.name}  (already exists)")
             skipped += 1
             continue
 
-        print(f"[process] {infile.name}  →  {outfile.name}")
+        print(f"[process] {infile.name}  ->  {outfile.name}")
         try:
-            process(infile, outfile, ffmpeg)
+            duration = get_video_duration(infile, ffprobe)
+            process(infile, outfile, ffmpeg, duration)
             print(f"[done]    {outfile.name}")
             processed += 1
         except subprocess.CalledProcessError as e:
