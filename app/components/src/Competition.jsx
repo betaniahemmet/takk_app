@@ -6,6 +6,7 @@ import Input from "./ui/Input.jsx";
 import VideoPlayer from "./VideoPlayer.jsx";
 import AppShellCompetition from "./AppShellCompetition.jsx";
 import mouthCoords from "../../../catalog/mouth_coordinates.json";
+import { trackPageView, trackCompetitionAttempt } from "./utils/analytics.js";
 
 export default function Competition() {
     const [phase, setPhase] = useState("name"); // name | play | end
@@ -25,6 +26,8 @@ export default function Competition() {
     const ENABLE_SOUND = true;
     const CONFIRM_MS = 800; // short pause before next sign
     const [lastCorrect, setLastCorrect] = useState(null);
+
+    useEffect(() => { trackPageView("competition"); }, []);
 
     // Fetch signs + distractors once
     useEffect(() => {
@@ -130,6 +133,7 @@ export default function Competition() {
     const endGame = async () => {
         setPhase("end");
         setMadeTop(false); // reset before new result
+        trackCompetitionAttempt(Math.round(score * 100) / 100, current + 1);
         try {
             const res = await fetch("/api/score", {
                 method: "POST",

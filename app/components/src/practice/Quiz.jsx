@@ -6,6 +6,7 @@ import Card from "../ui/Card.jsx";
 import VideoPlayer from "../VideoPlayer.jsx";
 import HomeButton from "../ui/HomeButton.jsx";
 import mouthCoords from "../../../../catalog/mouth_coordinates.json";
+import { trackPageView, trackLevelStarted, trackQuizAttempt } from "../utils/analytics.js";
 
 const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
@@ -29,6 +30,15 @@ function Quiz() {
     const [hasPlayedVideo, setHasPlayedVideo] = useState(false);
     const CONFIRM_MS = 600;
     const ENABLE_SOUND = true;
+
+    useEffect(() => {
+        trackPageView("quiz");
+        trackLevelStarted(Number(n));
+    }, []);
+
+    useEffect(() => {
+        if (phase === "finished") trackQuizAttempt(Number(n), order.length);
+    }, [phase]);
 
     // Load level + build order
     useEffect(() => {

@@ -21,6 +21,7 @@ const Competition  = lazy(() => import("./Competition.jsx"));
 const Dictionary   = lazy(() => import("./Dictionary.jsx"));
 const Feedback     = lazy(() => import("./Feedback.jsx"));
 const Introduction = lazy(() => import("./Introduction.jsx"));
+const Analytics    = lazy(() => import("./Analytics.jsx"));
 
 function Loading() {
     return (
@@ -60,6 +61,7 @@ function App() {
                     <Route path="/dictionary"             element={<Dictionary />} />
                     <Route path="/feedback"               element={<Feedback />} />
                     <Route path="/introduktion"           element={<Introduction />} />
+                    <Route path="/analytics"             element={<Analytics />} />
                     <Route path="*"                       element={<NotFound />} />
                 </Routes>
             </Suspense>

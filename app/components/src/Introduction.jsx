@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import AppShell from "./AppShell.jsx";
 import Card from "./ui/Card.jsx";
 import HomeButton from "./ui/HomeButton.jsx";
+import { trackPageView } from "./utils/analytics.js";
 
 const sections = [
     {
@@ -19,6 +21,8 @@ const sections = [
 ];
 
 export default function Introduction() {
+    useEffect(() => { trackPageView("introduction"); }, []);
+
     return (
         <AppShell title="Introduktion">
             <Card className="p-5 space-y-6">

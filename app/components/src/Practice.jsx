@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Button from "./ui/Button.jsx";
 import Card from "./ui/Card.jsx";
 import AppShell from "./AppShell.jsx";
+import HomeButton from "./ui/HomeButton.jsx";
 
 /* Levels list fed by /api/levels (unchanged) */
 function GameLevels() {
@@ -54,6 +55,9 @@ function LevelDetail() {
     return (
         <AppShell title={level.name || `Nivå ${n}`}>
             <Card className="p-5 space-y-4">
+                <div className="flex justify-end">
+                    <HomeButton />
+                </div>
                 <div className="grid gap-3">
                     <Button
                         variant="primary"

@@ -5,6 +5,7 @@ import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
 import VideoPlayer from "../VideoPlayer.jsx";
 import HomeButton from "../ui/HomeButton.jsx";
+import { trackPageView, trackLevelStarted, trackSignCompleted, trackLevelCompleted } from "../utils/analytics.js";
 
 function Training() {
     const { n } = useParams();
@@ -15,6 +16,11 @@ function Training() {
     const [picIndex, setPicIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const vRef = useRef(null);
+
+    useEffect(() => {
+        trackPageView("training");
+        trackLevelStarted(Number(n));
+    }, []);
 
     useEffect(() => {
         fetch(`/api/levels/${n}`)
@@ -78,13 +84,18 @@ function Training() {
         const v = vRef.current;
         if (v) v.pause();
 
+        if (current?.id) trackSignCompleted(current.id, "training");
+
         // Reset pictogram state for next sign
         setShowPictograms(false);
         setPicIndex(0);
         setIsPlaying(false);
 
         if (i + 1 < level.signs.length) setI(i + 1);
-        else nav(`/game/niva/${n}`);
+        else {
+            trackLevelCompleted(Number(n));
+            nav(`/game/niva/${n}`);
+        }
     };
 
     return (

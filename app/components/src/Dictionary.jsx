@@ -4,6 +4,7 @@ import Card from "./ui/Card.jsx";
 import Button from "./ui/Button.jsx";
 import VideoPlayer from "./VideoPlayer.jsx";
 import HomeButton from "./ui/HomeButton.jsx";
+import { trackPageView, trackSignViewed } from "./utils/analytics.js";
 
 export default function Dictionary() {
     // --- State ---
@@ -69,6 +70,8 @@ export default function Dictionary() {
             await new Promise((resolve) => setTimeout(resolve, 1200));
         }
     };
+
+    useEffect(() => { trackPageView("dictionary"); }, []);
 
     // --- When showPictograms becomes true, play the video ---
     useEffect(() => {
@@ -177,6 +180,7 @@ export default function Dictionary() {
                                 setShowPictograms(false);
                                 setPicIndex(0);
                                 setIsPlaying(false);
+                                trackSignViewed(sign.id);
                             }}
                             className="py-2 px-2 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded-md"
                         >
@@ -225,6 +229,7 @@ export default function Dictionary() {
                                         setIsPlaying(false);
                                         setQuery("");
                                         setIsSearchOpen(false);
+                                        trackSignViewed(sign.id);
                                     }}
                                     className="py-3 px-2 text-gray-900 dark:text-white cursor-pointer hover:bg-black/5 dark:hover:bg-white/10 rounded-md"
                                 >

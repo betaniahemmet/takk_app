@@ -1,10 +1,14 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Button from "./ui/Button.jsx";
 import Card from "./ui/Card.jsx";
 import AppShell from "./AppShell.jsx";
 import { Layers, Trophy, Book, MessageSquare, Film } from "lucide-react";
+import { trackPageView } from "./utils/analytics.js";
 
 function Home() {
+    useEffect(() => { trackPageView("home"); }, []);
+
     return (
         <AppShell title="TAKK">
             <Card className="p-5 space-y-6">
