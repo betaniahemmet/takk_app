@@ -80,4 +80,6 @@ desktop.ini
 
 # === Logs ===
 *.log
-logs/
+logs/.claude/settings.local.json
+.claude/settings.local.json
+.claude/settings.local.json

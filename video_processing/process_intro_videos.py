@@ -34,14 +34,15 @@ def get_video_duration(infile: Path, ffprobe: str) -> float:
 
 
 def process(infile: Path, outfile: Path, ffmpeg: str, duration: float) -> None:
-    # Scale to 1080px height, keep native aspect ratio, add logo overlay
+    # Scale to 1080px height, keep native aspect ratio
+    # Logo overlay is commented out — input video already has logo embedded
     target_h = 1080
-    logo_w = max(1, int(round(target_h * LOGO_REL_WIDTH)))
+    # logo_w = max(1, int(round(target_h * LOGO_REL_WIDTH)))
     filters = [
-        f"[0:v]scale=-2:{target_h}:in_range=pc:out_range=tv,setsar=1,format=yuv420p[v0]",
-        f"[1:v]format=rgba,scale={logo_w}:-1[lg]",
-        f"[v0][lg]overlay=x=W-w-{MARGIN_PX}:y=H-h-{MARGIN_PX}[v1]",
-        "[v1]format=yuv420p[vout]",
+        f"[0:v]scale=-2:{target_h}:in_range=pc:out_range=tv,setsar=1,format=yuv420p[vout]",
+        # f"[1:v]format=rgba,scale={logo_w}:-1[lg]",
+        # f"[v0][lg]overlay=x=W-w-{MARGIN_PX}:y=H-h-{MARGIN_PX}[v1]",
+        # "[v1]format=yuv420p[vout]",
         "[0:a]pan=mono|c0=0.5*c0+0.5*c1[aout]",
     ]
     filter_chain = ";".join(filters)
@@ -50,10 +51,9 @@ def process(infile: Path, outfile: Path, ffmpeg: str, duration: float) -> None:
         "-y",
         "-i",
         str(infile),
-        "-loop",
-        "1",
-        "-i",
-        str(LOGO_PATH),
+        # Logo input removed — re-enable these two lines to add logo overlay:
+        # "-loop", "1",
+        # "-i", str(LOGO_PATH),
         "-filter_complex",
         filter_chain,
         "-map",
@@ -96,9 +96,10 @@ def process(infile: Path, outfile: Path, ffmpeg: str, duration: float) -> None:
 
 
 def main():
-    if not LOGO_PATH.exists():
-        print(f"[error] Logo not found: {LOGO_PATH}")
-        sys.exit(1)
+    # Logo check disabled — logo overlay is currently commented out
+    # if not LOGO_PATH.exists():
+    #     print(f"[error] Logo not found: {LOGO_PATH}")
+    #     sys.exit(1)
 
     if not INPUT_DIR.exists():
         print(f"[error] Input folder not found: {INPUT_DIR}")

@@ -39,11 +39,12 @@ if [ ! -d "$DEPLOY_DIR" ]; then
 fi
 
 echo -e "${YELLOW}This script will:${NC}"
-echo "  1. Copy Gunicorn config to /opt/takk/"
-echo "  2. Copy Nginx config to /etc/nginx/sites-available/"
-echo "  3. Copy systemd service to /etc/systemd/system/"
-echo "  4. Set proper permissions"
-echo "  5. Enable the service"
+echo "  1. Install and enable Redis"
+echo "  2. Copy Gunicorn config to /opt/takk/"
+echo "  3. Copy Nginx config to /etc/nginx/sites-available/"
+echo "  4. Copy systemd service to /etc/systemd/system/"
+echo "  5. Set proper permissions"
+echo "  6. Enable the service"
 echo ""
 read -p "Continue? (y/n) " -n 1 -r
 echo ""
@@ -57,7 +58,24 @@ echo ""
 echo -e "${BLUE}Starting setup...${NC}"
 echo ""
 
-# 1. Copy Gunicorn config
+# 1. Install and enable Redis
+echo -n "Installing Redis... "
+if apt-get install -y redis-server 2>/dev/null; then
+    echo -e "${GREEN}✓${NC}"
+else
+    echo -e "${RED}✗ Failed${NC}"
+    exit 1
+fi
+
+echo -n "Enabling Redis service... "
+if systemctl enable redis-server && systemctl start redis-server; then
+    echo -e "${GREEN}✓${NC}"
+else
+    echo -e "${RED}✗ Failed${NC}"
+    exit 1
+fi
+
+# 2. Copy Gunicorn config
 echo -n "Copying Gunicorn config... "
 if cp "$DEPLOY_DIR/gunicorn.conf.py" /opt/takk/gunicorn.conf.py; then
     chown takk:takk /opt/takk/gunicorn.conf.py

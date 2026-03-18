@@ -7,6 +7,7 @@ from pathlib import Path
 
 from flask import Blueprint, abort, current_app, jsonify, request, send_from_directory
 
+from .analytics import ANALYTICS_KEY, VALID_EVENT_TYPES, get_analytics, track_event
 from .leaderboard import add_score, get_top
 from .version import __version__
 
@@ -16,20 +17,15 @@ main_bp = Blueprint("main", __name__)
 rate_limit_store = defaultdict(list)
 RATE_LIMIT_WINDOW = 60  # seconds
 RATE_LIMIT_MAX_REQUESTS = 10  # max requests per window
+TRACK_RATE_LIMIT_MAX_REQUESTS = 60  # analytics events are more frequent
 
 
-def check_rate_limit(identifier):
-    """Simple rate limiter: max 10 requests per 60 seconds per identifier."""
+def check_rate_limit(identifier, max_requests=RATE_LIMIT_MAX_REQUESTS):
+    """Simple rate limiter: max N requests per 60 seconds per identifier."""
     now = time.time()
-
-    # Clean old entries
-    rate_limit_store[identifier] = [timestamp for timestamp in rate_limit_store[identifier] if now - timestamp < RATE_LIMIT_WINDOW]
-
-    # Check if limit exceeded
-    if len(rate_limit_store[identifier]) >= RATE_LIMIT_MAX_REQUESTS:
+    rate_limit_store[identifier] = [t for t in rate_limit_store[identifier] if now - t < RATE_LIMIT_WINDOW]
+    if len(rate_limit_store[identifier]) >= max_requests:
         return False
-
-    # Add current request
     rate_limit_store[identifier].append(now)
     return True
 
@@ -296,6 +292,54 @@ def api_signs():
     return jsonify({"signs": signs_list})
 
 
+# --- Analytics ---
+
+
+@main_bp.post("/api/track")
+def api_track():
+    ip = request.remote_addr
+    if not check_rate_limit(f"track_{ip}", max_requests=TRACK_RATE_LIMIT_MAX_REQUESTS):
+        return jsonify({"ok": False, "error": "Too many requests"}), 429
+
+    data = request.get_json(silent=True) or {}
+    session_id = (data.get("session_id") or "").strip()
+    event_type = (data.get("event_type") or "").strip()
+    event_data = data.get("data") or {}
+
+    if not session_id or not event_type:
+        return jsonify({"ok": False, "error": "session_id and event_type required"}), 400
+
+    if len(session_id) > 64:
+        return jsonify({"ok": False, "error": "session_id too long"}), 400
+
+    if event_type not in VALID_EVENT_TYPES:
+        return jsonify({"ok": False, "error": "invalid event_type"}), 400
+
+    if not isinstance(event_data, dict):
+        return jsonify({"ok": False, "error": "data must be an object"}), 400
+
+    try:
+        track_event(session_id, event_type, event_data)
+        return jsonify({"ok": True})
+    except Exception as e:
+        current_app.logger.error(f"Analytics track error: {e}")
+        return jsonify({"ok": False, "error": "server error"}), 500
+
+
+@main_bp.get("/api/analytics")
+def api_analytics():
+    if ANALYTICS_KEY:
+        provided = request.headers.get("X-Analytics-Key") or request.args.get("key", "")
+        if provided != ANALYTICS_KEY:
+            return jsonify({"error": "unauthorized"}), 401
+
+    try:
+        return jsonify(get_analytics())
+    except Exception as e:
+        current_app.logger.error(f"Analytics query error: {e}")
+        return jsonify({"error": "server error"}), 500
+
+
 # --- React SPA Fallback ---
 @main_bp.route("/", defaults={"path": ""})
 @main_bp.route("/<path:path>")
@@ -303,7 +347,7 @@ def spa_fallback(path):
     if path.startswith(("api/", "media/", "static/")):
         abort(404)
 
-    static_dir = current_app.static_folder
+    static_dir = current_app.config["DIST_ROOT"]
     full_path = os.path.join(static_dir, path)
 
     # serve a real file if it exists

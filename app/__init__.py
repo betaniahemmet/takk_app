@@ -16,7 +16,10 @@ def create_app(config_class=Config):
     package_dir = os.path.dirname(os.path.abspath(__file__))
     dist_root = os.path.join(package_dir, "components", "dist")
 
-    app = Flask(__name__, static_folder=dist_root, static_url_path="/")
+    # static_folder=None disables Flask's built-in static handler (which would
+    # intercept /<path> requests and 404 before the SPA catch-all fires).
+    # The blueprint's /<path:path> route serves both real dist files and index.html.
+    app = Flask(__name__, static_folder=None)
     app.config.from_object(config_class)
     app.config["DIST_ROOT"] = dist_root
 
