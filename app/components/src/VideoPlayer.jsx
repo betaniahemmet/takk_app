@@ -67,8 +67,7 @@ export default function VideoPlayer({
                         top: `${mouthCoord.y - 5}%`,
                         width: "12%",
                         height: "10%",
-                        backdropFilter: "blur(12px)",
-                        background: "rgba(0,0,0,0.25)",
+                        background: "rgba(0,0,0,1)",
                         borderRadius: "4px",
                         pointerEvents: "none",
                     }}
