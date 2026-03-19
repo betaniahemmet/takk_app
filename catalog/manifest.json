@@ -3,124 +3,158 @@
   "levels": [
     {
       "id": 1,
-      "name": "Nivå 1",
+      "name": "Nivå 1 - Grundord",
       "signs": [
         "hej",
-        "jag_heter",
         "tack",
+        "hjälpa",
+        "tack_för_hjälpen",
         "varsågod"
       ]
     },
     {
       "id": 2,
-      "name": "Nivå 2",
+      "name": "Nivå 2 - Självuttryck",
       "signs": [
-        "gå",
-        "hem",
-        "jobb",
-        "taxi",
-        "åka"
+        "vet_inte",
+        "färdig",
+        "vill_du",
+        "vill_du_ha_mer"
       ]
     },
     {
       "id": 3,
-      "name": "Nivå 3",
+      "name": "Nivå 3 - Handlingar",
       "signs": [
-        "dricka",
-        "äta",
-        "frukt",
-        "kaffe"
+        "gå",
+        "åka",
+        "sitta",
+        "vila",
+        "byta"
       ]
     },
     {
       "id": 4,
-      "name": "Nivå 4",
+      "name": "Nivå 4 - Hem & Jobb",
       "signs": [
-        "idag",
-        "imorgon",
-        "nu",
-        "sen",
-        "snart",
-        "vänta"
+        "hem",
+        "jobb",
+        "taxi",
+        "personal",
+        "byta_personal",
+        "du_ska_åka_hem",
+        "du_ska_åka_till_jobbet",
+        "taxin_kommer_snart"
       ]
     },
     {
       "id": 5,
-      "name": "Nivå 5",
+      "name": "Nivå 5 - Personer",
       "signs": [
-        "bada",
-        "bajsa",
-        "duscha",
-        "kissa",
-        "toa"
+        "pappa",
+        "mamma",
+        "vän",
+        "snäll",
+        "fin",
+        "duktig",
+        "du_är_snäll"
       ]
     },
     {
       "id": 6,
-      "name": "Nivå 6",
+      "name": "Nivå 6 - Mat & dryck",
       "signs": [
-        "kallt",
-        "sitta",
-        "trött",
-        "varmt",
-        "vila"
+        "äta",
+        "dricka",
+        "frukt",
+        "kaffe",
+        "vill_du_ha_mer_kaffe",
+        "vill_du_ha_mer",
+        "vill_du_ha_mer_ketchup"
       ]
     },
     {
       "id": 7,
-      "name": "Nivå 7",
+      "name": "Nivå 7 - Hygien & WC",
       "signs": [
-        "bra",
-        "duktig",
-        "ledsen",
-        "snäll",
-        "vän"
+        "toa",
+        "kissa",
+        "bajsa",
+        "duscha",
+        "bada",
+        "byta_blöja"
       ]
     },
     {
       "id": 8,
-      "name": "Nivå 8",
+      "name": "Nivå 8 - Kropp & tillstånd",
       "signs": [
-        "fin",
-        "färdig",
-        "roligt",
+        "trött",
+        "varmt",
+        "kallt",
         "trasig",
-        "vet_inte"
+        "akta"
       ]
     },
     {
       "id": 9,
-      "name": "Nivå 9",
+      "name": "Nivå 9 - Tid",
       "signs": [
-        "akta",
-        "byta",
-        "byta_blöja",
-        "byta_personal",
-        "byta_stol",
-        "du_ska_åka_hem",
-        "du_ska_åka_till_jobbet",
+        "nu",
+        "sen",
+        "snart",
+        "vänta",
+        "idag"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Nivå 10 - Tid forts.",
+      "signs": [
+        "imorgon",
+        "gå_in",
+        "gå_ut",
+        "nu_ska_vi",
+        "nu_ska_vi_gå_ut",
+        "nu_ska_vi_gå_in"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Nivå 11 - Känslor",
+      "signs": [
+        "ledsen",
+        "bra",
+        "roligt",
+        "du_är_busig",
+        "du_är_fin",
+        "du_är_rolig"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Fraser",
+      "signs": [
         "du_är_busig",
         "du_är_fin",
         "du_är_rolig",
         "du_är_snäll",
-        "gå_in",
-        "gå_ut",
-        "hjälpa",
-        "mamma",
-        "nu_ska_du_åka_hem",
-        "nu_ska_du_åka_till_jobbet",
         "nu_ska_vi",
         "nu_ska_vi_gå_in",
         "nu_ska_vi_gå_ut",
-        "pappa",
-        "personal",
-        "tack_för_hjälpen",
-        "taxin_kommer_snart",
+        "nu_ska_du_åka_hem",
+        "nu_ska_du_åka_till_jobbet",
+        "du_ska_åka_hem",
+        "du_ska_åka_till_jobbet",
         "vill_du",
         "vill_du_ha_hjälp",
         "vill_du_ha_mer",
         "vill_du_ha_mer_kaffe",
-        "vill_du_ha_mer_ketchup"
+        "vill_du_ha_mer_ketchup",
+        "tack_för_hjälpen",
+        "taxin_kommer_snart",
+        "byta_blöja",
+        "byta_stol"
       ]
     }
   ],
