@@ -328,6 +328,10 @@ def api_track():
 
 @main_bp.get("/api/analytics")
 def api_analytics():
+    ip = request.remote_addr or "unknown"
+    if not check_rate_limit(f"analytics_{ip}", max_requests=5):
+        return jsonify({"error": "rate limit exceeded"}), 429
+
     if ANALYTICS_KEY:
         provided = request.headers.get("X-Analytics-Key") or request.args.get("key", "")
         if provided != ANALYTICS_KEY:

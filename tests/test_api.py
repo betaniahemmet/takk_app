@@ -144,3 +144,23 @@ def test_api_scores(client, monkeypatch):
     assert len(data["scores"]) == 2
     assert data["scores"][0]["name"] == "Alice"
     assert data["scores"][0]["score"] == 5.20
+
+
+def test_analytics_rate_limit(client, monkeypatch):
+    from collections import defaultdict
+
+    from app import routes  # noqa: F811
+
+    # Start with a clean rate limit store and no auth requirement
+    monkeypatch.setattr(routes, "rate_limit_store", defaultdict(list))
+    monkeypatch.setattr(routes, "get_analytics", lambda: {"events": []})
+    monkeypatch.setattr(routes, "ANALYTICS_KEY", "")
+
+    # First 5 requests should succeed
+    for i in range(5):
+        r = client.get("/api/analytics")
+        assert r.status_code == 200, f"request {i + 1} should succeed"
+
+    # 6th request should be rate limited
+    r = client.get("/api/analytics")
+    assert r.status_code == 429
