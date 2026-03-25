@@ -15,10 +15,11 @@ Target platform: HP Elite Mini 600 G9 · Ubuntu Server 24.04 · public domain wi
 7. [Nginx — HTTP Configuration](#7-nginx--http-configuration)
 8. [SSL/HTTPS with Let's Encrypt](#8-sslhttps-with-lets-encrypt)
 9. [DNS Configuration](#9-dns-configuration)
-10. [Firewall](#10-firewall)
-11. [Post-Deployment Testing Checklist](#11-post-deployment-testing-checklist)
-12. [Rollback Procedure](#12-rollback-procedure)
-13. [Ongoing Maintenance](#13-ongoing-maintenance)
+10. [SSH Key Authentication](#10-ssh-key-authentication)
+11. [Firewall & Fail2ban](#11-firewall--fail2ban)
+12. [Post-Deployment Testing Checklist](#12-post-deployment-testing-checklist)
+13. [Rollback Procedure](#13-rollback-procedure)
+14. [Ongoing Maintenance](#14-ongoing-maintenance)
 
 ---
 
@@ -332,7 +333,58 @@ If the server is on a local network and you're using your router's public IP:
 
 ---
 
-## 10. Firewall
+## 10. SSH Key Authentication
+
+Set this up **before** disabling password login, and test the key login in a second terminal
+before closing your existing session.
+
+### On your dev machine — generate a key pair (skip if you already have one)
+
+```bash
+ssh-keygen -t ed25519 -C "takk-server"
+# Creates ~/.ssh/id_ed25519 (private) and ~/.ssh/id_ed25519.pub (public)
+```
+
+### Copy the public key to the server
+
+```bash
+ssh-copy-id -i ~/.ssh/id_ed25519.pub takk@<server-ip>
+# Or manually: cat ~/.ssh/id_ed25519.pub | ssh takk@<server-ip> "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+```
+
+### Test key login (do this before the next step)
+
+Open a **new terminal** and verify you can log in without a password:
+```bash
+ssh -i ~/.ssh/id_ed25519 takk@<server-ip>
+```
+
+### Harden SSH daemon
+
+```bash
+sudo nano /etc/ssh/sshd_config
+```
+
+Set or confirm these values:
+```
+PasswordAuthentication no
+PermitRootLogin no
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+```
+
+Apply:
+```bash
+sudo systemctl reload sshd
+```
+
+Verify you can still log in from a new terminal before closing your current session.
+
+---
+
+## 11. Firewall & Fail2ban
+
+### UFW
 
 ```bash
 sudo ufw allow 22/tcp     # SSH — do this FIRST or you'll lock yourself out
@@ -345,9 +397,62 @@ sudo ufw status
 
 Redis (6379) and Gunicorn (8000) must **not** be opened — they only listen on localhost.
 
+### Fail2ban
+
+Fail2ban watches logs and temporarily bans IPs with too many failed attempts.
+
+```bash
+sudo apt install -y fail2ban
+```
+
+Create a local config (never edit the default `jail.conf` directly — it gets overwritten on upgrades):
+
+```bash
+sudo nano /etc/fail2ban/jail.local
+```
+
+```ini
+[DEFAULT]
+bantime  = 1h
+findtime = 10m
+maxretry = 5
+
+[sshd]
+enabled = true
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
+
+[nginx-http-auth]
+enabled  = true
+logpath  = /var/log/nginx/takk-error.log
+
+[nginx-botsearch]
+enabled  = true
+logpath  = /var/log/nginx/takk-access.log
+maxretry = 10
+```
+
+Enable and start:
+```bash
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+```
+
+Check status:
+```bash
+sudo fail2ban-client status
+sudo fail2ban-client status sshd    # shows banned IPs for SSH jail
+```
+
+Unban an IP if needed:
+```bash
+sudo fail2ban-client set sshd unbanip <ip-address>
+```
+
 ---
 
-## 11. Post-Deployment Testing Checklist
+## 12. Post-Deployment Testing Checklist
 
 Run these from a device outside the server after completing all steps.
 
@@ -356,6 +461,9 @@ Run these from a device outside the server after completing all steps.
 - [ ] `curl -I https://takk.betaniahemmet.se` returns `200 OK` with `Strict-Transport-Security` header
 - [ ] `curl -I http://takk.betaniahemmet.se` returns `301` redirect to HTTPS
 - [ ] SSL certificate is valid: `echo | openssl s_client -connect takk.betaniahemmet.se:443 2>/dev/null | openssl x509 -noout -dates`
+- [ ] SSH key login works: `ssh -i ~/.ssh/id_ed25519 takk@<server-ip>`
+- [ ] Password login is rejected: `ssh -o PreferredAuthentications=password takk@<server-ip>` → `Permission denied`
+- [ ] Fail2ban is running: `sudo fail2ban-client status` shows `sshd` jail active
 
 ### Application endpoints
 
@@ -413,7 +521,7 @@ sudo tail -20 /var/log/nginx/takk-error.log  # should be empty
 
 ---
 
-## 12. Rollback Procedure
+## 13. Rollback Procedure
 
 ### Fast rollback (restart previous working state)
 
@@ -480,7 +588,7 @@ sudo systemctl restart takk
 
 ---
 
-## 13. Ongoing Maintenance
+## 14. Ongoing Maintenance
 
 ### Deploying updates
 
