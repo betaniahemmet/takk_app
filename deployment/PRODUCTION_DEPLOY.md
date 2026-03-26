@@ -1,6 +1,6 @@
 # TAKK — Production Deployment Guide
 
-Target platform: HP Elite Mini 600 G9 · Ubuntu Server 24.04 · public domain with HTTPS
+Target platform: Ubuntu Server 24.04 · public domain with HTTPS
 
 ---
 
@@ -196,7 +196,7 @@ sudo systemctl start takk
 sudo systemctl status takk
 ```
 
-Gunicorn listens on `127.0.0.1:8000` with 9 workers (tuned for the i3-12100T's 4 cores).
+Gunicorn listens on `127.0.0.1:8000`. Worker count is configured in `deployment/gunicorn.conf.py` — formula: `(2 × CPU cores) + 1`.
 
 Check logs:
 ```bash
