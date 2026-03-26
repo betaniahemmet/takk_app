@@ -7,9 +7,8 @@ backlog = 2048
 
 # Worker configuration
 # Formula: (2 x CPU cores) + 1
-# For HP Elite Mini 600 G9: i3-12100T has 4 cores (8 threads)
-# Workers: (2 x 4) + 1 = 9
-workers = 9
+# 1 vCPU: (2 x 1) + 1 = 3
+workers = 3
 worker_class = "sync"
 worker_connections = 1000
 max_requests = 1000
