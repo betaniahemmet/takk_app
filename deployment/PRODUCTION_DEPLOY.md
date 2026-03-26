@@ -1,6 +1,6 @@
 # TAKK — Production Deployment Guide
 
-Target platform: Ubuntu Server 24.04 · public domain with HTTPS
+Target platform: Ubuntu Server 24.04 · `takk.betaniahemmet.se` · HTTPS via Let's Encrypt
 
 ---
 
