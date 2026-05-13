@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import AppShell from "../AppShell.jsx";
 import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
@@ -10,6 +10,7 @@ import { trackPageView, trackLevelStarted, trackSignCompleted, trackLevelComplet
 function Training() {
     const { n } = useParams();
     const nav = useNavigate();
+    const [searchParams] = useSearchParams();
     const [level, setLevel] = useState(null);
     const [i, setI] = useState(0);
     const [showPictograms, setShowPictograms] = useState(false);
@@ -25,7 +26,14 @@ function Training() {
     useEffect(() => {
         fetch(`/api/levels/${n}`)
             .then((r) => r.json())
-            .then(setLevel);
+            .then((data) => {
+                setLevel(data);
+                const startId = searchParams.get("start");
+                if (startId) {
+                    const idx = (data.signs || []).findIndex((s) => s.id === startId);
+                    if (idx > 0) setI(idx);
+                }
+            });
     }, [n]);
 
     const current = level?.signs?.[i];

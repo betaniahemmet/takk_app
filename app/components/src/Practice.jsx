@@ -79,8 +79,14 @@ function LevelDetail() {
                     <div className="text-sm font-semibold mb-2">Tecken i nivån</div>
                     <ul className="space-y-2">
                         {(level.signs || []).map((s) => (
-                            <li key={s.id} className="flex items-center justify-between">
-                                <span>{s.label || s.id}</span>
+                            <li key={s.id}>
+                                <Link
+                                    to={`/game/niva/${n}/training?start=${s.id}`}
+                                    className="flex items-center justify-between py-1 px-2 rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                                >
+                                    <span>{s.label || s.id}</span>
+                                    <span className="text-xs text-[var(--muted)]">→</span>
+                                </Link>
                             </li>
                         ))}
                     </ul>
