@@ -9,6 +9,7 @@ const sections = [
         title: "Så använder du appen",
         description: "Guide till appens funktioner",
         videoSrc: "/media/intro/intro_takk_app.mp4",
+        trackSrc: "/media/intro/intro_takk_app.vtt",
     },
     {
         title: "Om projektet",
@@ -42,12 +43,22 @@ export default function Introduction() {
                             </div>
                             {section.videoSrc ? (
                                 <video
-                                    src={section.videoSrc}
                                     controls
                                     playsInline
                                     preload="metadata"
                                     className="w-full aspect-video rounded-lg bg-black"
-                                />
+                                >
+                                    <source src={section.videoSrc} type="video/mp4" />
+                                    {section.trackSrc && (
+                                        <track
+                                            kind="captions"
+                                            src={section.trackSrc}
+                                            srclang="sv"
+                                            label="Svenska"
+                                            default
+                                        />
+                                    )}
+                                </video>
                             ) : (
                                 <div className="w-full aspect-video rounded-lg bg-black/10 dark:bg-white/10 flex items-center justify-center">
                                     <span className="text-sm text-gray-400 dark:text-gray-500">
