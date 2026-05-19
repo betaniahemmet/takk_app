@@ -26,7 +26,7 @@ Betanias TAKK-app är en interaktiv lärplattform som hjälper användare att l�
 ### Backend
 - **Flask** - Python web framework
 - **Gunicorn** - WSGI HTTP server för produktion
-- **JSON-filer** - Enkel databas för leaderboard och feedback
+- **Redis** - Leaderboard och analytics-data
 
 ### Frontend
 - **React** - UI framework
@@ -35,9 +35,9 @@ Betanias TAKK-app är en interaktiv lärplattform som hjälper användare att l�
 - **Radix UI** - Tillgängliga UI-komponenter
 
 ### Deployment
-- **Nginx** - Reverse proxy och SSL
+- **Nginx** - Reverse proxy och SSL (Let's Encrypt, `takk.betaniahemmet.se`)
 - **Systemd** - Service management
-- **Ubuntu Server** - OS
+- **Ubuntu Server** - OS (VPS, Ubuntu 24.04)
 
 ## 🚀 Kom Igång
 
@@ -90,16 +90,7 @@ Appen körs nu på:
 ### Produktion
 
 För produktionsdeploy, se detaljerade instruktioner i:
-- **[deployment/DEPLOYMENT.md](deployment/DEPLOYMENT.md)** - Steg-för-steg guide
-- **[deployment/DEPLOYMENT-PREP.md](deployment/DEPLOYMENT-PREP.md)** - Översikt och krav
-
-#### Snabbstart för produktion
-
-1. Följ [DEPLOYMENT.md](deployment/DEPLOYMENT.md)
-2. Kör verifieringsskript:
-```bash
-sudo bash deployment/deployment-check.sh
-```
+- **[deployment/PRODUCTION_DEPLOY.md](deployment/PRODUCTION_DEPLOY.md)** - Komplett guide (nginx, SSL, Redis, fail2ban)
 
 ## 📁 Projektstruktur
 
@@ -115,11 +106,11 @@ takk_app/
 │       └── dist/                # Byggd frontend (skapas vid build)
 ├── catalog/                     # Data
 │   ├── manifest.json           # Tecken och nivåer
-│   ├── distractors.json        # Distraktorer för quiz
-│   └── leaderboard.json        # High scores
+│   └── distractors.json        # Distraktorer för quiz
 ├── media/                       # Media-filer
 │   ├── signs/                  # Teckenvideoer (*.mp4)
-│   └── ui/                     # UI-resurser
+│   ├── intro/                  # Introduktionsvideo + textning
+│   └── ui/                     # UI-resurser (favicon, OG-bild)
 ├── deployment/                  # Produktionskonfiguration
 │   ├── DEPLOYMENT.md           # Deployment-guide
 │   ├── gunicorn.conf.py        # Gunicorn-config
@@ -182,6 +173,9 @@ FLASK_DEBUG=0
 - `GET /api/scores` - Topp 10 scores
 - `POST /api/score` - Lägg till ny score
 
+### Analytics
+- `GET /analytics` - Analytics dashboard (lösenordsskyddad)
+
 ### Övrigt
 - `GET /api/distractors` - Hämta distraktorer
 - `POST /api/feedback` - Skicka feedback
@@ -231,7 +225,7 @@ git push origin feature/ny-funktion
 # På servern
 cd /opt/takk
 sudo -u takk git pull
-sudo -u takk /opt/takk/venv/bin/python -m build app/components
+cd /opt/takk/app/components && sudo -u takk npm run build
 sudo systemctl restart takk
 ```
 
@@ -318,6 +312,6 @@ En ideell förening som arbetar med stöd och boende för personer med funktions
 
 ---
 
-**Version:** 1.0.0  
+**Version:** 1.1.1  
 **Status:** ✅ Produktionsklar  
-**Senast uppdaterad:** November 2025
+**Senast uppdaterad:** Maj 2026
