@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "levels": [
     {
       "id": 1,
@@ -77,7 +77,7 @@
       "id": 7,
       "name": "Nivå 7 - Hygien & WC",
       "signs": [
-        "toa",
+        "toalett",
         "kissa",
         "bajsa",
         "duscha",
@@ -101,7 +101,7 @@
       "name": "Nivå 9 - Tid",
       "signs": [
         "nu",
-        "sen",
+        "sedan",
         "snart",
         "vänta",
         "idag"
@@ -142,8 +142,6 @@
         "nu_ska_vi",
         "nu_ska_vi_gå_in",
         "nu_ska_vi_gå_ut",
-        "nu_ska_du_åka_hem",
-        "nu_ska_du_åka_till_jobbet",
         "du_ska_åka_hem",
         "du_ska_åka_till_jobbet",
         "vill_du",
@@ -173,7 +171,8 @@
       "pictograms": [
         "/media/signs/bada/bada.jpg"
       ],
-      "video": "/media/signs/bada/bada_square.mp4"
+      "video": "/media/signs/bada/bada_square.mp4",
+      "video_silent": "/media/signs/bada/bada_tyst_square.mp4"
     },
     "bajsa": {
       "label": "Bajsa",
@@ -181,7 +180,8 @@
       "pictograms": [
         "/media/signs/bajsa/bajsa.jpg"
       ],
-      "video": "/media/signs/bajsa/bajsa_square.mp4"
+      "video": "/media/signs/bajsa/bajsa_square.mp4",
+      "video_silent": "/media/signs/bajsa/bajsa_tyst_square.mp4"
     },
     "bra": {
       "label": "Bra",
@@ -189,7 +189,8 @@
       "pictograms": [
         "/media/signs/bra/bra.jpg"
       ],
-      "video": "/media/signs/bra/bra_square.mp4"
+      "video": "/media/signs/bra/bra_square.mp4",
+      "video_silent": "/media/signs/bra/bra_tyst_square.mp4"
     },
     "byta": {
       "label": "Byta",
@@ -197,7 +198,8 @@
       "pictograms": [
         "/media/signs/byta/byta.jpg"
       ],
-      "video": "/media/signs/byta/byta_square.mp4"
+      "video": "/media/signs/byta/byta_square.mp4",
+      "video_silent": "/media/signs/byta/byta_tyst_square.mp4"
     },
     "byta_blöja": {
       "label": "Byta blöja",
@@ -206,7 +208,8 @@
         "/media/signs/byta_blöja/1_byta.jpg",
         "/media/signs/byta_blöja/2_blöja.jpg"
       ],
-      "video": "/media/signs/byta_blöja/byta_blöja_square.mp4"
+      "video": "/media/signs/byta_blöja/byta_blöja_square.mp4",
+      "video_silent": "/media/signs/byta_blöja/byta_blöja_tyst_square.mp4"
     },
     "byta_personal": {
       "label": "Byta personal",
@@ -215,7 +218,8 @@
         "/media/signs/byta_personal/1_byta.jpg",
         "/media/signs/byta_personal/2_personal.jpg"
       ],
-      "video": "/media/signs/byta_personal/byta_personal_square.mp4"
+      "video": "/media/signs/byta_personal/byta_personal_square.mp4",
+      "video_silent": "/media/signs/byta_personal/byta_personal_tyst_square.mp4"
     },
     "byta_stol": {
       "label": "Byta stol",
@@ -232,7 +236,8 @@
       "pictograms": [
         "/media/signs/dricka/dricka.jpg"
       ],
-      "video": "/media/signs/dricka/dricka_square.mp4"
+      "video": "/media/signs/dricka/dricka_square.mp4",
+      "video_silent": "/media/signs/dricka/dricka_tyst_square.mp4"
     },
     "du_ska_åka_hem": {
       "label": "Du ska åka hem",
@@ -243,7 +248,8 @@
         "/media/signs/du_ska_åka_hem/3_åka.jpg",
         "/media/signs/du_ska_åka_hem/4_hem.jpg"
       ],
-      "video": "/media/signs/du_ska_åka_hem/du_ska_åka_hem_square.mp4"
+      "video": "/media/signs/du_ska_åka_hem/du_ska_åka_hem_square.mp4",
+      "video_silent": "/media/signs/du_ska_åka_hem/du_ska_åka_hem_tyst_square.mp4"
     },
     "du_ska_åka_till_jobbet": {
       "label": "Du ska åka till jobbet",
@@ -254,7 +260,8 @@
         "/media/signs/du_ska_åka_till_jobbet/3_åka.jpg",
         "/media/signs/du_ska_åka_till_jobbet/4_jobbet.jpg"
       ],
-      "video": "/media/signs/du_ska_åka_till_jobbet/du_ska_åka_till_jobbet_square.mp4"
+      "video": "/media/signs/du_ska_åka_till_jobbet/du_ska_åka_till_jobbet_square.mp4",
+      "video_silent": "/media/signs/du_ska_åka_till_jobbet/du_ska_åka_till_jobbet_tyst_square.mp4"
     },
     "du_är_busig": {
       "label": "Du är busig",
@@ -264,7 +271,8 @@
         "/media/signs/du_är_busig/2_är.jpg",
         "/media/signs/du_är_busig/3_busig.jpg"
       ],
-      "video": "/media/signs/du_är_busig/du_är_busig_square.mp4"
+      "video": "/media/signs/du_är_busig/du_är_busig_square.mp4",
+      "video_silent": "/media/signs/du_är_busig/du_är_busig_tyst_square.mp4"
     },
     "du_är_fin": {
       "label": "Du är fin",
@@ -274,7 +282,8 @@
         "/media/signs/du_är_fin/2_är.jpg",
         "/media/signs/du_är_fin/3_fin.jpg"
       ],
-      "video": "/media/signs/du_är_fin/du_är_fin_square.mp4"
+      "video": "/media/signs/du_är_fin/du_är_fin_square.mp4",
+      "video_silent": "/media/signs/du_är_fin/du_är_fin_tyst_square.mp4"
     },
     "du_är_rolig": {
       "label": "Du är rolig",
@@ -284,7 +293,8 @@
         "/media/signs/du_är_rolig/2_är.jpg",
         "/media/signs/du_är_rolig/3_rolig.jpg"
       ],
-      "video": "/media/signs/du_är_rolig/du_är_rolig_square.mp4"
+      "video": "/media/signs/du_är_rolig/du_är_rolig_square.mp4",
+      "video_silent": "/media/signs/du_är_rolig/du_är_rolig_tyst_square.mp4"
     },
     "du_är_snäll": {
       "label": "Du är snäll",
@@ -294,7 +304,8 @@
         "/media/signs/du_är_snäll/2_är.jpg",
         "/media/signs/du_är_snäll/3_snäll.jpg"
       ],
-      "video": "/media/signs/du_är_snäll/du_är_snäll_square.mp4"
+      "video": "/media/signs/du_är_snäll/du_är_snäll_square.mp4",
+      "video_silent": "/media/signs/du_är_snäll/du_är_snäll_tyst_square.mp4"
     },
     "duktig": {
       "label": "Duktig",
@@ -302,7 +313,8 @@
       "pictograms": [
         "/media/signs/duktig/duktig.jpg"
       ],
-      "video": "/media/signs/duktig/duktig_square.mp4"
+      "video": "/media/signs/duktig/duktig_square.mp4",
+      "video_silent": "/media/signs/duktig/duktig_tyst_square.mp4"
     },
     "duscha": {
       "label": "Duscha",
@@ -310,7 +322,8 @@
       "pictograms": [
         "/media/signs/duscha/duscha.jpg"
       ],
-      "video": "/media/signs/duscha/duscha_square.mp4"
+      "video": "/media/signs/duscha/duscha_square.mp4",
+      "video_silent": "/media/signs/duscha/duscha_tyst_square.mp4"
     },
     "fin": {
       "label": "Fin",
@@ -318,7 +331,8 @@
       "pictograms": [
         "/media/signs/fin/fin.jpg"
       ],
-      "video": "/media/signs/fin/fin_square.mp4"
+      "video": "/media/signs/fin/fin_square.mp4",
+      "video_silent": "/media/signs/fin/fin_tyst_square.mp4"
     },
     "frukt": {
       "label": "Frukt",
@@ -326,7 +340,8 @@
       "pictograms": [
         "/media/signs/frukt/frukt.jpg"
       ],
-      "video": "/media/signs/frukt/frukt_square.mp4"
+      "video": "/media/signs/frukt/frukt_square.mp4",
+      "video_silent": "/media/signs/frukt/frukt_tyst_square.mp4"
     },
     "färdig": {
       "label": "Färdig",
@@ -334,7 +349,8 @@
       "pictograms": [
         "/media/signs/färdig/färdig.jpg"
       ],
-      "video": "/media/signs/färdig/färdig_square.mp4"
+      "video": "/media/signs/färdig/färdig_square.mp4",
+      "video_silent": "/media/signs/färdig/färdig_tyst_square.mp4"
     },
     "gå": {
       "label": "Gå",
@@ -342,7 +358,8 @@
       "pictograms": [
         "/media/signs/gå/gå.jpg"
       ],
-      "video": "/media/signs/gå/gå_square.mp4"
+      "video": "/media/signs/gå/gå_square.mp4",
+      "video_silent": "/media/signs/gå/gå_tyst_square.mp4"
     },
     "gå_in": {
       "label": "Gå in",
@@ -351,7 +368,8 @@
         "/media/signs/gå_in/1_gå.jpg",
         "/media/signs/gå_in/2_in.jpg"
       ],
-      "video": "/media/signs/gå_in/gå_in_square.mp4"
+      "video": "/media/signs/gå_in/gå_in_square.mp4",
+      "video_silent": "/media/signs/gå_in/gå_in_tyst_square.mp4"
     },
     "gå_ut": {
       "label": "Gå ut",
@@ -360,7 +378,8 @@
         "/media/signs/gå_ut/1_gå.jpg",
         "/media/signs/gå_ut/2_ut.jpg"
       ],
-      "video": "/media/signs/gå_ut/gå_ut_square.mp4"
+      "video": "/media/signs/gå_ut/gå_ut_square.mp4",
+      "video_silent": "/media/signs/gå_ut/gå_ut_tyst_square.mp4"
     },
     "hej": {
       "label": "Hej",
@@ -368,7 +387,8 @@
       "pictograms": [
         "/media/signs/hej/hej.jpg"
       ],
-      "video": "/media/signs/hej/hej_square.mp4"
+      "video": "/media/signs/hej/hej_square.mp4",
+      "video_silent": "/media/signs/hej/hej_tyst_square.mp4"
     },
     "hem": {
       "label": "Hem",
@@ -376,7 +396,8 @@
       "pictograms": [
         "/media/signs/hem/hem.jpg"
       ],
-      "video": "/media/signs/hem/hem_square.mp4"
+      "video": "/media/signs/hem/hem_square.mp4",
+      "video_silent": "/media/signs/hem/hem_tyst_square.mp4"
     },
     "hjälpa": {
       "label": "Hjälpa",
@@ -384,7 +405,8 @@
       "pictograms": [
         "/media/signs/hjälpa/hjälpa.jpg"
       ],
-      "video": "/media/signs/hjälpa/hjälpa_square.mp4"
+      "video": "/media/signs/hjälpa/hjälpa_square.mp4",
+      "video_silent": "/media/signs/hjälpa/hjälpa_tyst_square.mp4"
     },
     "idag": {
       "label": "Idag",
@@ -392,7 +414,8 @@
       "pictograms": [
         "/media/signs/idag/idag.jpg"
       ],
-      "video": "/media/signs/idag/idag_square.mp4"
+      "video": "/media/signs/idag/idag_square.mp4",
+      "video_silent": "/media/signs/idag/idag_tyst_square.mp4"
     },
     "imorgon": {
       "label": "Imorgon",
@@ -400,16 +423,8 @@
       "pictograms": [
         "/media/signs/imorgon/imorgon.jpg"
       ],
-      "video": "/media/signs/imorgon/imorgon_square.mp4"
-    },
-    "jag_heter": {
-      "label": "Jag heter",
-      "symbol": "/media/signs/jag_heter/1_jag.jpg",
-      "pictograms": [
-        "/media/signs/jag_heter/1_jag.jpg",
-        "/media/signs/jag_heter/2_heter.jpg"
-      ],
-      "video": "/media/signs/jag_heter/jag_heter_square.mp4"
+      "video": "/media/signs/imorgon/imorgon_square.mp4",
+      "video_silent": "/media/signs/imorgon/imorgon_tyst_square.mp4"
     },
     "jobb": {
       "label": "Jobb",
@@ -417,7 +432,8 @@
       "pictograms": [
         "/media/signs/jobb/jobb.jpg"
       ],
-      "video": "/media/signs/jobb/jobb_square.mp4"
+      "video": "/media/signs/jobb/jobb_square.mp4",
+      "video_silent": "/media/signs/jobb/jobb_tyst_square.mp4"
     },
     "kaffe": {
       "label": "Kaffe",
@@ -425,7 +441,8 @@
       "pictograms": [
         "/media/signs/kaffe/kaffe.jpg"
       ],
-      "video": "/media/signs/kaffe/kaffe_square.mp4"
+      "video": "/media/signs/kaffe/kaffe_square.mp4",
+      "video_silent": "/media/signs/kaffe/kaffe_tyst_square.mp4"
     },
     "kallt": {
       "label": "Kallt",
@@ -433,7 +450,8 @@
       "pictograms": [
         "/media/signs/kallt/kallt.jpg"
       ],
-      "video": "/media/signs/kallt/kallt_square.mp4"
+      "video": "/media/signs/kallt/kallt_square.mp4",
+      "video_silent": "/media/signs/kallt/kallt_tyst_square.mp4"
     },
     "kissa": {
       "label": "Kissa",
@@ -441,7 +459,8 @@
       "pictograms": [
         "/media/signs/kissa/kissa.jpg"
       ],
-      "video": "/media/signs/kissa/kissa_square.mp4"
+      "video": "/media/signs/kissa/kissa_square.mp4",
+      "video_silent": "/media/signs/kissa/kissa_tyst_square.mp4"
     },
     "ledsen": {
       "label": "Ledsen",
@@ -449,7 +468,8 @@
       "pictograms": [
         "/media/signs/ledsen/ledsen.jpg"
       ],
-      "video": "/media/signs/ledsen/ledsen_square.mp4"
+      "video": "/media/signs/ledsen/ledsen_square.mp4",
+      "video_silent": "/media/signs/ledsen/ledsen_tyst_square.mp4"
     },
     "mamma": {
       "label": "Mamma",
@@ -457,7 +477,8 @@
       "pictograms": [
         "/media/signs/mamma/mamma.jpg"
       ],
-      "video": "/media/signs/mamma/mamma_square.mp4"
+      "video": "/media/signs/mamma/mamma_square.mp4",
+      "video_silent": "/media/signs/mamma/mamma_tyst_square.mp4"
     },
     "nu": {
       "label": "Nu",
@@ -465,31 +486,8 @@
       "pictograms": [
         "/media/signs/nu/nu.jpg"
       ],
-      "video": "/media/signs/nu/nu_square.mp4"
-    },
-    "nu_ska_du_åka_hem": {
-      "label": "Nu ska du åka hem",
-      "symbol": "/media/signs/nu_ska_du_åka_hem/1_nu.jpg",
-      "pictograms": [
-        "/media/signs/nu_ska_du_åka_hem/1_nu.jpg",
-        "/media/signs/nu_ska_du_åka_hem/2_ska.jpg",
-        "/media/signs/nu_ska_du_åka_hem/3_du.jpg",
-        "/media/signs/nu_ska_du_åka_hem/4_åka.jpg",
-        "/media/signs/nu_ska_du_åka_hem/5_hem.jpg"
-      ],
-      "video": "/media/signs/nu_ska_du_åka_hem/nu_ska_du_åka_hem_square.mp4"
-    },
-    "nu_ska_du_åka_till_jobbet": {
-      "label": "Nu ska du åka till jobbet",
-      "symbol": "/media/signs/nu_ska_du_åka_till_jobbet/1_nu.jpg",
-      "pictograms": [
-        "/media/signs/nu_ska_du_åka_till_jobbet/1_nu.jpg",
-        "/media/signs/nu_ska_du_åka_till_jobbet/2_ska.jpg",
-        "/media/signs/nu_ska_du_åka_till_jobbet/3_du.jpg",
-        "/media/signs/nu_ska_du_åka_till_jobbet/4_åka.jpg",
-        "/media/signs/nu_ska_du_åka_till_jobbet/5_jobbet.jpg"
-      ],
-      "video": "/media/signs/nu_ska_du_åka_till_jobbet/nu_ska_du_åka_till_jobbet_square.mp4"
+      "video": "/media/signs/nu/nu_square.mp4",
+      "video_silent": "/media/signs/nu/nu_tyst_square.mp4"
     },
     "nu_ska_vi": {
       "label": "Nu ska vi",
@@ -499,7 +497,8 @@
         "/media/signs/nu_ska_vi/2_ska.jpg",
         "/media/signs/nu_ska_vi/3_vi.jpg"
       ],
-      "video": "/media/signs/nu_ska_vi/nu_ska_vi_square.mp4"
+      "video": "/media/signs/nu_ska_vi/nu_ska_vi_square.mp4",
+      "video_silent": "/media/signs/nu_ska_vi/nu_ska_vi_tyst_square.mp4"
     },
     "nu_ska_vi_gå_in": {
       "label": "Nu ska vi gå in",
@@ -510,7 +509,8 @@
         "/media/signs/nu_ska_vi_gå_in/3_vi.jpg",
         "/media/signs/nu_ska_vi_gå_in/4_in.jpg"
       ],
-      "video": "/media/signs/nu_ska_vi_gå_in/nu_ska_vi_gå_in_square.mp4"
+      "video": "/media/signs/nu_ska_vi_gå_in/nu_ska_vi_gå_in_square.mp4",
+      "video_silent": "/media/signs/nu_ska_vi_gå_in/nu_ska_vi_gå_in_tyst_square.mp4"
     },
     "nu_ska_vi_gå_ut": {
       "label": "Nu ska vi gå ut",
@@ -521,7 +521,8 @@
         "/media/signs/nu_ska_vi_gå_ut/3_vi.jpg",
         "/media/signs/nu_ska_vi_gå_ut/4_ut.jpg"
       ],
-      "video": "/media/signs/nu_ska_vi_gå_ut/nu_ska_vi_gå_ut_square.mp4"
+      "video": "/media/signs/nu_ska_vi_gå_ut/nu_ska_vi_gå_ut_square.mp4",
+      "video_silent": "/media/signs/nu_ska_vi_gå_ut/nu_ska_vi_gå_ut_tyst_square.mp4"
     },
     "pappa": {
       "label": "Pappa",
@@ -529,7 +530,8 @@
       "pictograms": [
         "/media/signs/pappa/pappa.jpg"
       ],
-      "video": "/media/signs/pappa/pappa_square.mp4"
+      "video": "/media/signs/pappa/pappa_square.mp4",
+      "video_silent": "/media/signs/pappa/pappa_tyst_square.mp4"
     },
     "personal": {
       "label": "Personal",
@@ -537,7 +539,8 @@
       "pictograms": [
         "/media/signs/personal/personal.jpg"
       ],
-      "video": "/media/signs/personal/personal_square.mp4"
+      "video": "/media/signs/personal/personal_square.mp4",
+      "video_silent": "/media/signs/personal/personal_tyst_square.mp4"
     },
     "roligt": {
       "label": "Roligt",
@@ -547,21 +550,14 @@
       ],
       "video": "/media/signs/roligt/roligt_square.mp4"
     },
-    "sen": {
-      "label": "Sen",
-      "symbol": "/media/signs/sen/sen.jpg",
-      "pictograms": [
-        "/media/signs/sen/sen.jpg"
-      ],
-      "video": "/media/signs/sen/sen_square.mp4"
-    },
     "sitta": {
       "label": "Sitta",
       "symbol": "/media/signs/sitta/sitta.jpg",
       "pictograms": [
         "/media/signs/sitta/sitta.jpg"
       ],
-      "video": "/media/signs/sitta/sitta_square.mp4"
+      "video": "/media/signs/sitta/sitta_square.mp4",
+      "video_silent": "/media/signs/sitta/sitta_tyst_square.mp4"
     },
     "snart": {
       "label": "Snart",
@@ -569,7 +565,8 @@
       "pictograms": [
         "/media/signs/snart/snart.jpg"
       ],
-      "video": "/media/signs/snart/snart_square.mp4"
+      "video": "/media/signs/snart/snart_square.mp4",
+      "video_silent": "/media/signs/snart/snart_tyst_square.mp4"
     },
     "snäll": {
       "label": "Snäll",
@@ -577,7 +574,8 @@
       "pictograms": [
         "/media/signs/snäll/snäll.jpg"
       ],
-      "video": "/media/signs/snäll/snäll_square.mp4"
+      "video": "/media/signs/snäll/snäll_square.mp4",
+      "video_silent": "/media/signs/snäll/snäll_tyst_square.mp4"
     },
     "tack": {
       "label": "Tack",
@@ -585,7 +583,8 @@
       "pictograms": [
         "/media/signs/tack/tack.jpg"
       ],
-      "video": "/media/signs/tack/tack_square.mp4"
+      "video": "/media/signs/tack/tack_square.mp4",
+      "video_silent": "/media/signs/tack/tack_tyst_square.mp4"
     },
     "tack_för_hjälpen": {
       "label": "Tack för hjälpen",
@@ -594,7 +593,8 @@
         "/media/signs/tack_för_hjälpen/1_tack.jpg",
         "/media/signs/tack_för_hjälpen/2_hjälpen.jpg"
       ],
-      "video": "/media/signs/tack_för_hjälpen/tack_för_hjälpen_square.mp4"
+      "video": "/media/signs/tack_för_hjälpen/tack_för_hjälpen_square.mp4",
+      "video_silent": "/media/signs/tack_för_hjälpen/tack_för_hjälpen_tyst_square.mp4"
     },
     "taxi": {
       "label": "Taxi",
@@ -602,7 +602,8 @@
       "pictograms": [
         "/media/signs/taxi/taxi.jpg"
       ],
-      "video": "/media/signs/taxi/taxi_square.mp4"
+      "video": "/media/signs/taxi/taxi_square.mp4",
+      "video_silent": "/media/signs/taxi/taxi_tyst_square.mp4"
     },
     "taxin_kommer_snart": {
       "label": "Taxin kommer snart",
@@ -612,15 +613,8 @@
         "/media/signs/taxin_kommer_snart/2_kommer.jpg",
         "/media/signs/taxin_kommer_snart/3_snart.jpg"
       ],
-      "video": "/media/signs/taxin_kommer_snart/taxin_kommer_snart_square.mp4"
-    },
-    "toa": {
-      "label": "Toa",
-      "symbol": "/media/signs/toa/toa.jpg",
-      "pictograms": [
-        "/media/signs/toa/toa.jpg"
-      ],
-      "video": "/media/signs/toa/toa_square.mp4"
+      "video": "/media/signs/taxin_kommer_snart/taxin_kommer_snart_square.mp4",
+      "video_silent": "/media/signs/taxin_kommer_snart/taxin_kommer_snart_tyst_square.mp4"
     },
     "trasig": {
       "label": "Trasig",
@@ -628,7 +622,8 @@
       "pictograms": [
         "/media/signs/trasig/trasig.jpg"
       ],
-      "video": "/media/signs/trasig/trasig_square.mp4"
+      "video": "/media/signs/trasig/trasig_square.mp4",
+      "video_silent": "/media/signs/trasig/trasig_tyst_square.mp4"
     },
     "trött": {
       "label": "Trött",
@@ -636,7 +631,8 @@
       "pictograms": [
         "/media/signs/trött/trött.jpg"
       ],
-      "video": "/media/signs/trött/trött_square.mp4"
+      "video": "/media/signs/trött/trött_square.mp4",
+      "video_silent": "/media/signs/trött/trött_tyst_square.mp4"
     },
     "varmt": {
       "label": "Varmt",
@@ -644,7 +640,8 @@
       "pictograms": [
         "/media/signs/varmt/varmt.jpg"
       ],
-      "video": "/media/signs/varmt/varmt_square.mp4"
+      "video": "/media/signs/varmt/varmt_square.mp4",
+      "video_silent": "/media/signs/varmt/varmt_tyst_square.mp4"
     },
     "varsågod": {
       "label": "Varsågod",
@@ -660,7 +657,8 @@
       "pictograms": [
         "/media/signs/vet_inte/vet_inte.jpg"
       ],
-      "video": "/media/signs/vet_inte/vet_inte_square.mp4"
+      "video": "/media/signs/vet_inte/vet_inte_square.mp4",
+      "video_silent": "/media/signs/vet_inte/vet_inte_tyst_square.mp4"
     },
     "vila": {
       "label": "Vila",
@@ -668,7 +666,8 @@
       "pictograms": [
         "/media/signs/vila/vila.jpg"
       ],
-      "video": "/media/signs/vila/vila_square.mp4"
+      "video": "/media/signs/vila/vila_square.mp4",
+      "video_silent": "/media/signs/vila/vila_tyst_square.mp4"
     },
     "vill_du": {
       "label": "Vill du",
@@ -677,7 +676,8 @@
         "/media/signs/vill_du/1_vill.jpg",
         "/media/signs/vill_du/2_du.jpg"
       ],
-      "video": "/media/signs/vill_du/vill_du_square.mp4"
+      "video": "/media/signs/vill_du/vill_du_square.mp4",
+      "video_silent": "/media/signs/vill_du/vill_du_tyst_square.mp4"
     },
     "vill_du_ha_hjälp": {
       "label": "Vill du ha hjälp",
@@ -688,7 +688,8 @@
         "/media/signs/vill_du_ha_hjälp/3_ha.jpg",
         "/media/signs/vill_du_ha_hjälp/4_hjälp.jpg"
       ],
-      "video": "/media/signs/vill_du_ha_hjälp/vill_du_ha_hjälp_square.mp4"
+      "video": "/media/signs/vill_du_ha_hjälp/vill_du_ha_hjälp_square.mp4",
+      "video_silent": "/media/signs/vill_du_ha_hjälp/vill_du_ha_hjälp_tyst_square.mp4"
     },
     "vill_du_ha_mer": {
       "label": "Vill du ha mer",
@@ -699,7 +700,8 @@
         "/media/signs/vill_du_ha_mer/3_ha.jpg",
         "/media/signs/vill_du_ha_mer/4_mer.jpg"
       ],
-      "video": "/media/signs/vill_du_ha_mer/vill_du_ha_mer_square.mp4"
+      "video": "/media/signs/vill_du_ha_mer/vill_du_ha_mer_square.mp4",
+      "video_silent": "/media/signs/vill_du_ha_mer/vill_du_ha_mer_tyst_square.mp4"
     },
     "vill_du_ha_mer_kaffe": {
       "label": "Vill du ha mer kaffe",
@@ -711,7 +713,8 @@
         "/media/signs/vill_du_ha_mer_kaffe/3_mer.jpg",
         "/media/signs/vill_du_ha_mer_kaffe/4_kaffe.jpg"
       ],
-      "video": "/media/signs/vill_du_ha_mer_kaffe/vill_du_ha_mer_kaffe_square.mp4"
+      "video": "/media/signs/vill_du_ha_mer_kaffe/vill_du_ha_mer_kaffe_square.mp4",
+      "video_silent": "/media/signs/vill_du_ha_mer_kaffe/vill_du_ha_mer_kaffe_tyst_square.mp4"
     },
     "vill_du_ha_mer_ketchup": {
       "label": "Vill du ha mer ketchup",
@@ -723,7 +726,8 @@
         "/media/signs/vill_du_ha_mer_ketchup/4_mer.jpg",
         "/media/signs/vill_du_ha_mer_ketchup/5_ketchup.jpg"
       ],
-      "video": "/media/signs/vill_du_ha_mer_ketchup/vill_du_ha_mer_ketchup_square.mp4"
+      "video": "/media/signs/vill_du_ha_mer_ketchup/vill_du_ha_mer_ketchup_square.mp4",
+      "video_silent": "/media/signs/vill_du_ha_mer_ketchup/vill_du_ha_mer_ketchup_tyst_square.mp4"
     },
     "vän": {
       "label": "Vän",
@@ -731,7 +735,8 @@
       "pictograms": [
         "/media/signs/vän/vän.jpg"
       ],
-      "video": "/media/signs/vän/vän_square.mp4"
+      "video": "/media/signs/vän/vän_square.mp4",
+      "video_silent": "/media/signs/vän/vän_tyst_square.mp4"
     },
     "vänta": {
       "label": "Vänta",
@@ -739,7 +744,8 @@
       "pictograms": [
         "/media/signs/vänta/vänta.jpg"
       ],
-      "video": "/media/signs/vänta/vänta_square.mp4"
+      "video": "/media/signs/vänta/vänta_square.mp4",
+      "video_silent": "/media/signs/vänta/vänta_tyst_square.mp4"
     },
     "äta": {
       "label": "Äta",
@@ -747,7 +753,8 @@
       "pictograms": [
         "/media/signs/äta/äta.jpg"
       ],
-      "video": "/media/signs/äta/äta_square.mp4"
+      "video": "/media/signs/äta/äta_square.mp4",
+      "video_silent": "/media/signs/äta/äta_tyst_square.mp4"
     },
     "åka": {
       "label": "Åka",
@@ -755,7 +762,26 @@
       "pictograms": [
         "/media/signs/åka/åka.jpg"
       ],
-      "video": "/media/signs/åka/åka_square.mp4"
+      "video": "/media/signs/åka/åka_square.mp4",
+      "video_silent": "/media/signs/åka/åka_tyst_square.mp4"
+    },
+    "sedan": {
+      "label": "Sedan",
+      "symbol": "/media/signs/sedan/sedan.jpg",
+      "pictograms": [
+        "/media/signs/sedan/sedan.jpg"
+      ],
+      "video": "/media/signs/sedan/sedan_square.mp4",
+      "video_silent": "/media/signs/sedan/sedan_tyst_square.mp4"
+    },
+    "toalett": {
+      "label": "Toalett",
+      "symbol": "/media/signs/toalett/toalett.jpg",
+      "pictograms": [
+        "/media/signs/toalett/toalett.jpg"
+      ],
+      "video": "/media/signs/toalett/toalett_square.mp4",
+      "video_silent": "/media/signs/toalett/toalett_tyst_square.mp4"
     }
   }
 }

@@ -157,12 +157,12 @@ function Quiz() {
                     <HomeButton />
                 </div>
                 <VideoPlayer
-                    src={q.video}
+                    src={q.video_silent || q.video}
                     muted={true}
                     preload="auto"
                     videoRef={vRef}
                     onPlay={() => setHasPlayedVideo(true)}
-                    mouthCoord={mouthCoords[q.id] ?? null}
+                    mouthCoord={q.video_silent ? null : (mouthCoords[q.id] ?? null)}
                 />
 
                 <div className="flex justify-end mt-1">
