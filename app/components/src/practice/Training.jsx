@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
+import { Undo2 } from "lucide-react";
 import AppShell from "../AppShell.jsx";
 import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
@@ -111,7 +112,16 @@ function Training() {
             <Card className="p-5 space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="text-lg font-semibold">{current?.label || current?.id}</div>
-                    <HomeButton />
+                    <div className="flex items-center gap-1">
+                        <Link
+                            to={`/game/niva/${n}`}
+                            className="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition"
+                            aria-label="Tillbaka till teckenlistan"
+                        >
+                            <Undo2 className="w-5 h-5" />
+                        </Link>
+                        <HomeButton />
+                    </div>
                 </div>
 
                 {/* Video or Pictograms */}
