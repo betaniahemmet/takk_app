@@ -66,6 +66,10 @@ incoming/
 feedback.json
 catalog/leaderboard.json
 
+# Local requirements (server uses deployment/requirements.txt)
+requirements.txt
+requirements-dev.txt
+
 # If videos are too large for Git, ignore them:
 # media/signs/**/*.mp4
 # media/signs/**/*.webm
