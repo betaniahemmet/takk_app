@@ -279,14 +279,15 @@ def api_signs():
     signs_list = []
     for sid, s in signs_obj.items():
         pics = s.get("pictograms") or ([s["symbol"]] if s.get("symbol") else [])
-        signs_list.append(
-            {
-                "id": sid,
-                "label": s.get("label", sid),
-                "video": s.get("video"),
-                "pictograms": pics,
-            }
-        )
+        entry = {
+            "id": sid,
+            "label": s.get("label", sid),
+            "video": s.get("video"),
+            "pictograms": pics,
+        }
+        if s.get("video_silent"):
+            entry["video_silent"] = s["video_silent"]
+        signs_list.append(entry)
 
     signs_list.sort(key=lambda x: x["label"].lower())
     return jsonify({"signs": signs_list})
