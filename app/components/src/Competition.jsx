@@ -211,17 +211,17 @@ export default function Competition() {
                 <div className="p-5">
                     <Card className="p-5 space-y-5">
                         <VideoPlayer
-                            src={signs[target]?.video}
+                            src={signs[target]?.video_silent || signs[target]?.video}
                             muted
                             preload="auto"
                             videoRef={vRef}
                             onPlay={() => setHasPlayedVideo(true)}
-                            mouthCoord={mouthCoords[target] ?? null}
+                            mouthCoord={signs[target]?.video_silent ? null : (mouthCoords[target] ?? null)}
                         />
-                        {order[current + 1] && signs[order[current + 1]]?.video && (
+                        {order[current + 1] && (signs[order[current + 1]]?.video_silent || signs[order[current + 1]]?.video) && (
                             <video
                                 key={order[current + 1]}
-                                src={signs[order[current + 1]].video}
+                                src={signs[order[current + 1]]?.video_silent || signs[order[current + 1]]?.video}
                                 preload="auto"
                                 style={{ display: "none" }}
                                 aria-hidden="true"

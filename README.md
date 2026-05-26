@@ -60,7 +60,7 @@ cd takk_app
 ```bash
 python3 -m venv venv
 source venv/bin/activate  # På Windows: venv\Scripts\activate
-pip install -r deployment/requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 3. **Installera frontend-dependencies**
@@ -105,39 +105,80 @@ takk_app/
 │       ├── public/              # Statiska filer
 │       └── dist/                # Byggd frontend (skapas vid build)
 ├── catalog/                     # Data
-│   ├── manifest.json           # Tecken och nivåer
-│   └── distractors.json        # Distraktorer för quiz
+│   ├── manifest.json           # Tecken och nivåer (v3)
+│   ├── distractors.json        # Distraktorer för quiz
+│   └── mouth_coordinates.json  # Munpositioner för blur-overlay
 ├── media/                       # Media-filer
-│   ├── signs/                  # Teckenvideoer (*.mp4)
+│   ├── signs/                  # Teckenvideoer + piktogram per tecken
 │   ├── intro/                  # Introduktionsvideo + textning
 │   └── ui/                     # UI-resurser (favicon, OG-bild)
-├── deployment/                  # Produktionskonfiguration
-│   ├── DEPLOYMENT.md           # Deployment-guide
-│   ├── gunicorn.conf.py        # Gunicorn-config
-│   ├── nginx-takk.conf         # Nginx-config
-│   ├── takk.service            # Systemd service
-│   └── requirements.txt        # Python dependencies
+├── tools/                       # Underhållsverktyg
+│   ├── add_signs.py            # Guidad: lägg till tecken (för alla)
+│   ├── remove_sign.py          # Guidad: ta bort tecken (för alla)
+│   ├── audit_signs.py          # Rapport: vad saknas i media/signs/?
+│   └── validate_catalog.py     # Validera manifest mot disk
+├── video_processing/            # Videobearbetning (ffmpeg)
+│   ├── process_sign.py         # Bearbeta enstaka tecken
+│   ├── batch_silent.py         # Batch: tysta tecken
+│   └── batch_regular.py        # Batch: vanliga tecken
+├── incoming/                    # Staging för nya tecken (ej i git)
 ├── raw_clips/                   # Råa videofiler (ej i git)
-├── video_processing/            # Videobearbetning
+├── requirements.txt             # Runtime-dependencies
+├── requirements-dev.txt         # Dev/test-dependencies
+├── deployment/                  # Produktionskonfiguration
 └── run.py                       # Entry point
 ```
 
 ## 🎬 Videohantering
 
-### Lägga till nya tecken
+### Lägga till nya tecken (guidad)
 
-1. Placera råa videofiler i `raw_clips/`
-2. Kör videobearbetning:
+För icke-tekniska användare — ett interaktivt skript som hjälper steg för steg:
+
+1. Skapa en mapp i `incoming/` för varje nytt tecken (t.ex. `incoming/glad/`)
+2. Lägg videofil(er) och piktogram i mappen enligt namnkonventionen:
+   - Vanlig video: `glad.mov`
+   - Tyst video: `glad_tyst.mov`
+   - Piktogram: `glad.jpg` (eller `1_glad.jpg`, `2_ord.jpg` för sammansatta tecken)
+3. Kör det guidade skriptet:
 ```bash
-python video_processing/batch_processor.py
+python tools/add_signs.py
 ```
-3. Uppdatera `catalog/manifest.json` med nya tecken
-4. Bygg om React-appen
+Skriptet validerar, bearbetar video, uppdaterar manifest och påminner om att bygga om appen.
+
+### Ta bort tecken
+
+```bash
+python tools/remove_sign.py
+```
+
+Visar en numrerad lista över alla tecken — välj vilka som ska tas bort.
+
+### Lägga till tecken (developer)
+
+För att bearbeta enstaka tecken direkt:
+```bash
+# Vanlig video + tyst video
+python video_processing/process_sign.py glad --regular raw_clips/glad.mov --silent tysta_tecken/glad_tyst.mp4
+
+# Bara tyst video
+python video_processing/process_sign.py glad --silent tysta_tecken/glad_tyst.mp4
+```
 
 ### Videokrav
-- Format: .mov, .mp4, eller .avi
+- Format: `.mov` eller `.mp4`
 - Rekommenderad upplösning: 1080p
-- Processerade videor sparas i `media/signs/`
+- Processerade videor sparas i `media/signs/` (1080×1080, H.264)
+
+### Kontrollera status
+
+```bash
+# Vad saknas? (piktogram, video, manifest-entry)
+python tools/audit_signs.py
+
+# Validera att alla sökvägar i manifestet finns på disk
+python tools/validate_catalog.py
+```
 
 ## 🔧 Konfiguration
 

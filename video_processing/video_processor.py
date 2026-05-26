@@ -8,6 +8,18 @@ from typing import Optional
 from static_ffmpeg import run as _sfrun  # pip install static-ffmpeg
 
 
+def _get_duration(infile: Path, ffprobe: str) -> float:
+    import json
+
+    result = subprocess.run(
+        [ffprobe, "-v", "quiet", "-print_format", "json", "-show_streams", "-select_streams", "v:0", str(infile)],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return float(json.loads(result.stdout)["streams"][0]["duration"])
+
+
 def process_video(
     infile: str | Path,
     outfile: str | Path,
@@ -33,9 +45,10 @@ def process_video(
     if not infile.is_file():
         raise FileNotFoundError(f"Input not found: {infile}")
 
-    ffmpeg, _ = _sfrun.get_or_fetch_platform_executables_else_raise()
+    ffmpeg, ffprobe = _sfrun.get_or_fetch_platform_executables_else_raise()
+    duration = _get_duration(infile, ffprobe)
 
-    args = ["-y", "-i", str(infile)]
+    args = ["-y", "-fflags", "+igndts", "-i", str(infile)]
     has_logo = False
 
     # Optional logo
@@ -50,7 +63,7 @@ def process_video(
     # Center crop to square (keep full height)
     crop = "crop=ih:ih:(iw-ih)/2:0"
 
-    filters = [f"[0:v]{crop},scale={target}:{target}:in_range=pc:out_range=tv," "setsar=1,format=yuv420p[v0]"]
+    filters = [f"[0:v]{crop},scale={target}:{target}:in_range=pc:out_range=tv,setsar=1,setpts=PTS-STARTPTS,format=yuv420p[v0]"]
     last = "v0"
 
     # Logo overlay (bottom-right)
@@ -86,6 +99,12 @@ def process_video(
         "yuv420p",
         "-metadata:s:v:0",
         "rotate=0",
+        "-map_metadata",
+        "-1",
+        "-t",
+        str(duration),
+        "-avoid_negative_ts",
+        "make_zero",
         "-movflags",
         "+faststart",
         "-c:a",

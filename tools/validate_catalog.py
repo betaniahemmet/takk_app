@@ -23,7 +23,7 @@ def main():
 
     # Files exist
     for sid, s in signs.items():
-        for key in ("symbol", "training_video", "quiz_video"):
+        for key in ("symbol", "video"):
             url = s.get(key, "")
             if not url.startswith("/media/"):
                 ok = False
@@ -33,6 +33,17 @@ def main():
             if not os.path.exists(path):
                 ok = False
                 errs.append(f"Missing file: {url}")
+        # video_silent is optional — only validate if present
+        if "video_silent" in s:
+            url = s["video_silent"]
+            if not url.startswith("/media/"):
+                ok = False
+                errs.append(f"{sid}.video_silent should start with /media/")
+            else:
+                path = os.path.join(ROOT, url.lstrip("/"))
+                if not os.path.exists(path):
+                    ok = False
+                    errs.append(f"Missing file: {url}")
 
     print("OK" if ok else "ERRORS:")
     for e in errs:
