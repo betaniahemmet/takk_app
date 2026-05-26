@@ -55,7 +55,7 @@ export default function Feedback() {
                 <div>
                     <h1 className="text-xl font-semibold">Dela dina tankar</h1>
                     <p className="text-sm opacity-70 mt-1">
-                        Berätta vad du tycker om appen – all feedback hjälper oss!
+                        Berätta vad du tycker om appen - all feedback hjälper oss!
                     </p>
                 </div>
 

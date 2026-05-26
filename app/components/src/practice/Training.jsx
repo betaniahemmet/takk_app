@@ -108,7 +108,7 @@ function Training() {
     };
 
     return (
-        <AppShell title={`Träning — ${level.name || `Nivå ${n}`}`}>
+        <AppShell title={`Träning - ${level.name || `Nivå ${n}`}`}>
             <Card className="p-5 space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="text-lg font-semibold">{current?.label || current?.id}</div>

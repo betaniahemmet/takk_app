@@ -399,7 +399,7 @@ export default function Analytics() {
                                                     </span>
                                                     {Object.keys(event.data || {}).length > 0 && (
                                                         <span className="text-gray-500 dark:text-gray-400 ml-1">
-                                                            —{" "}
+                                                            -{" "}
                                                             {Object.entries(event.data)
                                                                 .map(([k, v]) => `${k}: ${v}`)
                                                                 .join(", ")}
