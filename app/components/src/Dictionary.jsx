@@ -17,8 +17,6 @@ export default function Dictionary() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const vRef = useRef(null);
 
-    console.log("Selected sign:", selected);
-
     // --- Filter signs by query ---
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();

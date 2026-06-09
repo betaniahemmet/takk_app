@@ -47,7 +47,6 @@ export default function Competition() {
 
                 const shuffled = Object.keys(signsMap).sort(() => Math.random() - 0.5);
                 setOrder(shuffled);
-                console.log("Loaded", shuffled.length, "signs");
             })
             .catch((err) => console.error("Fetch error:", err));
     }, []);
@@ -145,10 +144,6 @@ export default function Competition() {
 
             if (!res.ok) throw new Error(`Server error ${res.status}`);
             const data = await res.json();
-            console.log("📊 madeTop from backend:", data.madeTop, typeof data.madeTop);
-
-            console.log("Score submit response:", data);
-
             setScores(data.scores || []);
             setMadeTop(!!data.madeTop);
             setShowOverlay(true);
