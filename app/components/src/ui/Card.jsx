@@ -19,8 +19,8 @@ export default function Card({
                 className="absolute inset-0 rounded-2xl bg-white/85 dark:bg-slate-900/75 backdrop-blur-sm"
                 aria-hidden="true"
             />
-            {/* Content wrapper (receives your p-5, space-y-*, etc.) */}
-            <div className={`relative ${className}`}>{children}</div>
+            {/* Content wrapper — z-[1] ensures outlines render above the backdrop-blur sibling */}
+            <div className={`relative z-[1] ${className}`}>{children}</div>
         </div>
     );
 }

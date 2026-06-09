@@ -228,16 +228,12 @@ function Results() {
             <Card className="p-5 text-center space-y-3">
                 <div className="text-xl font-semibold">Bra jobbat!</div>
                 <div className="grid gap-2 mt-1">
-                    <Link to="/game">
-                        <Button variant="outline" className="w-full">
-                            Till Nivåer
-                        </Button>
-                    </Link>
-                    <Link to="/">
-                        <Button variant="primary" className="w-full">
-                            Till Huvudmenyn
-                        </Button>
-                    </Link>
+                    <Button as={Link} to="/game" variant="outline" className="w-full">
+                        Till Nivåer
+                    </Button>
+                    <Button as={Link} to="/" variant="primary" className="w-full">
+                        Till Huvudmenyn
+                    </Button>
                 </div>
             </Card>
         </AppShell>

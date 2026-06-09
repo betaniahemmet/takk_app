@@ -323,8 +323,8 @@ def api_track():
         track_event(session_id, event_type, event_data)
         return jsonify({"ok": True})
     except Exception as e:
-        current_app.logger.error(f"Analytics track error: {e}")
-        return jsonify({"ok": False, "error": "server error"}), 500
+        current_app.logger.warning(f"Analytics unavailable (Redis down?): {e}")
+        return jsonify({"ok": True})
 
 
 @main_bp.get("/api/analytics")

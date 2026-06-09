@@ -18,7 +18,7 @@ function GameLevels() {
             <div className="space-y-3">
                 {!levels && <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>}
                 {levels?.map((l) => (
-                    <Link key={l.id} to={`/game/niva/${l.id}`}>
+                    <Link key={l.id} to={`/game/niva/${l.id}`} className="block isolate rounded-2xl">
                         <Card className="p-5 hover:shadow-sm transition">
                             <div className="flex items-center justify-between mt-1">
                                 <div className="font-semibold">{l.name || `Nivå ${l.id}`}</div>

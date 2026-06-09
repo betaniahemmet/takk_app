@@ -1,10 +1,14 @@
-import React from "react";
+import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
-/**
- * AppShellCompetition
- * Identical layout to AppShell but with an animated synthwave gradient tint.
- */
 export default function AppShellCompetition({ children }) {
+    const mainRef = useRef(null);
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        mainRef.current?.focus();
+    }, [pathname]);
+
     return (
         <div className="relative min-h-dvh overflow-hidden text-white">
             {/* Background image — same composition as AppShell */}
@@ -35,7 +39,7 @@ export default function AppShellCompetition({ children }) {
             <div className="absolute inset-0 z-[2] bg-black/25" />
 
             {/* Foreground content (identical to AppShell) */}
-            <main className="relative z-10 mx-auto max-w-md p-5">{children}</main>
+            <main ref={mainRef} tabIndex={-1} style={{ outline: "none" }} className="relative z-10 mx-auto max-w-md p-5">{children}</main>
         </div>
     );
 }

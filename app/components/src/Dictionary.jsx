@@ -132,7 +132,7 @@ export default function Dictionary() {
                                     src={selected.video}
                                     videoRef={vRef}
                                     muted={false}
-                                    preload="none"
+                                    preload="metadata"
                                     onEnd={handleVideoEnd}
                                 />
                             </div>
@@ -173,18 +173,19 @@ export default function Dictionary() {
                 {/* Sign list */}
                 <ul className="divide-y divide-black/10 dark:divide-white/10">
                     {filtered.map((sign) => (
-                        <li
-                            key={sign.id}
-                            onClick={() => {
-                                setSelected(sign);
-                                setShowPictograms(false);
-                                setPicIndex(0);
-                                setIsPlaying(false);
-                                trackSignViewed(sign.id);
-                            }}
-                            className="py-2 px-2 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded-md"
-                        >
-                            {sign.label}
+                        <li key={sign.id}>
+                            <button
+                                className="w-full text-left py-2 px-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-md"
+                                onClick={() => {
+                                    setSelected(sign);
+                                    setShowPictograms(false);
+                                    setPicIndex(0);
+                                    setIsPlaying(false);
+                                    trackSignViewed(sign.id);
+                                }}
+                            >
+                                {sign.label}
+                            </button>
                         </li>
                     ))}
                 </ul>
@@ -214,26 +215,25 @@ export default function Dictionary() {
                     <div className="overflow-y-auto flex-1">
                         <ul className="divide-y divide-black/10 dark:divide-white/20">
                             {filtered.map((sign) => (
-                                <li
-                                    key={sign.id}
-                                    onClick={() => {
-                                        // Pause current video first
-                                        if (vRef.current) {
-                                            vRef.current.pause();
-                                            vRef.current.currentTime = 0;
-                                        }
-
-                                        setSelected(sign);
-                                        setShowPictograms(false);
-                                        setPicIndex(0);
-                                        setIsPlaying(false);
-                                        setQuery("");
-                                        setIsSearchOpen(false);
-                                        trackSignViewed(sign.id);
-                                    }}
-                                    className="py-3 px-2 text-gray-900 dark:text-white cursor-pointer hover:bg-black/5 dark:hover:bg-white/10 rounded-md"
-                                >
-                                    {sign.label}
+                                <li key={sign.id}>
+                                    <button
+                                        className="w-full text-left py-3 px-2 text-gray-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 rounded-md"
+                                        onClick={() => {
+                                            if (vRef.current) {
+                                                vRef.current.pause();
+                                                vRef.current.currentTime = 0;
+                                            }
+                                            setSelected(sign);
+                                            setShowPictograms(false);
+                                            setPicIndex(0);
+                                            setIsPlaying(false);
+                                            setQuery("");
+                                            setIsSearchOpen(false);
+                                            trackSignViewed(sign.id);
+                                        }}
+                                    >
+                                        {sign.label}
+                                    </button>
                                 </li>
                             ))}
                             {filtered.length === 0 && (

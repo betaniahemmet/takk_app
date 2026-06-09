@@ -37,11 +37,9 @@ function NotFound() {
         <AppShell title="404">
             <Card className="p-5 text-center space-y-3">
                 <div className="text-xl font-semibold">Sidan finns inte.</div>
-                <Link to="/">
-                    <Button variant="primary" className="w-full mt-3">
-                        Till startsidan
-                    </Button>
-                </Link>
+                <Button as={Link} to="/" variant="primary" className="w-full mt-3">
+                    Till startsidan
+                </Button>
             </Card>
         </AppShell>
     );

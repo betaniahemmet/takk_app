@@ -1,7 +1,16 @@
 // In AppShell (root layout) — neutral background for all non-competition pages
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { VersionDisplay } from './VersionDisplay';
 
 export default function AppShell({ children }) {
+    const mainRef = useRef(null);
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        mainRef.current?.focus();
+    }, [pathname]);
+
     return (
         <div className="relative min-h-dvh overflow-hidden text-gray-900 dark:text-white">
             {/* Background image */}
@@ -29,7 +38,12 @@ export default function AppShell({ children }) {
             <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/25 via-transparent to-black/35" />
 
             {/* Foreground content (single children render) */}
-            <main className="relative z-10 mx-auto max-w-md p-5">
+            <main
+                ref={mainRef}
+                tabIndex={-1}
+                style={{ outline: "none" }}
+                className="relative z-10 mx-auto max-w-md p-5"
+            >
                 {children}
                 <VersionDisplay />
             </main>
