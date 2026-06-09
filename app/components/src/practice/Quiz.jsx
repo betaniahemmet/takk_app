@@ -27,6 +27,7 @@ function Quiz() {
     const [phase, setPhase] = useState("playing");
     const vRef = useRef(null);
     const chimeRef = useRef(null);
+    const playBtnRef = useRef(null);
     const [hasPlayedVideo, setHasPlayedVideo] = useState(false);
     const CONFIRM_MS = 600;
     const ENABLE_SOUND = true;
@@ -72,11 +73,12 @@ function Quiz() {
         return shuffle([correct, ...others]);
     }, [level, q]);
 
-    // 🔑 Reset eliminated/confirming on new question
+    // Reset state on new question and move focus to play button
     useEffect(() => {
         setEliminated(new Set());
         setConfirmingId(null);
         setHasPlayedVideo(false);
+        playBtnRef.current?.focus();
     }, [qid]);
 
     // ----- guards (after ALL hooks) -----
@@ -166,7 +168,7 @@ function Quiz() {
                 />
 
                 <div className="flex justify-end mt-1">
-                    <Button variant="outline" onClick={playClip} disabled={isLocked}>
+                    <Button ref={playBtnRef} variant="outline" onClick={playClip} disabled={isLocked}>
                         Spela klipp
                     </Button>
                 </div>

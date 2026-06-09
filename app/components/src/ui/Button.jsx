@@ -1,10 +1,12 @@
 // app/components/src/ui/Button.jsx
-export default function Button({
+import { forwardRef } from "react";
+
+const Button = forwardRef(function Button({
     as: Tag = "button",
     variant = "primary",
     className = "",
     ...props
-}) {
+}, ref) {
     const base =
         "inline-flex items-center justify-center px-4 py-2 rounded-2xl text-sm font-semibold transition shadow-soft active:shadow-none";
 
@@ -16,14 +18,16 @@ export default function Button({
         secondary:
             "bg-slate-700 text-white hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700",
         ghost: "bg-transparent text-[var(--fg)] hover:bg-black/5 dark:text-[var(--fg)] dark:hover:bg-white/10",
-        // keep danger if you use it elsewhere
         danger: "bg-rose-600 text-white hover:bg-rose-700",
     };
 
     return (
         <Tag
+            ref={ref}
             className={`${base} ${variants[variant] || variants.primary} ${className}`}
             {...props}
         />
     );
-}
+});
+
+export default Button;

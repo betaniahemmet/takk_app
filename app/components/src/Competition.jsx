@@ -23,6 +23,7 @@ export default function Competition() {
     const [hasPlayedVideo, setHasPlayedVideo] = useState(false);
     const vRef = useRef(null);
     const chimeRef = useRef(null);
+    const playBtnRef = useRef(null);
     const ENABLE_SOUND = true;
     const CONFIRM_MS = 800; // short pause before next sign
     const [lastCorrect, setLastCorrect] = useState(null);
@@ -95,6 +96,7 @@ export default function Competition() {
     useEffect(() => {
         if (phase === "play") {
             setChoices(makeChoices());
+            playBtnRef.current?.focus();
         }
     }, [makeChoices, phase, current]);
 
@@ -231,6 +233,7 @@ export default function Competition() {
                         {/* Video controls row */}
                         <div className="flex justify-end gap-2">
                             <Button
+                                ref={playBtnRef}
                                 variant="primary"
                                 className="w-1/2"
                                 onClick={() => {
