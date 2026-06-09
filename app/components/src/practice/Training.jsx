@@ -134,7 +134,7 @@ function Training() {
                         <VideoPlayer
                             src={current.video}
                             muted={false}
-                            preload="none"
+                            preload="metadata"
                             videoRef={vRef}
                             onEnd={handleVideoEnd}
                         />
