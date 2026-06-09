@@ -320,7 +320,7 @@ function Scoreboard({ scores, showOverlay, setShowOverlay, score, madeTop, corre
 
             {showOverlay && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                    <Card className="p-6 text-center space-y-4 bg-white/80 dark:bg-white/20 backdrop-blur-md text-gray-900 dark:text-white rounded-2xl shadow-lg">
+                    <Card className="p-6 text-center space-y-4 bg-white dark:bg-slate-800 text-gray-900 dark:text-white rounded-2xl shadow-lg">
                         <h1 className="text-2xl font-bold">Du fick {score.toFixed(2)} poäng!</h1>
                         {correctAnswer && (
                             <p className="text-sm">Rätt svar: <span className="font-semibold">{correctAnswer}</span></p>
