@@ -55,7 +55,8 @@ function LevelDetail() {
     return (
         <AppShell title={level.name || `Nivå ${n}`}>
             <Card className="p-5 space-y-4">
-                <div className="flex justify-end">
+                <div className="flex items-center justify-between">
+                    <h1 className="text-lg font-semibold">{level.name || `Nivå ${n}`}</h1>
                     <HomeButton />
                 </div>
                 <div className="grid gap-3">
