@@ -363,20 +363,18 @@
     },
     "gå_in": {
       "label": "Gå in",
-      "symbol": "/media/signs/gå_in/1_gå.jpg",
+      "symbol": "/media/signs/gå_in/in.jpg",
       "pictograms": [
-        "/media/signs/gå_in/1_gå.jpg",
-        "/media/signs/gå_in/2_in.jpg"
+        "/media/signs/gå_in/in.jpg"
       ],
       "video": "/media/signs/gå_in/gå_in_square.mp4",
       "video_silent": "/media/signs/gå_in/gå_in_tyst_square.mp4"
     },
     "gå_ut": {
       "label": "Gå ut",
-      "symbol": "/media/signs/gå_ut/1_gå.jpg",
+      "symbol": "/media/signs/gå_ut/ut.jpg",
       "pictograms": [
-        "/media/signs/gå_ut/1_gå.jpg",
-        "/media/signs/gå_ut/2_ut.jpg"
+        "/media/signs/gå_ut/ut.jpg"
       ],
       "video": "/media/signs/gå_ut/gå_ut_square.mp4",
       "video_silent": "/media/signs/gå_ut/gå_ut_tyst_square.mp4"

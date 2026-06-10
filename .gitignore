@@ -80,6 +80,9 @@ requirements-dev.txt
 Thumbs.db
 desktop.ini
 
+# === Playwright ===
+.playwright-mcp/
+
 # === Temporary Files ===
 *.tmp
 *.temp
