@@ -5,6 +5,7 @@ import time
 from collections import defaultdict
 from pathlib import Path
 
+import redis as _redis
 from flask import Blueprint, abort, current_app, jsonify, request, send_from_directory
 
 from .analytics import ANALYTICS_KEY, VALID_EVENT_TYPES, get_analytics, track_event
@@ -12,6 +13,19 @@ from .leaderboard import add_score, get_top
 from .version import __version__
 
 main_bp = Blueprint("main", __name__)
+
+_REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+FEEDBACK_KEY = "takk:feedback"
+MAX_FEEDBACK = 1000
+_redis_client = None
+
+
+def _get_redis():
+    global _redis_client
+    if _redis_client is None:
+        _redis_client = _redis.from_url(_REDIS_URL, decode_responses=True)
+    return _redis_client
+
 
 # Simple in-memory rate limiting
 rate_limit_store = defaultdict(list)
@@ -40,12 +54,6 @@ def _manifest_path():
     package_dir = os.path.dirname(os.path.abspath(__file__))
     project_dir = os.path.dirname(package_dir)
     return os.path.join(project_dir, "catalog", "manifest.json")
-
-
-def _feedback_path():
-    package_dir = os.path.dirname(os.path.abspath(__file__))
-    project_dir = os.path.dirname(package_dir)
-    return os.path.join(project_dir, "feedback.json")
 
 
 def _load_manifest():
@@ -119,29 +127,11 @@ def api_feedback():
 
     feedback_entry = {"id": str(uuid.uuid4()), "timestamp": datetime.utcnow().isoformat() + "Z", "message": message}
 
-    path = _feedback_path()
-
-    # Read existing feedback or start with empty list
-    if os.path.exists(path):
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                feedback_list = json.load(f)
-        except json.JSONDecodeError:
-            feedback_list = []
-    else:
-        feedback_list = []
-
-    # Check file size limit (prevent disk fill - max 1000 entries)
-    if len(feedback_list) >= 1000:
-        return jsonify({"ok": False, "error": "feedback storage full"}), 507
-
-    # Append new feedback
-    feedback_list.append(feedback_entry)
-
-    # Write back to file
     try:
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(feedback_list, f, indent=2, ensure_ascii=False)
+        r = _get_redis()
+        if r.llen(FEEDBACK_KEY) >= MAX_FEEDBACK:
+            return jsonify({"ok": False, "error": "feedback storage full"}), 507
+        r.lpush(FEEDBACK_KEY, json.dumps(feedback_entry, ensure_ascii=False))
         return jsonify({"ok": True})
     except Exception as e:
         current_app.logger.error(f"Failed to save feedback: {e}")
