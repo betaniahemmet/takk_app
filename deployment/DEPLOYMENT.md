@@ -235,7 +235,7 @@ You should see the TAKK home page!
 
 Test endpoints:
 ```
-http://<server-ip>/api/health  # Should return {"ok": true}
+http://<server-ip>/health  # Should return {"ok": true}
 http://<server-ip>/api/signs   # Should return list of signs
 ```
 
@@ -352,7 +352,7 @@ sudo netstat -tlnp | grep :80
 sudo ufw status
 
 # Test from server itself
-curl http://localhost/api/health
+curl http://localhost/health
 
 # Verify static IP
 ip addr show
@@ -409,7 +409,7 @@ http://<server-ip>/game          # Levels
 http://<server-ip>/dictionary    # Dictionary
 http://<server-ip>/competition   # Competition
 http://<server-ip>/feedback      # Feedback
-http://<server-ip>/api/health    # Health check
+http://<server-ip>/health    # Health check
 ```
 
 ---
@@ -429,7 +429,7 @@ http://<server-ip>/api/health    # Health check
 
 If you encounter issues:
 1. Check logs: `sudo journalctl -u takk -n 100`
-2. Test health endpoint: `curl http://localhost/api/health`
+2. Test health endpoint: `curl http://localhost/health`
 3. Verify file permissions: `ls -la /opt/takk`
 4. Check network: `ip addr show` and `ping <server-ip>`
 

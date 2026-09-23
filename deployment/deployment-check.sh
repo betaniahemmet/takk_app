@@ -46,7 +46,7 @@ test_endpoint() {
 FAILURES=0
 
 # Test health endpoint
-test_endpoint "/api/health" "Health check" || ((FAILURES++))
+test_endpoint "/health" "Health check" || ((FAILURES++))
 
 # Test main page
 test_endpoint "/" "Home page" || ((FAILURES++))

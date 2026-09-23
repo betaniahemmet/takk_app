@@ -228,7 +228,7 @@ sudo systemctl restart nginx
 
 Quick smoke test (from the server itself):
 ```bash
-curl -s http://localhost/api/health
+curl -s http://localhost/health
 # Expected: {"ok": true, ...}
 ```
 
@@ -471,7 +471,7 @@ Run these from a device outside the server after completing all steps.
 BASE=https://takk.betaniahemmet.se
 
 # Health
-curl -s $BASE/api/health
+curl -s $BASE/health
 # Expected: {"ok": true, "version": "..."}
 
 # Signs list

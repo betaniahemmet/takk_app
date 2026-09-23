@@ -172,7 +172,7 @@ After setup, test from any device on your WiFi:
 
 Or manually:
 - Browser: `http://192.168.1.100/`
-- API test: `http://192.168.1.100/api/health`
+- API test: `http://192.168.1.100/health`
 
 ## 📦 What Goes Where
 

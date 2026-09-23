@@ -104,7 +104,7 @@ chmod +x deployment-check.sh
 
 Or manually test in browser:
 - `http://192.168.1.100/` - Home page
-- `http://192.168.1.100/api/health` - Should return `{"ok": true}`
+- `http://192.168.1.100/health` - Should return `{"ok": true}`
 
 ## 📊 Expected Performance
 
@@ -178,7 +178,7 @@ sudo ufw allow 80/tcp
 sudo netstat -tlnp | grep :80
 
 # Check from server
-curl http://localhost/api/health
+curl http://localhost/health
 ```
 
 ## 🔐 Security Notes
