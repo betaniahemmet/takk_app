@@ -27,6 +27,10 @@ export default function Competition() {
     const ENABLE_SOUND = true;
     const CONFIRM_MS = 800; // short pause before next sign
     const [lastCorrect, setLastCorrect] = useState(null);
+    // Blocks further answers between a correct answer and the next sign
+    // (a ref, so two quick taps in the same frame can't both get through)
+    const answeringRef = useRef(false);
+    const [isAnswering, setIsAnswering] = useState(false);
 
     useEffect(() => { trackPageView("competition"); }, []);
 
@@ -57,6 +61,8 @@ export default function Competition() {
     const nextSign = () => {
         setCurrent((c) => c + 1);
         setHasPlayedVideo(false);
+        answeringRef.current = false;
+        setIsAnswering(false);
     };
 
     // compute possible answers
@@ -70,22 +76,30 @@ export default function Competition() {
             const targetLabel = targetSign.label || target;
             const targetPicCount = (targetSign.pictograms || []).length;
 
-            // Get matching distractors from JSON
-            const matchingDistractors = distractors[String(targetPicCount)] || [];
+            // Wrong answers should look alike, so prefer labels with the same
+            // pictogram count (signs + distractors.json). If there are fewer than 3,
+            // widen to the nearest counts so every question still has 4 options.
+            const labelsWithCount = (count) => [
+                ...(distractors[String(count)] || []),
+                ...order
+                    .filter((id) => id !== target)
+                    .map((id) => signs[id])
+                    .filter((s) => s && (s.pictograms || []).length === count)
+                    .map((s) => s.label),
+            ];
+            const shuffleArr = (arr) => [...arr].sort(() => Math.random() - 0.5);
 
-            // Get matching signs (same pictogram count)
-            const matchingSigns = order
-                .filter((id) => id !== target)
-                .map((id) => signs[id])
-                .filter((s) => s && (s.pictograms || []).length === targetPicCount)
-                .map((s) => s.label);
+            const picked = [];
+            for (let dist = 0; picked.length < 3 && dist <= 10; dist++) {
+                const counts = dist === 0 ? [targetPicCount] : [targetPicCount - dist, targetPicCount + dist];
+                const candidates = counts.filter((c) => c > 0).flatMap(labelsWithCount);
+                for (const label of shuffleArr(candidates)) {
+                    if (picked.length >= 3) break;
+                    if (label && label !== targetLabel && !picked.includes(label)) picked.push(label);
+                }
+            }
 
-            // Combine pools
-            const pool = [...matchingDistractors, ...matchingSigns];
-            const uniq = [...new Set(pool.filter((x) => x && x !== targetLabel))];
-
-            // Pick 3 distractors + 1 correct, then shuffle
-            const choices = [targetLabel, ...uniq.sort(() => Math.random() - 0.5).slice(0, 3)];
+            const choices = [targetLabel, ...picked];
             return choices.sort(() => Math.random() - 0.5);
         };
     }, [order, current, signs, distractors]);
@@ -100,13 +114,18 @@ export default function Competition() {
     }, [makeChoices, phase, current]);
 
     const handleAnswer = (choice) => {
+        if (answeringRef.current) return;
+        answeringRef.current = true;
+        setIsAnswering(true);
+
         const target = order[current];
         const correct = signs[target]?.label;
 
         if (choice === correct) {
             const base = Math.random() * (1.17 - 1.15) + 1.15;
             const pts = base + streak * 0.05;
-            setScore((s) => s + pts);
+            const newScore = score + pts;
+            setScore(newScore);
             setStreak((s) => s + 1);
 
             // ✅ play chime and wait briefly before next sign
@@ -120,26 +139,28 @@ export default function Competition() {
             setTimeout(() => {
                 // stop after last sign
                 if (current + 1 >= order.length) {
-                    endGame();
+                    endGame(newScore);
                 } else {
                     nextSign();
                 }
             }, CONFIRM_MS);
         } else {
             setLastCorrect(correct);  // Save correct answer before ending
-            endGame();
+            endGame(score);
         }
     };
 
-    const endGame = async () => {
+    // finalScore is passed in explicitly: inside the timeout above, `score`
+    // would still be the value from before the last correct answer.
+    const endGame = async (finalScore) => {
         setPhase("end");
         setMadeTop(false); // reset before new result
-        trackCompetitionAttempt(Math.round(score * 100) / 100, current + 1);
+        trackCompetitionAttempt(Math.round(finalScore * 100) / 100, current + 1);
         try {
             const res = await fetch("/api/score", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: tag, score }),
+                body: JSON.stringify({ name: tag, score: finalScore }),
             });
 
             if (!res.ok) throw new Error(`Server error ${res.status}`);
@@ -166,6 +187,9 @@ export default function Competition() {
         setMadeTop(false);
         setScores([]);
         setLastCorrect(null);
+        answeringRef.current = false;
+        setIsAnswering(false);
+        setHasPlayedVideo(false);
         setPhase("name"); // switch back to name entry last
     };
 
@@ -253,7 +277,7 @@ export default function Competition() {
                                     variant="outline"
                                     className={`w-full ${!hasPlayedVideo ? "opacity-40 cursor-not-allowed" : ""}`}
                                     onClick={() => handleAnswer(c)}
-                                    disabled={!hasPlayedVideo}
+                                    disabled={!hasPlayedVideo || isAnswering}
                                 >
                                     {c}
                                 </Button>
