@@ -1,8 +1,11 @@
 # app/routes.py
+import hmac
 import json
 import os
 import time
+import uuid
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 import redis as _redis
@@ -32,16 +35,34 @@ rate_limit_store = defaultdict(list)
 RATE_LIMIT_WINDOW = 60  # seconds
 RATE_LIMIT_MAX_REQUESTS = 10  # max requests per window
 TRACK_RATE_LIMIT_MAX_REQUESTS = 60  # analytics events are more frequent
+MAX_TRACK_DATA_BYTES = 512  # serialized size cap for /api/track `data`
+
+# Competition scoring (must match Competition.jsx): each correct answer gives
+# at most 1.17 points plus 0.05 per answer already in the streak.
+SCORE_MAX_BASE = 1.17
+SCORE_STREAK_BONUS = 0.05
 
 
 def check_rate_limit(identifier, max_requests=RATE_LIMIT_MAX_REQUESTS):
     """Simple rate limiter: max N requests per 60 seconds per identifier."""
     now = time.time()
-    rate_limit_store[identifier] = [t for t in rate_limit_store[identifier] if now - t < RATE_LIMIT_WINDOW]
-    if len(rate_limit_store[identifier]) >= max_requests:
+    recent = [t for t in rate_limit_store.get(identifier, []) if now - t < RATE_LIMIT_WINDOW]
+    if len(recent) >= max_requests:
+        rate_limit_store[identifier] = recent
         return False
-    rate_limit_store[identifier].append(now)
+    recent.append(now)
+    rate_limit_store[identifier] = recent
+    # Drop idle identifiers now and then so the store doesn't grow forever
+    if len(rate_limit_store) > 10000:
+        for key in [k for k, ts in rate_limit_store.items() if not ts or now - ts[-1] >= RATE_LIMIT_WINDOW]:
+            del rate_limit_store[key]
     return True
+
+
+def max_competition_score() -> float:
+    """Highest score possible: every sign in the manifest answered correctly."""
+    n = len(_load_manifest().get("signs", {}))
+    return SCORE_MAX_BASE * n + SCORE_STREAK_BONUS * n * (n - 1) / 2
 
 
 def _distractors_path():
@@ -93,9 +114,10 @@ def api_add_score():
     # Validate score is reasonable (prevent absurd values)
     try:
         score_float = float(score)
-        if score_float < 0 or score_float > 100000:
-            return jsonify({"ok": False, "error": "invalid score"}), 400
     except (ValueError, TypeError):
+        return jsonify({"ok": False, "error": "invalid score"}), 400
+    # Reject anything above what a perfect run could score (small float margin)
+    if not 0 <= score_float <= max_competition_score() + 0.01:
         return jsonify({"ok": False, "error": "invalid score"}), 400
 
     try:
@@ -122,16 +144,16 @@ def api_feedback():
     if len(message) > 1000:
         return jsonify({"ok": False, "error": "message too long (max 1000 characters)"}), 400
 
-    import uuid
-    from datetime import datetime
-
-    feedback_entry = {"id": str(uuid.uuid4()), "timestamp": datetime.utcnow().isoformat() + "Z", "message": message}
+    timestamp = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    feedback_entry = {"id": str(uuid.uuid4()), "timestamp": timestamp, "message": message}
 
     try:
         r = _get_redis()
-        if r.llen(FEEDBACK_KEY) >= MAX_FEEDBACK:
-            return jsonify({"ok": False, "error": "feedback storage full"}), 507
-        r.lpush(FEEDBACK_KEY, json.dumps(feedback_entry, ensure_ascii=False))
+        # Newest first; keep only the latest MAX_FEEDBACK entries
+        pipe = r.pipeline()
+        pipe.lpush(FEEDBACK_KEY, json.dumps(feedback_entry, ensure_ascii=False))
+        pipe.ltrim(FEEDBACK_KEY, 0, MAX_FEEDBACK - 1)
+        pipe.execute()
         return jsonify({"ok": True})
     except Exception as e:
         current_app.logger.error(f"Failed to save feedback: {e}")
@@ -309,6 +331,9 @@ def api_track():
     if not isinstance(event_data, dict):
         return jsonify({"ok": False, "error": "data must be an object"}), 400
 
+    if len(json.dumps(event_data)) > MAX_TRACK_DATA_BYTES:
+        return jsonify({"ok": False, "error": "data too large"}), 400
+
     try:
         track_event(session_id, event_type, event_data)
         return jsonify({"ok": True})
@@ -324,8 +349,9 @@ def api_analytics():
         return jsonify({"error": "rate limit exceeded"}), 429
 
     if ANALYTICS_KEY:
-        provided = request.headers.get("X-Analytics-Key") or request.args.get("key", "")
-        if provided != ANALYTICS_KEY:
+        # Header only: query strings end up in nginx/gunicorn access logs
+        provided = request.headers.get("X-Analytics-Key", "")
+        if not hmac.compare_digest(provided.encode(), ANALYTICS_KEY.encode()):
             return jsonify({"error": "unauthorized"}), 401
 
     try:

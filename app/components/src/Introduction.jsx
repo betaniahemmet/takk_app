@@ -11,14 +11,15 @@ const sections = [
         videoSrc: "/media/intro/intro_takk_app.mp4",
         trackSrc: "/media/intro/intro_takk_app.vtt",
     },
-    {
-        title: "Om projektet",
-        description: "Betaniahemmet och TAKK",
-    },
-    {
-        title: "Introduktion till TAKK",
-        description: "Grunderna i tecken som stöd",
-    },
+    // Placeholders — uncomment when the videos are ready
+    // {
+    //     title: "Om projektet",
+    //     description: "Betaniahemmet och TAKK",
+    // },
+    // {
+    //     title: "Introduktion till TAKK",
+    //     description: "Grunderna i tecken som stöd",
+    // },
 ];
 
 export default function Introduction() {

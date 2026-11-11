@@ -13,15 +13,9 @@ echo "TAKK Deployment Verification"
 echo "=========================================="
 echo ""
 
-# Get server IP
-if [ -z "$1" ]; then
-    echo -e "${YELLOW}Usage: ./deployment-check.sh <server-ip>${NC}"
-    echo "Example: ./deployment-check.sh 192.168.1.100"
-    exit 1
-fi
-
-SERVER_IP=$1
-BASE_URL="http://$SERVER_IP"
+# Usage: ./deployment-check.sh [base-url]   (default: production)
+BASE_URL="${1:-https://takk.betaniahemmet.se}"
+BASE_URL="${BASE_URL%/}"
 
 echo "Testing server: $BASE_URL"
 echo ""
@@ -42,20 +36,34 @@ test_endpoint() {
     fi
 }
 
-# Track failures
+# Track failures. (Not ((FAILURES++)): it returns status 1 when FAILURES is 0,
+# which makes `set -e` exit on the first failed check.)
 FAILURES=0
+fail() { FAILURES=$((FAILURES + 1)); }
 
 # Test health endpoint
-test_endpoint "/health" "Health check" || ((FAILURES++))
+test_endpoint "/health" "Health check" || fail
 
 # Test main page
-test_endpoint "/" "Home page" || ((FAILURES++))
+test_endpoint "/" "Home page" || fail
 
 # Test API endpoints
-test_endpoint "/api/levels" "Levels API" || ((FAILURES++))
-test_endpoint "/api/signs" "Signs API" || ((FAILURES++))
-test_endpoint "/api/distractors" "Distractors API" || ((FAILURES++))
-test_endpoint "/api/scores" "Scores API" || ((FAILURES++))
+test_endpoint "/api/version" "Version API" || fail
+test_endpoint "/api/levels" "Levels API" || fail
+test_endpoint "/api/signs" "Signs API" || fail
+test_endpoint "/api/distractors" "Distractors API" || fail
+test_endpoint "/api/scores" "Scores API" || fail
+
+# HTTPS: HSTS header should be present
+if [[ "$BASE_URL" == https://* ]]; then
+    echo -n "Testing HSTS header... "
+    if curl -s -I "$BASE_URL/" | grep -qi "strict-transport-security"; then
+        echo -e "${GREEN}✓ OK${NC}"
+    else
+        echo -e "${RED}✗ MISSING${NC}"
+        fail
+    fi
+fi
 
 # Test media serving
 echo -n "Testing media serving... "

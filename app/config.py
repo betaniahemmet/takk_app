@@ -15,9 +15,9 @@ if not os.environ.get("_TAKK_ENV_LOADED"):
 
     if env_file.exists():
         load_dotenv(env_file)
-        print(f"✓ Loaded environment: {env_file.name}")
+        print(f"Loaded environment: {env_file.name}")
     else:
-        print(f"⚠ No .env file found for '{env}', using defaults")
+        print(f"No .env file found for '{env}', using defaults")
 
     # Mark as loaded to prevent duplicate loads
     os.environ["_TAKK_ENV_LOADED"] = "1"

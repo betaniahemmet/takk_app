@@ -5,6 +5,8 @@ import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
 import VideoPlayer from "../VideoPlayer.jsx";
 import HomeButton from "../ui/HomeButton.jsx";
+import LoadError from "../ui/LoadError.jsx";
+import { fetchJson, errorKind } from "../utils/fetchJson.js";
 import mouthCoords from "../../../../catalog/mouth_coordinates.json";
 import { trackPageView, trackLevelStarted, trackQuizAttempt } from "../utils/analytics.js";
 
@@ -29,6 +31,7 @@ function Quiz() {
     const chimeRef = useRef(null);
     const playBtnRef = useRef(null);
     const [hasPlayedVideo, setHasPlayedVideo] = useState(false);
+    const [error, setError] = useState(null);
     const CONFIRM_MS = 600;
     const ENABLE_SOUND = true;
 
@@ -43,12 +46,12 @@ function Quiz() {
 
     // Load level + build order
     useEffect(() => {
-        fetch(`/api/levels/${n}/cumulative`)
-            .then((r) => r.json())
+        fetchJson(`/api/levels/${n}/cumulative`)
             .then((L) => {
                 setLevel(L);
                 setOrder(shuffle((L.signs || []).map((s) => s.id)));
-            });
+            })
+            .catch((e) => setError(errorKind(e)));
     }, [n]);
 
     // Derived
@@ -85,7 +88,11 @@ function Quiz() {
     if (!level) {
         return (
             <AppShell title={`Gissa - Nivå ${n}`}>
-                <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>
+                {error ? (
+                    <LoadError kind={error} />
+                ) : (
+                    <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>
+                )}
             </AppShell>
         );
     }
@@ -137,9 +144,12 @@ function Quiz() {
             }
             const isLast = idx + 1 >= order.length;
             if (isLast) {
+                // Finish when the chime ends, or after 1.5 s if it never plays
+                // (blocked autoplay, failed load) so the quiz can't get stuck.
+                const finish = () => setPhase("finished");
                 const audio = chimeRef.current;
-                if (audio) audio.onended = () => setPhase("finished");
-                else setTimeout(() => setPhase("finished"), 1000);
+                if (audio) audio.onended = finish;
+                setTimeout(finish, 1500);
             } else {
                 setTimeout(nextQuestion, CONFIRM_MS);
             }

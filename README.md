@@ -10,7 +10,7 @@
 
 ## 📖 Om TAKK
 
-Betanias TAKK-app är en interaktiv lärplattform som hjälper användare att lära sig teckenspråk genom videobaserat material och interaktiva övningar. Appen innehåller över 80 tecken organiserade i progressiva nivåer.
+Betanias TAKK-app är en interaktiv lärplattform som hjälper användare att lära sig teckenspråk genom videobaserat material och interaktiva övningar. Appen innehåller över 90 tecken organiserade i progressiva nivåer.
 
 ### Funktioner
 
@@ -60,7 +60,7 @@ cd takk_app
 ```bash
 python3 -m venv venv
 source venv/bin/activate  # På Windows: venv\Scripts\activate
-pip install -r requirements-dev.txt
+pip install -r deployment/requirements-dev.txt
 ```
 
 3. **Installera frontend-dependencies**
@@ -99,7 +99,8 @@ takk_app/
 ├── app/                          # Flask-applikation
 │   ├── __init__.py              # App factory
 │   ├── routes.py                # API endpoints
-│   ├── leaderboard.py           # Leaderboard-logik
+│   ├── leaderboard.py           # Leaderboard (Redis)
+│   ├── analytics.py             # Analytics (Redis)
 │   └── components/              # React frontend
 │       ├── src/                 # React källkod
 │       ├── public/              # Statiska filer
@@ -120,12 +121,14 @@ takk_app/
 ├── video_processing/            # Videobearbetning (ffmpeg)
 │   ├── process_sign.py         # Bearbeta enstaka tecken
 │   ├── batch_silent.py         # Batch: tysta tecken
-│   └── batch_regular.py        # Batch: vanliga tecken
+│   ├── batch_regular.py        # Batch: vanliga tecken
+│   └── process_intro_videos.py # Introduktionsfilm
 ├── incoming/                    # Staging för nya tecken (ej i git)
 ├── raw_clips/                   # Råa videofiler (ej i git)
-├── requirements.txt             # Runtime-dependencies
-├── requirements-dev.txt         # Dev/test-dependencies
-├── deployment/                  # Produktionskonfiguration
+│   ├── *.mov / *.mp4           # Vanliga tecken
+│   ├── tysta_tecken/           # Tysta tecken (*_tyst.mp4)
+│   └── intro/                  # Introduktionsfilm
+├── deployment/                  # Produktion: nginx, systemd, gunicorn, requirements
 └── run.py                       # Entry point
 ```
 
@@ -159,10 +162,24 @@ Visar en numrerad lista över alla tecken — välj vilka som ska tas bort.
 För att bearbeta enstaka tecken direkt:
 ```bash
 # Vanlig video + tyst video
-python video_processing/process_sign.py glad --regular raw_clips/glad.mov --silent tysta_tecken/glad_tyst.mp4
+python video_processing/process_sign.py glad --regular raw_clips/glad.mov --silent raw_clips/tysta_tecken/glad_tyst.mp4
 
 # Bara tyst video
-python video_processing/process_sign.py glad --silent tysta_tecken/glad_tyst.mp4
+python video_processing/process_sign.py glad --silent raw_clips/tysta_tecken/glad_tyst.mp4
+```
+
+### Batch-bearbetning
+
+All råvideo ligger i `raw_clips/`:
+```bash
+# Vanliga tecken: alla videor direkt i raw_clips/
+python video_processing/batch_regular.py
+
+# Tysta tecken: raw_clips/tysta_tecken/*_tyst.mp4
+python video_processing/batch_silent.py
+
+# Introduktionsfilm: raw_clips/intro/ -> media/intro/
+python video_processing/process_intro_videos.py
 ```
 
 ### Videokrav
@@ -217,7 +234,12 @@ FLASK_DEBUG=0
 ### Analytics
 - `GET /analytics` - Analytics dashboard (lösenordsskyddad)
 
+### Analytics API
+- `POST /api/track` - Logga händelse (sidvisning, tecken klart m.m.)
+- `GET /api/analytics` - Aggregerad statistik (kräver header `X-Analytics-Key`)
+
 ### Övrigt
+- `GET /api/version` - Appversion
 - `GET /api/distractors` - Hämta distraktorer
 - `POST /api/feedback` - Skicka feedback
 - `GET /health` - Health check
@@ -262,20 +284,24 @@ git push origin feature/ny-funktion
 ```
 
 5. **Deploy till server**
+
+Se [deployment/PRODUCTION_DEPLOY.md § Deploying updates](deployment/PRODUCTION_DEPLOY.md#deploying-updates). Kortversion:
 ```bash
 # På servern
 cd /opt/takk
-sudo -u takk git pull
-cd /opt/takk/app/components && sudo -u takk npm run build
+sudo -u takk git pull origin main
+cd app/components && sudo -u takk npm ci && sudo -u takk npm run build
 sudo systemctl restart takk
 ```
 
 ## 🔒 Säkerhet
 
-- Rate limiting på POST-endpoints (10 req/60s)
+- Rate limiting per klient-IP (nginx skickar `X-Forwarded-For`, appen läser den via `ProxyFix`)
+- Topplistan avvisar poäng över vad en perfekt omgång kan ge
 - Path traversal-skydd på mediaförfrågningar
-- Input-validering på alla användardata
-- CORS konfigurerad för lokal användning
+- Input-validering på alla användardata, storleksgräns på analytics-data
+- Ingen CORS: frontend och API har samma origin
+- HTTPS med HSTS (Let's Encrypt)
 
 ## 🐛 Felsökning
 
@@ -353,6 +379,5 @@ En ideell förening som arbetar med stöd och boende för personer med funktions
 
 ---
 
-**Version:** 1.1.1  
-**Status:** ✅ Produktionsklar  
-**Senast uppdaterad:** Maj 2026
+**Version:** se [VERSION](VERSION) (visas även längst ned i appen)  
+**Status:** ✅ I produktion på [takk.betaniahemmet.se](https://takk.betaniahemmet.se)

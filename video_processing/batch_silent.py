@@ -4,7 +4,7 @@ from pathlib import Path
 from process_sign import process_sign
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SILENT_ROOT = BASE_DIR / "tysta_tecken"
+SILENT_ROOT = BASE_DIR / "raw_clips" / "tysta_tecken"
 
 
 def main():

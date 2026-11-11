@@ -63,6 +63,7 @@ export default function Feedback() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Skriv din feedback här..."
+                    maxLength={1000}
                     className="w-full min-h-[200px] p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] resize-y focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                     disabled={submitting}
                 />

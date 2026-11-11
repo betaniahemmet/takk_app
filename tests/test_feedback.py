@@ -57,11 +57,13 @@ def test_feedback_rate_limit(client):
     assert r.status_code == 429
 
 
-def test_feedback_storage_full(client, fake_redis):
+def test_feedback_keeps_newest_when_full(client, fake_redis):
     import app.routes as routes
 
     for i in range(routes.MAX_FEEDBACK):
-        fake_redis.lpush(routes.FEEDBACK_KEY, json.dumps({"id": str(i), "message": "x", "timestamp": "t"}))
+        fake_redis.rpush(routes.FEEDBACK_KEY, json.dumps({"id": str(i), "message": "old", "timestamp": "t"}))
 
-    r = client.post("/api/feedback", json={"message": "overflow"})
-    assert r.status_code == 507
+    r = client.post("/api/feedback", json={"message": "newest"})
+    assert r.status_code == 200
+    assert fake_redis.llen(routes.FEEDBACK_KEY) == routes.MAX_FEEDBACK
+    assert json.loads(fake_redis.lindex(routes.FEEDBACK_KEY, 0))["message"] == "newest"

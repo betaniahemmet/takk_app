@@ -9,7 +9,10 @@
         "tack",
         "hjälpa",
         "tack_för_hjälpen",
-        "varsågod"
+        "varsågod",
+        "ja",
+        "nej",
+        "mer"
       ]
     },
     {
@@ -19,7 +22,14 @@
         "vet_inte",
         "färdig",
         "vill_du",
-        "vill_du_ha_mer"
+        "vill_du_ha_mer",
+        "jag",
+        "du",
+        "vi",
+        "vill",
+        "vill_inte",
+        "vill_du_ha",
+        "förlåt"
       ]
     },
     {
@@ -30,7 +40,13 @@
         "åka",
         "sitta",
         "vila",
-        "byta"
+        "byta",
+        "ska",
+        "dansa",
+        "gunga",
+        "spela",
+        "musik",
+        "kalas"
       ]
     },
     {
@@ -42,6 +58,7 @@
         "taxi",
         "personal",
         "byta_personal",
+        "du_ska_åka",
         "du_ska_åka_hem",
         "du_ska_åka_till_jobbet",
         "taxin_kommer_snart"
@@ -70,7 +87,11 @@
         "kaffe",
         "vill_du_ha_mer_kaffe",
         "vill_du_ha_mer",
-        "vill_du_ha_mer_ketchup"
+        "vill_du_ha_mer_ketchup",
+        "vatten",
+        "mjölk",
+        "saft",
+        "vill_du_ha_mjölk_i_kaffet"
       ]
     },
     {
@@ -93,7 +114,9 @@
         "varmt",
         "kallt",
         "trasig",
-        "akta"
+        "akta",
+        "sjuk",
+        "frisk"
       ]
     },
     {
@@ -128,7 +151,10 @@
         "roligt",
         "du_är_busig",
         "du_är_fin",
-        "du_är_rolig"
+        "du_är_rolig",
+        "glad",
+        "orolig",
+        "rädd"
       ]
     },
     {
@@ -152,7 +178,11 @@
         "tack_för_hjälpen",
         "taxin_kommer_snart",
         "byta_blöja",
-        "byta_stol"
+        "byta_stol",
+        "du_ska_åka",
+        "vill_du_ha",
+        "vill_du_ha_mjölk_i_kaffet",
+        "vill_inte"
       ]
     }
   ],
@@ -780,6 +810,249 @@
       ],
       "video": "/media/signs/toalett/toalett_square.mp4",
       "video_silent": "/media/signs/toalett/toalett_tyst_square.mp4"
+    },
+    "dansa": {
+      "label": "Dansa",
+      "symbol": "/media/signs/dansa/dansa.jpg",
+      "pictograms": [
+        "/media/signs/dansa/dansa.jpg"
+      ],
+      "video": "/media/signs/dansa/dansa_square.mp4",
+      "video_silent": "/media/signs/dansa/dansa_tyst_square.mp4"
+    },
+    "du": {
+      "label": "Du",
+      "symbol": "/media/signs/du/du.jpg",
+      "pictograms": [
+        "/media/signs/du/du.jpg"
+      ],
+      "video": "/media/signs/du/du_square.mp4",
+      "video_silent": "/media/signs/du/du_tyst_square.mp4"
+    },
+    "du_ska_åka": {
+      "label": "Du ska åka",
+      "symbol": "/media/signs/du_ska_åka/1_du.jpg",
+      "pictograms": [
+        "/media/signs/du_ska_åka/1_du.jpg",
+        "/media/signs/du_ska_åka/2_ska.jpg",
+        "/media/signs/du_ska_åka/3_åka.jpg"
+      ],
+      "video": "/media/signs/du_ska_åka/du_ska_åka_square.mp4",
+      "video_silent": "/media/signs/du_ska_åka/du_ska_åka_tyst_square.mp4"
+    },
+    "frisk": {
+      "label": "Frisk",
+      "symbol": "/media/signs/frisk/frisk.jpg",
+      "pictograms": [
+        "/media/signs/frisk/frisk.jpg"
+      ],
+      "video": "/media/signs/frisk/frisk_square.mp4",
+      "video_silent": "/media/signs/frisk/frisk_tyst_square.mp4"
+    },
+    "förlåt": {
+      "label": "Förlåt",
+      "symbol": "/media/signs/förlåt/förlåt.jpg",
+      "pictograms": [
+        "/media/signs/förlåt/förlåt.jpg"
+      ],
+      "video": "/media/signs/förlåt/förlåt_square.mp4",
+      "video_silent": "/media/signs/förlåt/förlåt_tyst_square.mp4"
+    },
+    "glad": {
+      "label": "Glad",
+      "symbol": "/media/signs/glad/glad.jpg",
+      "pictograms": [
+        "/media/signs/glad/glad.jpg"
+      ],
+      "video": "/media/signs/glad/glad_square.mp4",
+      "video_silent": "/media/signs/glad/glad_tyst_square.mp4"
+    },
+    "gunga": {
+      "label": "Gunga",
+      "symbol": "/media/signs/gunga/gunga.jpg",
+      "pictograms": [
+        "/media/signs/gunga/gunga.jpg"
+      ],
+      "video": "/media/signs/gunga/gunga_square.mp4",
+      "video_silent": "/media/signs/gunga/gunga_tyst_square.mp4"
+    },
+    "ja": {
+      "label": "Ja",
+      "symbol": "/media/signs/ja/ja.jpg",
+      "pictograms": [
+        "/media/signs/ja/ja.jpg"
+      ],
+      "video": "/media/signs/ja/ja_square.mp4",
+      "video_silent": "/media/signs/ja/ja_tyst_square.mp4"
+    },
+    "jag": {
+      "label": "Jag",
+      "symbol": "/media/signs/jag/jag.jpg",
+      "pictograms": [
+        "/media/signs/jag/jag.jpg"
+      ],
+      "video": "/media/signs/jag/jag_square.mp4",
+      "video_silent": "/media/signs/jag/jag_tyst_square.mp4"
+    },
+    "kalas": {
+      "label": "Kalas",
+      "symbol": "/media/signs/kalas/kalas.jpg",
+      "pictograms": [
+        "/media/signs/kalas/kalas.jpg"
+      ],
+      "video": "/media/signs/kalas/kalas_square.mp4",
+      "video_silent": "/media/signs/kalas/kalas_tyst_square.mp4"
+    },
+    "mer": {
+      "label": "Mer",
+      "symbol": "/media/signs/mer/mer.jpg",
+      "pictograms": [
+        "/media/signs/mer/mer.jpg"
+      ],
+      "video": "/media/signs/mer/mer_square.mp4",
+      "video_silent": "/media/signs/mer/mer_tyst_square.mp4"
+    },
+    "mjölk": {
+      "label": "Mjölk",
+      "symbol": "/media/signs/mjölk/mjölk.jpg",
+      "pictograms": [
+        "/media/signs/mjölk/mjölk.jpg"
+      ],
+      "video": "/media/signs/mjölk/mjölk_square.mp4",
+      "video_silent": "/media/signs/mjölk/mjölk_tyst_square.mp4"
+    },
+    "musik": {
+      "label": "Musik",
+      "symbol": "/media/signs/musik/musik.jpg",
+      "pictograms": [
+        "/media/signs/musik/musik.jpg"
+      ],
+      "video": "/media/signs/musik/musik_square.mp4",
+      "video_silent": "/media/signs/musik/musik_tyst_square.mp4"
+    },
+    "nej": {
+      "label": "Nej",
+      "symbol": "/media/signs/nej/nej.jpg",
+      "pictograms": [
+        "/media/signs/nej/nej.jpg"
+      ],
+      "video": "/media/signs/nej/nej_square.mp4",
+      "video_silent": "/media/signs/nej/nej_tyst_square.mp4"
+    },
+    "orolig": {
+      "label": "Orolig",
+      "symbol": "/media/signs/orolig/orolig.jpg",
+      "pictograms": [
+        "/media/signs/orolig/orolig.jpg"
+      ],
+      "video": "/media/signs/orolig/orolig_square.mp4",
+      "video_silent": "/media/signs/orolig/orolig_tyst_square.mp4"
+    },
+    "rädd": {
+      "label": "Rädd",
+      "symbol": "/media/signs/rädd/rädd.jpg",
+      "pictograms": [
+        "/media/signs/rädd/rädd.jpg"
+      ],
+      "video": "/media/signs/rädd/rädd_square.mp4",
+      "video_silent": "/media/signs/rädd/rädd_tyst_square.mp4"
+    },
+    "saft": {
+      "label": "Saft",
+      "symbol": "/media/signs/saft/saft.jpg",
+      "pictograms": [
+        "/media/signs/saft/saft.jpg"
+      ],
+      "video": "/media/signs/saft/saft_square.mp4",
+      "video_silent": "/media/signs/saft/saft_tyst_square.mp4"
+    },
+    "sjuk": {
+      "label": "Sjuk",
+      "symbol": "/media/signs/sjuk/sjuk.jpg",
+      "pictograms": [
+        "/media/signs/sjuk/sjuk.jpg"
+      ],
+      "video": "/media/signs/sjuk/sjuk_square.mp4",
+      "video_silent": "/media/signs/sjuk/sjuk_tyst_square.mp4"
+    },
+    "ska": {
+      "label": "Ska",
+      "symbol": "/media/signs/ska/ska.jpg",
+      "pictograms": [
+        "/media/signs/ska/ska.jpg"
+      ],
+      "video": "/media/signs/ska/ska_square.mp4",
+      "video_silent": "/media/signs/ska/ska_tyst_square.mp4"
+    },
+    "spela": {
+      "label": "Spela",
+      "symbol": "/media/signs/spela/spela.jpg",
+      "pictograms": [
+        "/media/signs/spela/spela.jpg"
+      ],
+      "video": "/media/signs/spela/spela_square.mp4",
+      "video_silent": "/media/signs/spela/spela_tyst_square.mp4"
+    },
+    "vatten": {
+      "label": "Vatten",
+      "symbol": "/media/signs/vatten/vatten.jpg",
+      "pictograms": [
+        "/media/signs/vatten/vatten.jpg"
+      ],
+      "video": "/media/signs/vatten/vatten_square.mp4",
+      "video_silent": "/media/signs/vatten/vatten_tyst_square.mp4"
+    },
+    "vi": {
+      "label": "Vi",
+      "symbol": "/media/signs/vi/vi.jpg",
+      "pictograms": [
+        "/media/signs/vi/vi.jpg"
+      ],
+      "video": "/media/signs/vi/vi_square.mp4",
+      "video_silent": "/media/signs/vi/vi_tyst_square.mp4"
+    },
+    "vill": {
+      "label": "Vill",
+      "symbol": "/media/signs/vill/vill.jpg",
+      "pictograms": [
+        "/media/signs/vill/vill.jpg"
+      ],
+      "video": "/media/signs/vill/vill_square.mp4",
+      "video_silent": "/media/signs/vill/vill_tyst_square.mp4"
+    },
+    "vill_du_ha": {
+      "label": "Vill du ha",
+      "symbol": "/media/signs/vill_du_ha/1_vill.jpg",
+      "pictograms": [
+        "/media/signs/vill_du_ha/1_vill.jpg",
+        "/media/signs/vill_du_ha/2_du.jpg",
+        "/media/signs/vill_du_ha/3_ha.jpg"
+      ],
+      "video": "/media/signs/vill_du_ha/vill_du_ha_square.mp4",
+      "video_silent": "/media/signs/vill_du_ha/vill_du_ha_tyst_square.mp4"
+    },
+    "vill_du_ha_mjölk_i_kaffet": {
+      "label": "Vill du ha mjölk i kaffet",
+      "symbol": "/media/signs/vill_du_ha_mjölk_i_kaffet/1_vill.jpg",
+      "pictograms": [
+        "/media/signs/vill_du_ha_mjölk_i_kaffet/1_vill.jpg",
+        "/media/signs/vill_du_ha_mjölk_i_kaffet/2_du.jpg",
+        "/media/signs/vill_du_ha_mjölk_i_kaffet/3_ha.jpg",
+        "/media/signs/vill_du_ha_mjölk_i_kaffet/4_mjölk.jpg",
+        "/media/signs/vill_du_ha_mjölk_i_kaffet/5_i.jpg",
+        "/media/signs/vill_du_ha_mjölk_i_kaffet/6_kaffet.jpg"
+      ],
+      "video": "/media/signs/vill_du_ha_mjölk_i_kaffet/vill_du_ha_mjölk_i_kaffet_square.mp4",
+      "video_silent": "/media/signs/vill_du_ha_mjölk_i_kaffet/vill_du_ha_mjölk_i_kaffet_tyst_square.mp4"
+    },
+    "vill_inte": {
+      "label": "Vill inte",
+      "symbol": "/media/signs/vill_inte/vill_inte.jpg",
+      "pictograms": [
+        "/media/signs/vill_inte/vill_inte.jpg"
+      ],
+      "video": "/media/signs/vill_inte/vill_inte_square.mp4",
+      "video_silent": "/media/signs/vill_inte/vill_inte_tyst_square.mp4"
     }
   }
 }

@@ -6,6 +6,8 @@ import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
 import VideoPlayer from "../VideoPlayer.jsx";
 import HomeButton from "../ui/HomeButton.jsx";
+import LoadError from "../ui/LoadError.jsx";
+import { fetchJson, errorKind } from "../utils/fetchJson.js";
 import { trackPageView, trackLevelStarted, trackSignCompleted, trackLevelCompleted } from "../utils/analytics.js";
 
 function Training() {
@@ -17,16 +19,19 @@ function Training() {
     const [showPictograms, setShowPictograms] = useState(false);
     const [picIndex, setPicIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [error, setError] = useState(null);
     const vRef = useRef(null);
+    // Bumped whenever the shown sign changes, so a running pictogram slideshow stops
+    const slideshowRun = useRef(0);
 
     useEffect(() => {
         trackPageView("training");
-        trackLevelStarted(Number(n));
+        // Opening a single sign from the level's list (?start=) is not starting the level
+        if (!searchParams.get("start")) trackLevelStarted(Number(n));
     }, []);
 
     useEffect(() => {
-        fetch(`/api/levels/${n}`)
-            .then((r) => r.json())
+        fetchJson(`/api/levels/${n}`)
             .then((data) => {
                 setLevel(data);
                 const startId = searchParams.get("start");
@@ -34,7 +39,8 @@ function Training() {
                     const idx = (data.signs || []).findIndex((s) => s.id === startId);
                     if (idx > 0) setI(idx);
                 }
-            });
+            })
+            .catch((e) => setError(errorKind(e)));
     }, [n]);
 
     const current = level?.signs?.[i];
@@ -43,7 +49,11 @@ function Training() {
     if (!level?.id) {
         return (
             <AppShell title={`Träning - Nivå ${n}`}>
-                <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>
+                {error ? (
+                    <LoadError kind={error} />
+                ) : (
+                    <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>
+                )}
             </AppShell>
         );
     }
@@ -56,13 +66,16 @@ function Training() {
 
         setShowPictograms(true);
 
+        const run = ++slideshowRun.current;
         for (let i = 0; i < pics.length; i++) {
+            if (run !== slideshowRun.current) return; // sign changed or replayed
             setPicIndex(i);
             await new Promise((resolve) => setTimeout(resolve, 1200));
         }
     };
 
     const playClip = () => {
+        slideshowRun.current++;
         // First, show video and hide pictograms
         setShowPictograms(false);
         setPicIndex(0);
@@ -96,6 +109,7 @@ function Training() {
         if (current?.id) trackSignCompleted(current.id, "training");
 
         // Reset pictogram state for next sign
+        slideshowRun.current++;
         setShowPictograms(false);
         setPicIndex(0);
         setIsPlaying(false);
