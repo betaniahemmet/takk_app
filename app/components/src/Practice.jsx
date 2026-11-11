@@ -4,19 +4,23 @@ import Button from "./ui/Button.jsx";
 import Card from "./ui/Card.jsx";
 import AppShell from "./AppShell.jsx";
 import HomeButton from "./ui/HomeButton.jsx";
+import LoadError from "./ui/LoadError.jsx";
+import { fetchJson, errorKind } from "./utils/fetchJson.js";
 
 /* Levels list fed by /api/levels (unchanged) */
 function GameLevels() {
     const [levels, setLevels] = useState(null);
+    const [error, setError] = useState(null);
     useEffect(() => {
-        fetch("/api/levels")
-            .then((r) => r.json())
-            .then((d) => setLevels(d.levels || []));
+        fetchJson("/api/levels")
+            .then((d) => setLevels(d.levels || []))
+            .catch((e) => setError(errorKind(e)));
     }, []);
     return (
         <AppShell title="Nivåer">
             <div className="space-y-3">
-                {!levels && <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>}
+                {error && <LoadError kind={error} />}
+                {!levels && !error && <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>}
                 {levels?.map((l) => (
                     <Link key={l.id} to={`/game/niva/${l.id}`} className="block isolate rounded-2xl">
                         <Card className="p-5 hover:shadow-sm transition">
@@ -38,16 +42,21 @@ function LevelDetail() {
     const { n } = useParams();
     const nav = useNavigate();
     const [level, setLevel] = useState(null);
+    const [error, setError] = useState(null);
     useEffect(() => {
-        fetch(`/api/levels/${n}`)
-            .then((r) => r.json())
-            .then(setLevel);
+        fetchJson(`/api/levels/${n}`)
+            .then(setLevel)
+            .catch((e) => setError(errorKind(e)));
     }, [n]);
 
     if (!level?.id)
         return (
             <AppShell title={`Nivå ${n}`}>
-                <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>
+                {error ? (
+                    <LoadError kind={error} />
+                ) : (
+                    <Card className="p-5 text-sm text-[var(--muted)]">Laddar…</Card>
+                )}
             </AppShell>
         );
 

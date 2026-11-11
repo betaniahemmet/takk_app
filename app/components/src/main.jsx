@@ -5,6 +5,7 @@ import "./index.css";
 import AppShell from "./AppShell.jsx";
 import Button from "./ui/Button.jsx";
 import Card from "./ui/Card.jsx";
+import ErrorBoundary from "./ErrorBoundary.jsx";
 // Home is eager — it's the first page every user sees
 import Home from "./Home.jsx";
 
@@ -47,6 +48,7 @@ function NotFound() {
 
 function App() {
     return (
+        <ErrorBoundary>
         <BrowserRouter>
             <Suspense fallback={<Loading />}>
                 <Routes>
@@ -64,6 +66,7 @@ function App() {
                 </Routes>
             </Suspense>
         </BrowserRouter>
+        </ErrorBoundary>
     );
 }
 

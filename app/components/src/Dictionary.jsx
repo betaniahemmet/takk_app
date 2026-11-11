@@ -16,6 +16,8 @@ export default function Dictionary() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const vRef = useRef(null);
+    // Bumped whenever the shown sign changes, so a running pictogram slideshow stops
+    const slideshowRun = useRef(0);
 
     // --- Filter signs by query ---
     const filtered = useMemo(() => {
@@ -29,6 +31,7 @@ export default function Dictionary() {
     const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
     const playVideo = () => {
+        slideshowRun.current++;
         setShowPictograms(false);
         setPicIndex(0);
         setIsPlaying(true);
@@ -63,7 +66,9 @@ export default function Dictionary() {
 
         setShowPictograms(true);
 
+        const run = ++slideshowRun.current;
         for (let i = 0; i < pics.length; i++) {
+            if (run !== slideshowRun.current) return; // sign changed or replayed
             setPicIndex(i);
             await new Promise((resolve) => setTimeout(resolve, 1200));
         }
@@ -175,6 +180,7 @@ export default function Dictionary() {
                             <button
                                 className="w-full text-left py-2 px-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-md"
                                 onClick={() => {
+                                    slideshowRun.current++;
                                     setSelected(sign);
                                     setShowPictograms(false);
                                     setPicIndex(0);
@@ -221,6 +227,7 @@ export default function Dictionary() {
                                                 vRef.current.pause();
                                                 vRef.current.currentTime = 0;
                                             }
+                                            slideshowRun.current++;
                                             setSelected(sign);
                                             setShowPictograms(false);
                                             setPicIndex(0);
