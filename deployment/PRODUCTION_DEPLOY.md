@@ -2,6 +2,9 @@
 
 Target platform: Ubuntu Server 24.04 · `takk.betaniahemmet.se` · HTTPS via Let's Encrypt
 
+This is the single deployment guide. For routine updates, jump to
+[§14 Deploying updates](#deploying-updates).
+
 ---
 
 ## Table of Contents
@@ -12,8 +15,8 @@ Target platform: Ubuntu Server 24.04 · `takk.betaniahemmet.se` · HTTPS via Let
 4. [Build React Frontend](#4-build-react-frontend)
 5. [Environment Variables](#5-environment-variables)
 6. [Systemd Service](#6-systemd-service)
-7. [Nginx — HTTP Configuration](#7-nginx--http-configuration)
-8. [SSL/HTTPS with Let's Encrypt](#8-sslhttps-with-lets-encrypt)
+7. [Nginx & HTTPS](#7-nginx--https)
+8. [Certificate renewal](#8-certificate-renewal)
 9. [DNS Configuration](#9-dns-configuration)
 10. [SSH Key Authentication](#10-ssh-key-authentication)
 11. [Firewall & Fail2ban](#11-firewall--fail2ban)
@@ -165,15 +168,14 @@ ANALYTICS_KEY=<strong-random-secret>
 REDIS_URL=redis://localhost:6379
 ```
 
-Set strict permissions:
+Set strict permissions (the file holds the analytics key):
 ```bash
 sudo chmod 600 /opt/takk/.env.production
 sudo chown takk:takk /opt/takk/.env.production
 ```
 
-> **Security note:** The default `ANALYTICS_KEY=4242` in `.env.production` must be replaced
-> with a strong secret before going live. The analytics dashboard at `/analytics` is the
-> only thing protecting access to all usage data.
+> **Analytics key:** the dashboard sends it in the `X-Analytics-Key` header (never in the
+> URL, so it stays out of access logs). `4242` is only the local development key.
 
 ---
 
@@ -205,94 +207,54 @@ sudo journalctl -u takk -f
 
 ---
 
-## 7. Nginx — HTTP Configuration
+## 7. Nginx & HTTPS
 
-> Complete this step first (HTTP only), then add HTTPS in the next step.
-> Certbot needs a working HTTP server to complete the ACME challenge.
+`deployment/nginx-takk.conf` is the **live production config**: HTTPS server block
+(certbot-managed certificate lines), HTTP→HTTPS redirect, HSTS, caching rules,
+`/api/` proxy that sends `X-Forwarded-For` (the app's rate limiting depends on it),
+and `/media/` served directly by nginx.
+
+### Updating the config on an existing server
 
 ```bash
 sudo cp /opt/takk/deployment/nginx-takk.conf /etc/nginx/sites-available/takk
-
-# Edit server_name to your real domain
-sudo nano /etc/nginx/sites-available/takk
-# Change:  server_name takk.local;
-# To:      server_name takk.betaniahemmet.se;
-
-sudo ln -s /etc/nginx/sites-available/takk /etc/nginx/sites-enabled/takk
-sudo rm -f /etc/nginx/sites-enabled/default
-
-sudo nginx -t            # must say "syntax is ok"
-sudo systemctl enable nginx
-sudo systemctl restart nginx
+sudo nginx -t                 # must say "syntax is ok"
+sudo systemctl reload nginx
 ```
 
-Quick smoke test (from the server itself):
+If you change the config on the server instead, copy it back into the repo so the two
+don't drift apart.
+
+### First-time setup on a new server
+
+The certificate files referenced in the config don't exist yet, so get the certificate
+first. DNS must already point to the server (see §9) and port 80 must be open.
+
 ```bash
-curl -s http://localhost/health
-# Expected: {"ok": true, ...}
+sudo apt install certbot python3-certbot-nginx
+sudo rm -f /etc/nginx/sites-enabled/default
+# Temporary HTTP-only site so certbot can answer the ACME challenge
+printf 'server { listen 80; server_name takk.betaniahemmet.se; root /var/www/html; }\n' \
+  | sudo tee /etc/nginx/sites-available/takk
+sudo ln -sf /etc/nginx/sites-available/takk /etc/nginx/sites-enabled/takk
+sudo nginx -t && sudo systemctl reload nginx
+
+sudo certbot certonly --nginx -d takk.betaniahemmet.se   # certificate only
+
+# Now install the real config
+sudo cp /opt/takk/deployment/nginx-takk.conf /etc/nginx/sites-available/takk
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+Smoke test:
+```bash
+curl -s https://takk.betaniahemmet.se/health      # {"ok": true}
+curl -sI https://takk.betaniahemmet.se/ | grep -i strict-transport
 ```
 
 ---
 
-## 8. SSL/HTTPS with Let's Encrypt
-
-### Prerequisites
-
-- Your domain's DNS A record must already point to this server's public IP (see §9).
-- Port 80 must be reachable from the internet (certbot's HTTP-01 challenge).
-
-### Obtain certificate
-
-```bash
-sudo certbot --nginx -d takk.betaniahemmet.se
-```
-
-Certbot will:
-1. Verify domain ownership via HTTP-01 challenge
-2. Issue the certificate to `/etc/letsencrypt/live/takk.betaniahemmet.se/`
-3. Automatically rewrite your nginx config to add HTTPS and an HTTP→HTTPS redirect
-
-### What the rewritten nginx config should look like
-
-After certbot runs, verify `/etc/nginx/sites-available/takk` contains two server blocks:
-
-```nginx
-# HTTP → HTTPS redirect (certbot adds this)
-server {
-    listen 80;
-    server_name takk.betaniahemmet.se;
-    return 301 https://$host$request_uri;
-}
-
-# HTTPS (certbot adds ssl_certificate lines here)
-server {
-    listen 443 ssl;
-    server_name takk.betaniahemmet.se;
-    ssl_certificate     /etc/letsencrypt/live/takk.betaniahemmet.se/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/takk.betaniahemmet.se/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-    # ... rest of your location blocks
-}
-```
-
-Test and reload:
-```bash
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-### Add HSTS header
-
-Once HTTPS is confirmed working, add this to the HTTPS server block in your nginx config:
-
-```nginx
-add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-```
-
-Then reload nginx.
-
-### Auto-renewal
+## 8. Certificate renewal
 
 Certbot installs a systemd timer automatically. Verify:
 ```bash
@@ -472,7 +434,10 @@ BASE=https://takk.betaniahemmet.se
 
 # Health
 curl -s $BASE/health
-# Expected: {"ok": true, "version": "..."}
+# Expected: {"ok": true}
+
+# Version
+curl -s $BASE/api/version
 
 # Signs list
 curl -s $BASE/api/signs | python3 -m json.tool | head -20
@@ -492,6 +457,8 @@ curl -s -H "X-Analytics-Key: <your-key>" $BASE/api/analytics
 ```
 
 ### Rate limiting
+
+Limits are per client IP (the app reads `X-Forwarded-For` from nginx).
 
 ```bash
 # Hit /api/analytics 6 times rapidly — the 6th should return 429
@@ -578,12 +545,15 @@ sudo -u takk venv/bin/python run.py
 
 ### Full restore from backup
 
-```bash
-# Restore data files from backup (catalog, feedback)
-BACKUP=/home/takk/backups/takk-data-<date>.tar.gz
-sudo tar -xzf $BACKUP -C /
+Leaderboard, analytics and feedback live in Redis (`/var/lib/redis/dump.rdb`);
+signs, levels and media are in git.
 
-sudo systemctl restart takk
+```bash
+BACKUP=/home/takk/backups/takk-redis-<date>.rdb
+sudo systemctl stop takk redis-server
+sudo cp $BACKUP /var/lib/redis/dump.rdb
+sudo chown redis:redis /var/lib/redis/dump.rdb
+sudo systemctl start redis-server takk
 ```
 
 ---
@@ -592,25 +562,35 @@ sudo systemctl restart takk
 
 ### Deploying updates
 
+On your dev machine: run the tests, push `dev`, merge `dev` → `main`. Then on the server:
+
 ```bash
 cd /opt/takk
 
 # Pull latest code
-sudo -u takk git pull
+sudo -u takk git pull origin main
 
-# Rebuild frontend if React files changed
+# Frontend: install deps if package-lock.json changed, then always rebuild
 cd app/components
+sudo -u takk npm ci          # only needed when package-lock.json changed
 sudo -u takk npm run build
 cd /opt/takk
 
-# Reinstall Python deps if requirements changed
+# Python deps, if deployment/requirements.txt changed
 sudo -u takk venv/bin/pip install -r deployment/requirements.txt
 
-# Reload gunicorn gracefully (zero downtime)
-sudo systemctl reload takk
-# If reload isn't enough:
+# Config files, only if they changed in this release
+sudo cp deployment/nginx-takk.conf /etc/nginx/sites-available/takk && sudo nginx -t && sudo systemctl reload nginx
+sudo cp deployment/takk.service /etc/systemd/system/takk.service && sudo systemctl daemon-reload
+sudo cp deployment/gunicorn.conf.py /opt/takk/gunicorn.conf.py
+
+# Restart the app
 sudo systemctl restart takk
+curl -s https://takk.betaniahemmet.se/api/version
 ```
+
+Frontend and backend must go out together (e.g. the analytics key header changed in
+both at once), so always rebuild the frontend when you pull.
 
 ### View logs
 
@@ -623,10 +603,13 @@ sudo tail -f /var/log/takk/error.log         # gunicorn errors
 
 ### Weekly backup (cron)
 
+Everything not in git is in Redis, so back up its snapshot:
+
 ```bash
+sudo mkdir -p /home/takk/backups
 sudo crontab -e
 # Add:
-0 2 * * 0 tar -czf /home/takk/backups/takk-data-$(date +\%Y\%m\%d).tar.gz /opt/takk/catalog/ /opt/takk/feedback.json && find /home/takk/backups -name "takk-data-*.tar.gz" -mtime +28 -delete
+0 2 * * 0 redis-cli save >/dev/null && cp /var/lib/redis/dump.rdb /home/takk/backups/takk-redis-$(date +\%Y\%m\%d).rdb && find /home/takk/backups -name "takk-redis-*.rdb" -mtime +28 -delete
 ```
 
 ### Cert renewal check

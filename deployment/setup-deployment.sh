@@ -1,6 +1,7 @@
 #!/bin/bash
 # setup-deployment.sh - Setup TAKK deployment files on the server
-# Run this script on the EliteDesk after copying the project files
+# First-time server setup. Run from /opt/takk after cloning the repo.
+# Full guide: deployment/PRODUCTION_DEPLOY.md
 
 set -e
 
@@ -183,9 +184,9 @@ echo ""
 echo "2. Build React frontend:"
 echo -e "   ${BLUE}cd /opt/takk/app/components && sudo -u takk npm run build${NC}"
 echo ""
-echo "3. Edit Nginx config with your server IP:"
-echo -e "   ${BLUE}sudo nano /etc/nginx/sites-available/takk${NC}"
-echo "   (Change server_name to your IP address)"
+echo "3. Get the HTTPS certificate (first time only):"
+echo "   The nginx config references Let's Encrypt files that don't exist yet."
+echo "   Follow deployment/PRODUCTION_DEPLOY.md section 7 before starting nginx."
 echo ""
 echo "4. Start services:"
 echo -e "   ${BLUE}sudo systemctl start takk${NC}"
