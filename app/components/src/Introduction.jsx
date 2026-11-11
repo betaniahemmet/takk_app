@@ -9,7 +9,7 @@ const sections = [
         title: "Så använder du appen",
         description: "Guide till appens funktioner",
         videoSrc: "/media/intro/intro_takk_app.mp4",
-        trackSrc: "/media/intro/intro_takk_app.vtt",
+        trackSrc: "/media/intro/intro_takk_app.vtt?v=2", // bump ?v= when the captions change
     },
     // Placeholders — uncomment when the videos are ready
     // {
