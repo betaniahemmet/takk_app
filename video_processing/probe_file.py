@@ -4,7 +4,7 @@ import json
 import statistics
 import subprocess
 
-FILE = r"C:\Users\henri\Documents\code\takk_app\raw_intro\intro_takk_app.mp4"
+FILE = r"C:\Users\henri\Documents\code\takk_app\media\intro\intro_takk_app.mp4"
 FFPROBE = "ffprobe"
 
 

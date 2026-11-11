@@ -123,6 +123,9 @@ takk_app/
 │   └── batch_regular.py        # Batch: vanliga tecken
 ├── incoming/                    # Staging för nya tecken (ej i git)
 ├── raw_clips/                   # Råa videofiler (ej i git)
+│   ├── *.mov / *.mp4           # Vanliga tecken
+│   ├── tysta_tecken/           # Tysta tecken (*_tyst.mp4)
+│   └── intro/                  # Introduktionsfilm
 ├── requirements.txt             # Runtime-dependencies
 ├── requirements-dev.txt         # Dev/test-dependencies
 ├── deployment/                  # Produktionskonfiguration
@@ -159,10 +162,24 @@ Visar en numrerad lista över alla tecken — välj vilka som ska tas bort.
 För att bearbeta enstaka tecken direkt:
 ```bash
 # Vanlig video + tyst video
-python video_processing/process_sign.py glad --regular raw_clips/glad.mov --silent tysta_tecken/glad_tyst.mp4
+python video_processing/process_sign.py glad --regular raw_clips/glad.mov --silent raw_clips/tysta_tecken/glad_tyst.mp4
 
 # Bara tyst video
-python video_processing/process_sign.py glad --silent tysta_tecken/glad_tyst.mp4
+python video_processing/process_sign.py glad --silent raw_clips/tysta_tecken/glad_tyst.mp4
+```
+
+### Batch-bearbetning
+
+All råvideo ligger i `raw_clips/`:
+```bash
+# Vanliga tecken: alla videor direkt i raw_clips/
+python video_processing/batch_regular.py
+
+# Tysta tecken: raw_clips/tysta_tecken/*_tyst.mp4
+python video_processing/batch_silent.py
+
+# Introduktionsfilm: raw_clips/intro/ -> media/intro/
+python video_processing/process_intro_videos.py
 ```
 
 ### Videokrav

@@ -56,8 +56,6 @@ app/components/dist/
 
 # Raw video files (too large, not needed in repo)
 raw_clips/
-raw_intro/
-tysta_tecken/
 
 # Staging area for new signs
 incoming/
@@ -91,8 +89,7 @@ desktop.ini
 
 # === Logs ===
 *.log
-logs/.claude/settings.local.json
-.claude/settings.local.json
-.claude/settings.local.json
-.claude/settings.local.json
+logs/
+
+# === Claude Code ===
 .claude/settings.local.json

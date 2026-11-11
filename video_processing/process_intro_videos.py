@@ -2,7 +2,7 @@
 # Converts raw intro videos to web-ready mp4 — same pipeline as sign videos
 # but WITHOUT square crop (native aspect ratio is preserved).
 #
-# Input:  raw_intro/*.mov or *.mp4
+# Input:  raw_clips/intro/*.mov or *.mp4
 # Output: media/intro/{name}.mp4
 # Usage:  python video_processing/process_intro_videos.py
 
@@ -14,7 +14,7 @@ from pathlib import Path
 from static_ffmpeg import run as _sfrun
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-INPUT_DIR = BASE_DIR / "raw_intro"
+INPUT_DIR = BASE_DIR / "raw_clips" / "intro"
 OUTPUT_DIR = BASE_DIR / "media" / "intro"
 LOGO_PATH = BASE_DIR / "media" / "logotyp.png"
 VIDEO_EXTS = {".mp4", ".mov", ".MP4", ".MOV"}
@@ -103,7 +103,7 @@ def main():
 
     if not INPUT_DIR.exists():
         print(f"[error] Input folder not found: {INPUT_DIR}")
-        print("        Create raw_intro/ and place .mov/.mp4 files in it.")
+        print("        Create raw_clips/intro/ and place .mov/.mp4 files in it.")
         sys.exit(1)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
