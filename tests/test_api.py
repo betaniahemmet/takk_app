@@ -154,6 +154,7 @@ def test_analytics_rate_limit(client, monkeypatch):
     # Start with a clean rate limit store and no auth requirement
     monkeypatch.setattr(routes, "rate_limit_store", defaultdict(list))
     monkeypatch.setattr(routes, "get_analytics", lambda: {"events": []})
+    monkeypatch.setattr(routes, "_recent_feedback", lambda: ([], 0))
     monkeypatch.setattr(routes, "ANALYTICS_KEY", "")
 
     # First 5 requests should succeed

@@ -9,10 +9,13 @@ import testenv  # noqa: F401
 def fake_redis(monkeypatch):
     """Replace the Redis client with a clean in-memory fakeredis for every test."""
     import app.analytics as an
+    import app.routes as routes
 
     server = fakeredis.FakeServer()
     fake = fakeredis.FakeRedis(server=server, decode_responses=True)
     monkeypatch.setattr(an, "_client", fake)
+    # The dashboard also reads feedback through the routes client
+    monkeypatch.setattr(routes, "_redis_client", fake)
     return fake
 
 

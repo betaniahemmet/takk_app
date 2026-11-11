@@ -20,6 +20,7 @@ main_bp = Blueprint("main", __name__)
 _REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 FEEDBACK_KEY = "takk:feedback"
 MAX_FEEDBACK = 1000
+FEEDBACK_SHOWN = 100  # newest entries returned to the analytics dashboard
 _redis_client = None
 
 
@@ -355,10 +356,29 @@ def api_analytics():
             return jsonify({"error": "unauthorized"}), 401
 
     try:
-        return jsonify(get_analytics())
+        result = get_analytics()
     except Exception as e:
         current_app.logger.error(f"Analytics query error: {e}")
         return jsonify({"error": "server error"}), 500
+
+    result["feedback"], result["feedback_total"] = _recent_feedback()
+    return jsonify(result)
+
+
+def _recent_feedback():
+    """Newest FEEDBACK_SHOWN entries first. Never fails the dashboard: returns ([], 0) on error."""
+    try:
+        r = _get_redis()
+        entries = []
+        for raw in r.lrange(FEEDBACK_KEY, 0, FEEDBACK_SHOWN - 1):
+            try:
+                entries.append(json.loads(raw))
+            except json.JSONDecodeError:
+                pass
+        return entries, r.llen(FEEDBACK_KEY)
+    except Exception as e:
+        current_app.logger.warning(f"Could not read feedback: {e}")
+        return [], 0
 
 
 # --- React SPA Fallback ---

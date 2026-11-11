@@ -414,6 +414,37 @@ export default function Analytics() {
                                     )}
                                 </div>
                             </MetricCard>
+
+                            {/* Feedback from /feedback — newest first */}
+                            <MetricCard
+                                title={`Feedback (${data.feedback_total ?? 0})`}
+                            >
+                                <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+                                    {(data.feedback || []).length === 0 ? (
+                                        <p className="text-sm text-gray-400">Ingen feedback ännu.</p>
+                                    ) : (
+                                        (data.feedback || []).map((f) => (
+                                            <div
+                                                key={f.id}
+                                                className="text-sm border-b border-black/5 dark:border-white/5 pb-3 last:border-0 last:pb-0"
+                                            >
+                                                <div className="text-xs text-gray-400 dark:text-gray-500 tabular-nums mb-1">
+                                                    {f.timestamp?.slice(0, 10)} {f.timestamp?.slice(11, 16)}
+                                                </div>
+                                                {/* overflow-wrap:anywhere (not break-words) so one very long word can't widen the grid */}
+                                                <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap [overflow-wrap:anywhere]">
+                                                    {f.message}
+                                                </p>
+                                            </div>
+                                        ))
+                                    )}
+                                    {(data.feedback_total ?? 0) > (data.feedback || []).length && (
+                                        <p className="text-xs text-gray-400">
+                                            Visar de {data.feedback.length} senaste av {data.feedback_total}.
+                                        </p>
+                                    )}
+                                </div>
+                            </MetricCard>
                         </div>
                     </div>
                 )}
