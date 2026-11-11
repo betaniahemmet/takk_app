@@ -53,6 +53,23 @@ def test_every_video_exists_on_disk():
     assert not missing, "Missing video files:\n" + "\n".join(missing)
 
 
+def test_every_silent_video_exists_on_disk():
+    data = load_manifest()
+    missing = [
+        f"{sign_id}: {sign['video_silent']}"
+        for sign_id, sign in data["signs"].items()
+        if sign.get("video_silent") and not resolve(sign["video_silent"]).exists()
+    ]
+    assert not missing, "Missing silent video files:\n" + "\n".join(missing)
+
+
+def test_every_sign_is_in_a_level():
+    data = load_manifest()
+    placed = {sid for level in data["levels"] for sid in level["signs"]}
+    unplaced = sorted(set(data["signs"]) - placed)
+    assert not unplaced, f"Signs not in any level (unreachable in Träna/Gissa): {unplaced}"
+
+
 def test_every_pictogram_exists_on_disk():
     data = load_manifest()
     missing = []

@@ -245,18 +245,32 @@ def test_api_track_session_id_too_long(client):
     assert res.status_code == 400
 
 
+def test_api_track_data_too_large(client):
+    res = client.post(
+        "/api/track",
+        json={"session_id": "abc", "event_type": "page_view", "data": {"page": "x" * 1000}},
+    )
+    assert res.status_code == 400
+
+
 def test_api_analytics_no_key(client, analytics_key):
     res = client.get("/api/analytics")
     assert res.status_code == 401
 
 
 def test_api_analytics_wrong_key(client, analytics_key):
-    res = client.get("/api/analytics?key=wrongkey")
+    res = client.get("/api/analytics", headers={"X-Analytics-Key": "wrongkey"})
+    assert res.status_code == 401
+
+
+def test_api_analytics_key_in_query_not_accepted(client, analytics_key):
+    # Query strings end up in access logs, so the key is only read from the header
+    res = client.get(f"/api/analytics?key={analytics_key}")
     assert res.status_code == 401
 
 
 def test_api_analytics_correct_key(client, analytics_key):
-    res = client.get(f"/api/analytics?key={analytics_key}")
+    res = client.get("/api/analytics", headers={"X-Analytics-Key": analytics_key})
     assert res.status_code == 200
     data = res.get_json()
     assert "unique_sessions" in data

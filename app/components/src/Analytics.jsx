@@ -45,7 +45,7 @@ function PasswordGate({ onUnlock }) {
         setLoading(true);
         setError("");
         try {
-            const res = await fetch(`/api/analytics?key=${encodeURIComponent(input)}`);
+            const res = await fetch("/api/analytics", { headers: { "X-Analytics-Key": input } });
             if (res.ok) {
                 sessionStorage.setItem(SESSION_STORAGE_KEY, input);
                 onUnlock(input);
@@ -131,7 +131,7 @@ export default function Analytics() {
         setLoading(true);
         setError("");
         try {
-            const res = await fetch(`/api/analytics?key=${encodeURIComponent(k)}`);
+            const res = await fetch("/api/analytics", { headers: { "X-Analytics-Key": k } });
             if (res.status === 401) {
                 sessionStorage.removeItem(SESSION_STORAGE_KEY);
                 setKey("");

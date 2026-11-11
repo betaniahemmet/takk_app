@@ -2,7 +2,7 @@
 import os
 
 from flask import Flask
-from flask_cors import CORS
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .config import Config  # Config handles all env loading
 from .routes import main_bp
@@ -23,7 +23,9 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     app.config["DIST_ROOT"] = dist_root
 
-    CORS(app)
+    # Behind nginx every request comes from 127.0.0.1. Trust exactly one proxy
+    # hop so request.remote_addr is the real client IP (used for rate limiting).
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
     app.register_blueprint(main_bp)
 
     return app
