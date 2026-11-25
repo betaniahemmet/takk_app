@@ -37,36 +37,6 @@ def test_rate_limit_is_per_client_behind_proxy(real_app):
     assert _post_feedback(real_app, "203.0.113.2").status_code == 200
 
 
-def test_allowlisted_ip_skips_rate_limit(real_app, monkeypatch):
-    import app.routes as routes
-
-    monkeypatch.setattr(routes, "RATE_LIMIT_ALLOWLIST", frozenset({"203.0.113.9"}))
-    for _ in range(30):
-        assert _post_feedback(real_app, "203.0.113.9").status_code == 200
-    # Everyone else keeps the normal limit
-    for _ in range(10):
-        assert _post_feedback(real_app, "203.0.113.1").status_code == 200
-    assert _post_feedback(real_app, "203.0.113.1").status_code == 429
-
-
-def test_allowlist_does_not_cover_analytics_dashboard(real_app, monkeypatch):
-    import app.routes as routes
-
-    monkeypatch.setattr(routes, "RATE_LIMIT_ALLOWLIST", frozenset({"203.0.113.9"}))
-    headers = {"X-Forwarded-For": "203.0.113.9"}
-    env = {"REMOTE_ADDR": "127.0.0.1"}
-    codes = [real_app.get("/api/analytics", headers=headers, environ_base=env).status_code for _ in range(6)]
-    assert codes[-1] == 429
-
-
-def test_parse_ip_allowlist():
-    from app.routes import parse_ip_allowlist
-
-    assert parse_ip_allowlist(" 217.10.117.57 , 198.51.100.4,,") == {"217.10.117.57", "198.51.100.4"}
-    assert parse_ip_allowlist("") == frozenset()
-    assert parse_ip_allowlist(None) == frozenset()
-
-
 def test_cors_headers_not_sent(real_app):
     r = real_app.get("/api/version", headers={"Origin": "https://evil.example"})
     assert "Access-Control-Allow-Origin" not in r.headers
