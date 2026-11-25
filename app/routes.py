@@ -38,14 +38,30 @@ RATE_LIMIT_MAX_REQUESTS = 10  # max requests per window
 TRACK_RATE_LIMIT_MAX_REQUESTS = 60  # analytics events are more frequent
 MAX_TRACK_DATA_BYTES = 512  # serialized size cap for /api/track `data`
 
+
+def parse_ip_allowlist(value):
+    """Turn "1.2.3.4, 5.6.7.8" into a set of IPs, ignoring blanks."""
+    return frozenset(ip.strip() for ip in (value or "").split(",") if ip.strip())
+
+
+# Client IPs that skip rate limiting, comma-separated, e.g. an office where many
+# people share one public IP during a demo. Read once at startup.
+RATE_LIMIT_ALLOWLIST = parse_ip_allowlist(os.getenv("RATE_LIMIT_ALLOWLIST"))
+
 # Competition scoring (must match Competition.jsx): each correct answer gives
 # at most 1.17 points plus 0.05 per answer already in the streak.
 SCORE_MAX_BASE = 1.17
 SCORE_STREAK_BONUS = 0.05
 
 
-def check_rate_limit(identifier, max_requests=RATE_LIMIT_MAX_REQUESTS):
-    """Simple rate limiter: max N requests per 60 seconds per identifier."""
+def check_rate_limit(bucket, ip, max_requests=RATE_LIMIT_MAX_REQUESTS, allowlist=True):
+    """Simple rate limiter: max N requests per 60 seconds per bucket and client IP.
+
+    IPs in RATE_LIMIT_ALLOWLIST always pass, unless allowlist=False.
+    """
+    if allowlist and ip in RATE_LIMIT_ALLOWLIST:
+        return True
+    identifier = f"{bucket}_{ip}"
     now = time.time()
     recent = [t for t in rate_limit_store.get(identifier, []) if now - t < RATE_LIMIT_WINDOW]
     if len(recent) >= max_requests:
@@ -98,7 +114,7 @@ def api_scores():
 def api_add_score():
     # Rate limiting by IP
     ip = request.remote_addr
-    if not check_rate_limit(f"score_{ip}"):
+    if not check_rate_limit("score", ip):
         return jsonify({"ok": False, "error": "Too many requests. Try again later."}), 429
 
     data = request.get_json(silent=True) or {}
@@ -132,7 +148,7 @@ def api_add_score():
 def api_feedback():
     # Rate limiting by IP
     ip = request.remote_addr
-    if not check_rate_limit(f"feedback_{ip}"):
+    if not check_rate_limit("feedback", ip):
         return jsonify({"ok": False, "error": "Too many requests. Try again later."}), 429
 
     data = request.get_json(silent=True) or {}
@@ -312,7 +328,7 @@ def api_signs():
 @main_bp.post("/api/track")
 def api_track():
     ip = request.remote_addr
-    if not check_rate_limit(f"track_{ip}", max_requests=TRACK_RATE_LIMIT_MAX_REQUESTS):
+    if not check_rate_limit("track", ip, max_requests=TRACK_RATE_LIMIT_MAX_REQUESTS):
         return jsonify({"ok": False, "error": "Too many requests"}), 429
 
     data = request.get_json(silent=True) or {}
@@ -346,7 +362,7 @@ def api_track():
 @main_bp.get("/api/analytics")
 def api_analytics():
     ip = request.remote_addr or "unknown"
-    if not check_rate_limit(f"analytics_{ip}", max_requests=5):
+    if not check_rate_limit("analytics", ip, max_requests=5, allowlist=False):
         return jsonify({"error": "rate limit exceeded"}), 429
 
     if ANALYTICS_KEY:

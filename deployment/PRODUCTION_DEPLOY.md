@@ -469,6 +469,21 @@ for i in {1..6}; do
 done
 ```
 
+**Many people behind one IP** (an office demo, a classroom): everyone shares the
+same limits. To let one IP skip the score, feedback and tracking limits, set
+`RATE_LIMIT_ALLOWLIST` (comma-separated) in a systemd drop-in:
+
+```bash
+sudo systemctl edit takk
+# add:
+#   [Service]
+#   Environment="RATE_LIMIT_ALLOWLIST=217.10.117.57"
+sudo systemctl restart takk
+```
+
+`/api/analytics` stays limited for every IP. To remove it, run
+`sudo systemctl revert takk && sudo systemctl restart takk`.
+
 ### Frontend
 
 - [ ] Home page loads and displays correctly
