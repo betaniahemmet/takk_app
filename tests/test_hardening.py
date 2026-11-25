@@ -30,41 +30,36 @@ def _post_feedback(client, ip):
 
 
 def test_rate_limit_is_per_client_behind_proxy(real_app):
-    for _ in range(10):
+    from app.routes import FEEDBACK_RATE_LIMIT_MAX_REQUESTS
+
+    for _ in range(FEEDBACK_RATE_LIMIT_MAX_REQUESTS):
         assert _post_feedback(real_app, "203.0.113.1").status_code == 200
     assert _post_feedback(real_app, "203.0.113.1").status_code == 429
     # A different visitor is not affected by the first one's limit
     assert _post_feedback(real_app, "203.0.113.2").status_code == 200
 
 
-def test_allowlisted_ip_skips_rate_limit(real_app, monkeypatch):
-    import app.routes as routes
+def test_group_on_one_ip_fits_in_the_limits(real_app, monkeypatch):
+    """30 people on one workplace wifi: all finish a competition and browse at once."""
+    import app.analytics as an
+    import app.leaderboard as lb
 
-    monkeypatch.setattr(routes, "RATE_LIMIT_ALLOWLIST", frozenset({"203.0.113.9"}))
-    for _ in range(30):
-        assert _post_feedback(real_app, "203.0.113.9").status_code == 200
-    # Everyone else keeps the normal limit
-    for _ in range(10):
-        assert _post_feedback(real_app, "203.0.113.1").status_code == 200
-    assert _post_feedback(real_app, "203.0.113.1").status_code == 429
-
-
-def test_allowlist_does_not_cover_analytics_dashboard(real_app, monkeypatch):
-    import app.routes as routes
-
-    monkeypatch.setattr(routes, "RATE_LIMIT_ALLOWLIST", frozenset({"203.0.113.9"}))
-    headers = {"X-Forwarded-For": "203.0.113.9"}
+    fake = fakeredis.FakeRedis(decode_responses=True)
+    monkeypatch.setattr(an, "_client", fake)
+    monkeypatch.setattr(lb, "_client", fake)
     env = {"REMOTE_ADDR": "127.0.0.1"}
-    codes = [real_app.get("/api/analytics", headers=headers, environ_base=env).status_code for _ in range(6)]
-    assert codes[-1] == 429
-
-
-def test_parse_ip_allowlist():
-    from app.routes import parse_ip_allowlist
-
-    assert parse_ip_allowlist(" 217.10.117.57 , 198.51.100.4,,") == {"217.10.117.57", "198.51.100.4"}
-    assert parse_ip_allowlist("") == frozenset()
-    assert parse_ip_allowlist(None) == frozenset()
+    headers = {"X-Forwarded-For": "203.0.113.5"}
+    for i in range(30):
+        r = real_app.post("/api/score", json={"name": f"P{i}", "score": 0.5}, headers=headers, environ_base=env)
+        assert r.status_code == 200
+    for _ in range(30 * 10):
+        r = real_app.post(
+            "/api/track",
+            json={"session_id": "s", "event_type": "sign_viewed", "data": {"sign_id": "hej"}},
+            headers=headers,
+            environ_base=env,
+        )
+        assert r.status_code == 200
 
 
 def test_cors_headers_not_sent(real_app):

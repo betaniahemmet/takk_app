@@ -51,7 +51,9 @@ def test_feedback_message_too_long(client):
 
 
 def test_feedback_rate_limit(client):
-    for _ in range(10):
+    from app.routes import FEEDBACK_RATE_LIMIT_MAX_REQUESTS
+
+    for _ in range(FEEDBACK_RATE_LIMIT_MAX_REQUESTS):
         client.post("/api/feedback", json={"message": "spam"})
     r = client.post("/api/feedback", json={"message": "spam"})
     assert r.status_code == 429

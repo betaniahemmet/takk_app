@@ -95,6 +95,32 @@ def test_track_event_sets_ttl(fake_redis):
     assert EVENT_TTL - 5 <= ttl <= EVENT_TTL
 
 
+def test_track_event_keeps_newest_when_full(fake_redis, monkeypatch):
+    import json
+
+    import app.analytics as an
+
+    monkeypatch.setattr(an, "MAX_EVENTS_PER_TYPE", 3)
+    for i in range(5):
+        an.track_event("s1", "sign_viewed", {"sign_id": f"sign{i}"})
+    stored = [json.loads(e)["data"]["sign_id"] for e in fake_redis.lrange("events:sign_viewed", 0, -1)]
+    assert stored == ["sign2", "sign3", "sign4"]
+    assert fake_redis.hget(an.DROPPED_KEY, "sign_viewed") == "2"
+
+
+def test_totals_count_trimmed_events(fake_redis, monkeypatch):
+    import app.analytics as an
+
+    monkeypatch.setattr(an, "MAX_EVENTS_PER_TYPE", 3)
+    for _ in range(5):
+        an.track_event("s1", "quiz_attempt", {"level": 1, "total": 10})
+    an.track_event("s1", "page_view", {"page": "home"})
+    result = an.get_analytics()
+    assert result["events"]["quiz_attempt"] == 5
+    assert result["quiz_count"] == 5
+    assert result["events"]["page_view"] == 1
+
+
 # --- get_analytics() ---
 
 

@@ -7,6 +7,11 @@ import redis
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 ANALYTICS_KEY = os.getenv("ANALYTICS_KEY", "")
 EVENT_TTL = 90 * 24 * 60 * 60  # 90 days in seconds
+# Newest events kept per type. Bounds Redis memory (~400 bytes per event, so
+# about 140 MB for all types at most) whatever the request rate.
+MAX_EVENTS_PER_TYPE = 50_000
+# Hash: event_type -> number of events trimmed off the lists, so totals stay right
+DROPPED_KEY = "analytics:dropped"
 
 VALID_EVENT_TYPES = {
     "page_view",
@@ -44,11 +49,15 @@ def track_event(session_id: str, event_type: str, data: dict) -> bool:
         "data": data,
     }
 
-    pipe = r.pipeline()
+    # MULTI/EXEC: push, trim and measure atomically, so concurrent workers
+    # never count the same trimmed event twice
+    pipe = r.pipeline(transaction=True)
 
-    # Append to per-type list and refresh TTL
+    # Append to per-type list, keep only the newest events, refresh TTL
     list_key = f"events:{event_type}"
     pipe.rpush(list_key, json.dumps(event))
+    pipe.ltrim(list_key, -MAX_EVENTS_PER_TYPE, -1)
+    pipe.llen(list_key)
     pipe.expire(list_key, EVENT_TTL)
 
     # Track unique sessions
@@ -57,7 +66,10 @@ def track_event(session_id: str, event_type: str, data: dict) -> bool:
     # Increment daily counter
     pipe.hincrby(f"analytics:daily:{date_str}", event_type, 1)
 
-    pipe.execute()
+    length_after_push, _, length_after_trim, *_ = pipe.execute()
+    dropped = length_after_push - length_after_trim
+    if dropped > 0:
+        r.hincrby(DROPPED_KEY, event_type, dropped)
     return True
 
 
@@ -72,9 +84,11 @@ def get_analytics() -> dict:
         "recent": [],
     }
 
-    # Total count per event type
+    # Total count per event type: what's stored plus what was trimmed off
+    dropped = r.hgetall(DROPPED_KEY)
     for event_type in VALID_EVENT_TYPES:
-        result["events"][event_type] = r.llen(f"events:{event_type}")
+        stored = r.llen(f"events:{event_type}")
+        result["events"][event_type] = stored + int(dropped.get(event_type, 0))
 
     # Daily stats — last 30 days
     today = datetime.now(timezone.utc).date()
@@ -133,6 +147,6 @@ def get_analytics() -> dict:
     result["comp_avg_score"] = round(sum(comp_scores) / len(comp_scores), 2) if comp_scores else 0
 
     # Quiz count
-    result["quiz_count"] = r.llen("events:quiz_attempt")
+    result["quiz_count"] = result["events"]["quiz_attempt"]
 
     return result
